@@ -1,20 +1,14 @@
 import { useState, useEffect } from 'react';
-import FormControl from '@mui/material/FormControl';
-import { styled } from '@mui/material/styles';
-import { toRem } from '@/helpers/globalFunctions';
+import GlobalStyles from '@mui/material/GlobalStyles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const FormControlStyle = styled(FormControl)(({ theme }) => ({
-  maxWidth: toRem(200),
+import styles, { FormControlStyle } from './index.styles';
 
-  [theme.breakpoints.down('md')]: {
-    width: '100%',
-    maxWidth: 'none',
-  },
-}));
+dayjs.locale('en');
+dayjs.Ls.en.weekStart = 1;
 
 type Props = {
   label?: string;
@@ -38,16 +32,29 @@ const DatePickerComp = ({ label, value, onChange, ...props }: Props) => {
   };
 
   return (
-    <FormControlStyle>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          {...usedLabel}
-          value={enterValue}
-          onChange={handleChange}
-          {...props}
-        />
-      </LocalizationProvider>
-    </FormControlStyle>
+    <>
+      <GlobalStyles
+        styles={{
+          body: styles.dateCalendarHeader,
+        }}
+      />
+      <FormControlStyle>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            {...usedLabel}
+            value={enterValue}
+            onChange={handleChange}
+            sx={{
+              '& .MuiDateCalendar-root': {
+                border: '2px solid #D1D5D8',
+                borderRadius: '12px',
+              },
+            }}
+            {...props}
+          />
+        </LocalizationProvider>
+      </FormControlStyle>
+    </>
   );
 };
 

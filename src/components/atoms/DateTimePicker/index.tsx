@@ -1,20 +1,11 @@
 import { useState, useEffect } from 'react';
-import FormControl from '@mui/material/FormControl';
-import { styled } from '@mui/material/styles';
-import { toRem } from '@/helpers/globalFunctions';
+import GlobalStyles from '@mui/material/GlobalStyles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
-const FormControlStyle = styled(FormControl)(({ theme }) => ({
-  maxWidth: toRem(200),
-
-  [theme.breakpoints.down('md')]: {
-    width: '100%',
-    maxWidth: 'none',
-  },
-}));
+import styles, { FormControlStyle } from './index.styles';
 
 type Props = {
   label?: string;
@@ -38,16 +29,23 @@ const DateTimePickerComp = ({ label, value, onChange, ...props }: Props) => {
   };
 
   return (
-    <FormControlStyle>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateTimePicker
-          {...usedLabel}
-          value={enterValue}
-          onChange={handleChange}
-          {...props}
-        />
-      </LocalizationProvider>
-    </FormControlStyle>
+    <>
+      <GlobalStyles
+        styles={{
+          body: styles.dateCalendarHeader,
+        }}
+      />
+      <FormControlStyle>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateTimePicker
+            {...usedLabel}
+            value={enterValue}
+            onChange={handleChange}
+            {...props}
+          />
+        </LocalizationProvider>
+      </FormControlStyle>
+    </>
   );
 };
 
