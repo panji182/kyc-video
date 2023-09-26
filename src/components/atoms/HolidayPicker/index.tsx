@@ -1,18 +1,19 @@
 import { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import FormControl from '@mui/material/FormControl';
-// import { styled } from '@mui/material/styles';
 import { toRem } from '@/helpers/globalFunctions';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import styles from './index.styles';
+import TextField from '@mui/material/TextField';
+import styles, { ModalStyle } from './index.styles';
 
-const TextInput = dynamic(() => import('@/components/atoms/TextInput'));
+dayjs.locale('en');
+dayjs.Ls.en.weekStart = 1;
+
 const Button = dynamic(() => import('@/components/atoms/Button'));
 
 type Props = {
@@ -67,6 +68,7 @@ const HolidayPicker = ({
           },
     [enterValue]
   );
+  const [subPopup, setSubPopup] = useState<boolean>(false);
 
   useEffect(() => {
     setEnterValue(value);
@@ -99,15 +101,15 @@ const HolidayPicker = ({
 
   const handleChange = (value: Dayjs | null) => {
     setEnterValue(value);
-
+    setSubPopup(true);
     // onChange(value);
   };
 
-  const handleHoliday = (val: any) => {
+  const handleHoliday = (val: React.ChangeEvent<HTMLInputElement>) => {
     setHolidayInfos((prevState: any) => {
       return {
         ...prevState,
-        [dateUsed.fullDate]: val,
+        [dateUsed.fullDate]: val.target.value,
       };
     });
   };
@@ -125,73 +127,81 @@ const HolidayPicker = ({
       temp.splice(temp.indexOf(dateUsed.date), 1);
       return temp;
     });
+    setSubPopup(false);
   };
 
   const handleAddHoliday = () => {
     const temp = { ...holidayInfos };
     delete temp.default;
-    console.log(127, temp);
-    // setHolidayInfos(temp);
+    console.log(137, temp);
+    setSubPopup(false);
   };
 
   return (
-    <FormControl>
+    <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Stack direction="row">
-          <Box
+        <Box sx={styles.dateCalendar}>
+          <DateCalendar
+            minDate={minDate}
+            maxDate={maxDate}
+            onMonthChange={handleMonthChange}
+            slots={{
+              day: ServerDay,
+            }}
+            slotProps={{
+              day: {
+                highlightedDays,
+              } as any,
+            }}
+            //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            onChange={handleChange}
+            calendarStartDay={0}
+            {...props}
+          />
+        </Box>
+      </LocalizationProvider>
+      <ModalStyle
+        open={subPopup}
+        aria-labelledby="sub-modal-title"
+        aria-describedby="sub-modal-description"
+        onClose={() => setSubPopup(false)}
+      >
+        <Box sx={styles.innerBoxStyle}>
+          <TextField
+            fullWidth
+            placeholder="Name Holiday"
+            value={holidayInfos[dateUsed.fullDate] ?? ''}
+            variant="standard"
+            onChange={handleHoliday}
             sx={{
-              '& .MuiDateCalendar-root': {
-                border: '2px solid #D1D5D8',
-                borderRadius: '7px',
-                width: toRem(275),
+              mt: toRem(32),
+              mb: toRem(48),
+              '& .MuiInput-root:before': {
+                borderBottom: '1px solid #000',
               },
-              '& .MuiYearCalendar-root': {
-                width: toRem(275),
+              '& .MuiInput-root:after': {
+                borderBottom: 'none',
               },
             }}
-          >
-            <DateCalendar
-              minDate={minDate}
-              maxDate={maxDate}
-              onMonthChange={handleMonthChange}
-              slots={{
-                day: ServerDay,
-              }}
-              slotProps={{
-                day: {
-                  highlightedDays,
-                } as any,
-              }}
-              //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              onChange={handleChange}
-              {...props}
-            />
-          </Box>
-          <Box>
-            <TextInput
-              placeholder="Holiday Info"
-              value={holidayInfos[dateUsed.fullDate] ?? ''}
-              variant="outlined"
-              onChange={handleHoliday}
-            />
+          />
+          <Stack direction="row" justifyContent={'flex-end'} gap={2}>
             <Button
-              label="Set Holidays"
-              variant="contained"
-              onClick={handleAddHoliday}
-              sx={{ marginLeft: toRem(8), mb: toRem(8) }}
-            />
-            <Button
-              label="Cancel"
+              label="Delete"
               color="error"
               variant="contained"
               onClick={handleCancelHoliday}
               sx={{ marginLeft: toRem(8) }}
             />
-          </Box>
-        </Stack>
-      </LocalizationProvider>
-    </FormControl>
+            <Button
+              label="Save"
+              variant="contained"
+              onClick={handleAddHoliday}
+            />
+          </Stack>
+        </Box>
+      </ModalStyle>
+    </>
   );
 };
 

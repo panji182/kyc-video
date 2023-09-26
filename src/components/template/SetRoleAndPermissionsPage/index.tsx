@@ -11,6 +11,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import Checkbox from '@mui/material/Checkbox';
 
 import { toRem } from '@/helpers/globalFunctions';
 import { HeadCell } from '@/types/atoms/table';
@@ -43,15 +44,15 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 const dataRows = [
   {
     userLevel: 'admin',
-    read: '',
-    update: '',
-    delete: '',
+    read: true,
+    update: true,
+    delete: true,
   },
   {
     userLevel: 'agent',
-    read: '',
-    update: '',
-    delete: '',
+    read: true,
+    update: false,
+    delete: false,
   },
 ];
 
@@ -84,6 +85,7 @@ const headCells: HeadCell[] = [
 
 const SetRoleAndPermissions = () => {
   const [page, setPage] = useState(0);
+  const [dataEdit, setDataEdit] = useState<any>(dataRows);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -98,9 +100,24 @@ const SetRoleAndPermissions = () => {
   };
 
   const visibleRows = useMemo(
-    () => dataRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage]
+    () => dataEdit.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [page, rowsPerPage, dataEdit]
   );
+
+  const handlePermissions = (
+    action: string | number,
+    rowIndex: number,
+    isChecked: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setDataEdit((prevState: any) => {
+      const data = [...prevState];
+      data[rowIndex] = {
+        ...data[rowIndex],
+        [action]: isChecked.target.checked,
+      };
+      return data;
+    });
+  };
 
   return (
     <>
@@ -127,7 +144,7 @@ const SetRoleAndPermissions = () => {
             <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
               <EnhancedTableHead headCells={headCells} />
               <TableBody>
-                {visibleRows.map((row: any) => (
+                {visibleRows.map((row: any, rowIdx: number) => (
                   <TableRow hover key={row.userLevel}>
                     {headCells.map(cell => {
                       const cellValue = cell.id
@@ -138,7 +155,21 @@ const SetRoleAndPermissions = () => {
                           key={cell.id}
                           align={cell.numeric ? 'right' : 'left'}
                         >
-                          {cellValue ?? '-'}
+                          {['read', 'update', 'delete'].includes(
+                            (cell.id || '').toString()
+                          ) ? (
+                            <Checkbox
+                              key={`${cell.id}${rowIdx}`}
+                              checked={cellValue}
+                              onChange={ev =>
+                                handlePermissions(cell.id, rowIdx, ev)
+                              }
+                            />
+                          ) : cellValue ? (
+                            cellValue
+                          ) : (
+                            '-'
+                          )}
                         </TableCell>
                       );
                     })}
