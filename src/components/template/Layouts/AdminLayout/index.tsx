@@ -6,50 +6,29 @@ import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-// import Toolbar from '@mui/material/Toolbar';
-// import List from '@mui/material/List';
-// import CssBaseline from '@mui/material/CssBaseline';
-// import Typography from '@mui/material/Typography';
-// import Divider from '@mui/material/Divider';
-// import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import CssBaseline from '@mui/material/CssBaseline';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-// import ListItem from '@mui/material/ListItem';
-// import ListItemButton from '@mui/material/ListItemButton';
-// import ListItemIcon from '@mui/material/ListItemIcon';
-// import ListItemText from '@mui/material/ListItemText';
-
-import {
-  Toolbar,
-  List,
-  CssBaseline,
-  Typography,
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Collapse,
-  Menu,
-  Tooltip,
-  Avatar,
-  MenuItem,
-  TextField,
-  InputAdornment,
-} from '@mui/material';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+import Menu from '@mui/material/Menu';
+import Tooltip from '@mui/material/Tooltip';
+import Avatar from '@mui/material/Avatar';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import './index.styles.css';
 
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-// import Collapse from '@mui/material/Collapse';
-// import Menu from '@mui/material/Menu';
-// import Tooltip from '@mui/material/Tooltip';
-// import Avatar from '@mui/material/Avatar';
-// import MenuItem from '@mui/material/MenuItem';
-// import TextField from '@mui/material/TextField';
-// import InputAdornment from '@mui/material/InputAdornment';
 import { toEm, toRem } from '@/helpers/globalFunctions';
-import './index.styles.css';
-
 import SearchIcon from '@mui/icons-material/Search';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -468,17 +447,19 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             onChange={e => setSearch(e.target.value)}
           />
         )}
-        <Typography
-          sx={{
-            marginTop: toRem(16),
-            marginLeft: toRem(16),
-            marginRight: toRem(16),
-            color: '#B0B0B0',
-            fontWeight: 'bold',
-          }}
-        >
-          Menu
-        </Typography>
+        {open && (
+          <Typography
+            sx={{
+              marginTop: toRem(16),
+              marginLeft: toRem(16),
+              marginRight: toRem(16),
+              color: '#B0B0B0',
+              fontWeight: 'bold',
+            }}
+          >
+            Menu
+          </Typography>
+        )}
         <List
           component="div"
           sx={{
