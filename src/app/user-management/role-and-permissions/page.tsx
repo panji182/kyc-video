@@ -1,16 +1,21 @@
 import React from 'react';
-import AdminLayout from '@/components/template/Layouts/AdminLayout';
+import dynamic from 'next/dynamic';
+import { checkValidAuth } from '@/app/helpers/globalFunctions';
+const AdminLayout = dynamic(
+  () => import('@/components/template/Layouts/AdminLayout')
+);
+const SetRoleAndPermissions = dynamic(
+  () => import('@/components/template/SetRoleAndPermissionsPage')
+);
 
-type Props = {};
+const RoleAndPermissions = () => {
+  checkValidAuth();
 
-const page = (props: Props) => {
   return (
-    <>
-      <AdminLayout>
-        <span>page role and permissions</span>
-      </AdminLayout>
-    </>
+    <AdminLayout>
+      <SetRoleAndPermissions />
+    </AdminLayout>
   );
 };
 
-export default page;
+export default RoleAndPermissions;

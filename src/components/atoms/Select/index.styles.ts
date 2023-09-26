@@ -1,9 +1,8 @@
-
-import { toRem } from "@/helpers/globalFunctions";
+import { toRem } from '@/helpers/globalFunctions';
 
 const styles = {
-  formControl: { m: 1, width: toRem(300) },
   selectedSelect: { display: 'flex', flexWrap: 'wrap', gap: 0.5 },
-}
+  bottomSpace: { pb: toRem(16) },
+};
 
 export default styles;

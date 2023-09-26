@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,136 +13,12 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import { visuallyHidden } from '@mui/utils';
+import IconButton from '@mui/material/IconButton';
 
-interface Data {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  email: string;
-  userLevel: string;
-  status: string;
-  picture: string;
-}
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const rows = [
-  {
-    firstName: 'Panji1',
-    middleName: 'test1',
-    lastName: 'Mantra1',
-    email: 'panji@yahoo.com1',
-    userLevel: 'Admin1',
-    status: 'Active1',
-    picture: 'http://image/to/path/panji.jpg1',
-  },
-  {
-    firstName: 'mantra2',
-    middleName: 'test2',
-    lastName: 'panji2',
-    email: 'panji@yahoo.com2',
-    userLevel: 'Admin2',
-    status: 'Not Active2',
-    picture: 'http://image/to/path/mantra.jpg2',
-  },
-  {
-    firstName: 'Panji3',
-    middleName: 'test3',
-    lastName: 'Mantra3',
-    email: 'panji@yahoo.com3',
-    userLevel: 'Admin3',
-    status: 'Active3',
-    picture: 'http://image/to/path/panji.jpg3',
-  },
-  {
-    firstName: 'mantra4',
-    middleName: 'test4',
-    lastName: 'panji4',
-    email: 'panji@yahoo.com4',
-    userLevel: 'Admin4',
-    status: 'Not Active4',
-    picture: 'http://image/to/path/mantra.jpg4',
-  },
-  {
-    firstName: 'Panji5',
-    middleName: 'test5',
-    lastName: 'Mantra5',
-    email: 'panji@yahoo.com5',
-    userLevel: 'Admin5',
-    status: 'Active5',
-    picture: 'http://image/to/path/panji.jpg5',
-  },
-  {
-    firstName: 'mantra6',
-    middleName: 'test6',
-    lastName: 'panji6',
-    email: 'panji@yahoo.com6',
-    userLevel: 'Admin6',
-    status: 'Not Active6',
-    picture: 'http://image/to/path/mantra.jpg6',
-  },
-  {
-    firstName: 'Panji7',
-    middleName: 'test7',
-    lastName: 'Mantra7',
-    email: 'panji@yahoo.com7',
-    userLevel: 'Admin7',
-    status: 'Active7',
-    picture: 'http://image/to/path/panji.jpg7',
-  },
-  {
-    firstName: 'mantr8a',
-    middleName: 'te8st',
-    lastName: 'panji8',
-    email: 'panji@yah8oo.com',
-    userLevel: 'Admi8n',
-    status: 'Not Act8ive',
-    picture: 'http://image/to/path/man8tra.jpg',
-  },
-  {
-    firstName: 'Panj9i',
-    middleName: 'tes9t',
-    lastName: 'Mant9ra',
-    email: 'panji@ya9hoo.com',
-    userLevel: 'Adm9in',
-    status: 'Act9ive',
-    picture: 'http://image/to/9path/panji.jpg',
-  },
-  {
-    firstName: 'mantr10a',
-    middleName: 'test10',
-    lastName: 'panji10',
-    email: 'panji@yahoo.com10',
-    userLevel: 'Admin10',
-    status: 'Not Active10',
-    picture: 'http://image/to/path/mantra.jpg10',
-  },
-  {
-    firstName: 'Panji11',
-    middleName: 'test11',
-    lastName: 'Mantra11',
-    email: 'panji@yahoo.com11',
-    userLevel: 'Admin11',
-    status: 'Active11',
-    picture: 'http://image/to/path/panji.jpg11',
-  },
-  {
-    firstName: 'mantra12',
-    middleName: 'test12',
-    lastName: 'panji12',
-    email: 'panji@yahoo12.com',
-    userLevel: 'Admin12',
-    status: 'Not Active12',
-    picture: 'http://image/to/path/mantra.jpg12',
-  },
-  {
-    firstName: 'Panji13',
-    middleName: 'test13',
-    lastName: 'Mantra13',
-    email: 'panji@yahoo.com13',
-    userLevel: 'Admin13',
-    status: 'Active13',
-    picture: 'http://image/to/path/panji.jpg13',
-  },
-];
+import { HeadCell, Order, EnhancedTableProps } from '@/types/atoms/table';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -153,13 +30,13 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0;
 }
 
-type Order = 'asc' | 'desc';
-
-function getComparator<Key extends keyof any>(
+function getComparator<Key extends string | number | symbol>(
   order: Order,
   orderBy: Key
 ): (
+  // eslint-disable-next-line no-unused-vars
   a: { [key in Key]: number | string },
+  // eslint-disable-next-line no-unused-vars
   b: { [key in Key]: number | string }
 ) => number {
   return order === 'desc'
@@ -173,6 +50,7 @@ function getComparator<Key extends keyof any>(
 // with exampleArray.slice().sort(exampleComparator)
 function stableSort<T>(
   array: readonly T[],
+  // eslint-disable-next-line no-unused-vars
   comparator: (a: T, b: T) => number
 ) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -186,72 +64,10 @@ function stableSort<T>(
   return stabilizedThis.map(el => el[0]);
 }
 
-interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
-}
-
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'firstName',
-    numeric: false,
-    disablePadding: false,
-    label: 'First Name',
-  },
-  {
-    id: 'middleName',
-    numeric: false,
-    disablePadding: false,
-    label: 'Middle Name',
-  },
-  {
-    id: 'lastName',
-    numeric: false,
-    disablePadding: false,
-    label: 'Last Name',
-  },
-  {
-    id: 'email',
-    numeric: false,
-    disablePadding: false,
-    label: 'Email',
-  },
-  {
-    id: 'userLevel',
-    numeric: false,
-    disablePadding: false,
-    label: 'User Level',
-  },
-  {
-    id: 'status',
-    numeric: false,
-    disablePadding: false,
-    label: 'Status',
-  },
-  {
-    id: 'picture',
-    numeric: false,
-    disablePadding: false,
-    label: 'Picture',
-  },
-];
-
-interface EnhancedTableProps {
-  onRequestSort: (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => void;
-
-  order: Order;
-  orderBy: string;
-}
-
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const { order, orderBy, onRequestSort } = props;
+  const { headCells, order, orderBy, onRequestSort, showEditor } = props;
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    (property: any) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -280,20 +96,34 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
+        {showEditor && <TableCell>&nbsp;</TableCell>}
       </TableRow>
     </TableHead>
   );
 }
 
-export const TableComp = () => {
+type Props = {
+  data: any[];
+  fieldOrderBy: string;
+  headCells: HeadCell[];
+  showEditor?: boolean;
+  sx?: any;
+};
+
+const TableComp = ({
+  data,
+  fieldOrderBy,
+  headCells,
+  showEditor = true,
+}: Props) => {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('firstName');
+  const [orderBy, setOrderBy] = React.useState<any>(fieldOrderBy);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: any
   ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -313,12 +143,20 @@ export const TableComp = () => {
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(data, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
     [order, orderBy, page, rowsPerPage]
   );
+
+  const handleEdit = (id: number) => {
+    alert(`${id} Edited !`);
+  };
+
+  const handleDelete = (id: number) => {
+    alert(`${id} Deleted !`);
+  };
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -328,48 +166,63 @@ export const TableComp = () => {
           mb: 2,
         }}
       >
-        <TableContainer>
+        <TableContainer
+          sx={{
+            width: '100%',
+            overflowX: 'auto',
+          }}
+        >
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead
+              headCells={headCells}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
+              showEditor={showEditor}
             />
             <TableBody>
-              {visibleRows.map(row => {
-                return (
-                  <TableRow hover key={row.firstName}>
-                    <TableCell align={headCells[0].numeric ? 'right' : 'left'}>
-                      {row.firstName}
+              {visibleRows.map(row => (
+                <TableRow hover key={row.firstName}>
+                  {headCells.map(cell => {
+                    const cellValue = cell.id ? row[cell.id.toString()] : null;
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        align={cell.numeric ? 'right' : 'left'}
+                      >
+                        {cellValue ?? '-'}
+                      </TableCell>
+                    );
+                  })}
+                  {showEditor && (
+                    <TableCell key={'editor'} align={'center'}>
+                      <Stack direction="row" spacing={1}>
+                        <IconButton
+                          aria-label="edit"
+                          color="primary"
+                          onClick={() => handleEdit(0)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="delete"
+                          color="primary"
+                          onClick={() => handleDelete(0)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Stack>
                     </TableCell>
-                    <TableCell align={headCells[1].numeric ? 'right' : 'left'}>
-                      {row.middleName}
-                    </TableCell>
-                    <TableCell align={headCells[2].numeric ? 'right' : 'left'}>
-                      {row.lastName}
-                    </TableCell>
-                    <TableCell align={headCells[3].numeric ? 'right' : 'left'}>
-                      {row.email}
-                    </TableCell>
-                    <TableCell align={headCells[4].numeric ? 'right' : 'left'}>
-                      {row.userLevel}
-                    </TableCell>
-                    <TableCell align={headCells[5].numeric ? 'right' : 'left'}>
-                      {row.status}
-                    </TableCell>
-                    <TableCell align={headCells[6].numeric ? 'right' : 'left'}>
-                      {row.picture}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                  )}
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={(data || []).length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -379,3 +232,5 @@ export const TableComp = () => {
     </Box>
   );
 };
+
+export default TableComp;

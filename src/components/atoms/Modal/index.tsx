@@ -1,19 +1,44 @@
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import IconButton from '@mui/material/IconButton';
+
+import CloseIcon from '@mui/icons-material/Close';
 
 import { toRem } from '@/helpers/globalFunctions';
+import { colors } from '@/consts';
 import styles from './index.styles';
+
+const ModalStyle = styled(Modal)(({ theme }) => ({
+  '&.MuiModal-root>.MuiBox-root': {
+    width: toRem(500),
+    overflowY: 'auto',
+    maxHeight: '75vh',
+  },
+  [theme.breakpoints.down('md')]: {
+    '&.MuiModal-root>.MuiBox-root': {
+      width: '80%',
+      marginTop: toRem(16),
+    },
+  },
+}));
+
+const IconButtonCustom = styled(IconButton)({
+  color: colors.dark,
+});
 
 type Props = {
   open: boolean;
   title: string;
   onClose: () => void;
+  sx?: any;
   children: JSX.Element;
 };
 
-export const ModalComp = ({ open, title, onClose, children }: Props) => {
+const ModalComp = ({ open, title, onClose, children, ...props }: Props) => {
   const [openModal, setOpenModal] = useState(false);
   const handleClose = () => {
     setOpenModal(false);
@@ -25,23 +50,40 @@ export const ModalComp = ({ open, title, onClose, children }: Props) => {
   }, [open]);
 
   return (
-    <Modal
+    <ModalStyle
       open={openModal}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      {...props}
     >
       <Box sx={styles.style}>
-        <Typography
-          id="modal-title"
-          variant="h5"
-          component="h2"
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          spacing={1}
           sx={{ mb: toRem(16) }}
         >
-          {title}
-        </Typography>
+          <Typography
+            id="modal-title"
+            variant="h5"
+            component="h2"
+            sx={{ mb: toRem(16) }}
+          >
+            {title}
+          </Typography>
+          <IconButtonCustom
+            aria-label="edit"
+            color="secondary"
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButtonCustom>
+        </Stack>
         {children}
       </Box>
-    </Modal>
+    </ModalStyle>
   );
 };
+
+export default ModalComp;

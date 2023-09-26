@@ -1,11 +1,12 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { toRem } from '@/helpers/globalFunctions';
 
-import { ButtonComp as Button } from '@/components/atoms/Button';
+const Button = dynamic(() => import('@/components/atoms/Button'));
 
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 
@@ -58,7 +59,8 @@ const ExportButton = ({ handleExportCSV, handleExportPDF }: Props) => {
           <MenuItem
             key={usetting}
             onClick={() => {
-              usetting === 'CSV' ? handleExportCSV : handleExportPDF;
+              usetting === 'CSV' ? handleExportCSV() : handleExportPDF();
+              handleCloseUserMenu();
             }}
           >
             <Typography textAlign="center">{usetting}</Typography>

@@ -13,19 +13,17 @@ type Props = {
     | 'info'
     | 'warning';
   startIcon?: React.ReactNode;
+  // eslint-disable-next-line no-unused-vars
   onClick?: (e: any) => void;
+  sx?: any;
 };
 
-export const ButtonComp = ({
-  label,
-  variant,
-  color,
-  startIcon,
-  ...props
-}: Props) => {
+const ButtonComp = ({ label, variant, color, startIcon, ...props }: Props) => {
   return (
     <Button variant={variant} startIcon={startIcon} color={color} {...props}>
       {label}
     </Button>
   );
 };
+
+export default ButtonComp;

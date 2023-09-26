@@ -1,8 +1,8 @@
-import { toRem } from "@/helpers/globalFunctions";
+import { toRem } from '@/helpers/globalFunctions';
 
 const styles = {
-  style : {
-    position: 'absolute' as 'absolute',
+  style: {
+    position: 'absolute' as const,
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -11,8 +11,8 @@ const styles = {
     border: '1px solid #dedede',
     boxShadow: 24,
     borderRadius: '10px',
-    padding: toRem(32)
-  }
+    padding: toRem(32),
+  },
 };
 
 export default styles;

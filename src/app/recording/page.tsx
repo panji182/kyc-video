@@ -1,10 +1,16 @@
 import React from 'react';
-import AdminLayout from '@/components/template/Layouts/AdminLayout';
-import RecordingPage from '@/components/template/RecordingPage';
+import dynamic from 'next/dynamic';
+import { checkValidAuth } from '@/app/helpers/globalFunctions';
+const AdminLayout = dynamic(
+  () => import('@/components/template/Layouts/AdminLayout')
+);
+const RecordingPage = dynamic(
+  () => import('@/components/template/RecordingPage')
+);
 
-type Props = {};
+const Recording = () => {
+  checkValidAuth();
 
-const Recording = (props: Props) => {
   return (
     <AdminLayout>
       <RecordingPage />

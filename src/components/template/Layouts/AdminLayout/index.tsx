@@ -6,37 +6,61 @@ import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
+// import Toolbar from '@mui/material/Toolbar';
+// import List from '@mui/material/List';
+// import CssBaseline from '@mui/material/CssBaseline';
+// import Typography from '@mui/material/Typography';
+// import Divider from '@mui/material/Divider';
+// import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+// import ListItem from '@mui/material/ListItem';
+// import ListItemButton from '@mui/material/ListItemButton';
+// import ListItemIcon from '@mui/material/ListItemIcon';
+// import ListItemText from '@mui/material/ListItemText';
+
+import {
+  Toolbar,
+  List,
+  CssBaseline,
+  Typography,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  Menu,
+  Tooltip,
+  Avatar,
+  MenuItem,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
+
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import Collapse from '@mui/material/Collapse';
-import Menu from '@mui/material/Menu';
-import Tooltip from '@mui/material/Tooltip';
-import Avatar from '@mui/material/Avatar';
-import MenuItem from '@mui/material/MenuItem';
+// import Collapse from '@mui/material/Collapse';
+// import Menu from '@mui/material/Menu';
+// import Tooltip from '@mui/material/Tooltip';
+// import Avatar from '@mui/material/Avatar';
+// import MenuItem from '@mui/material/MenuItem';
+// import TextField from '@mui/material/TextField';
+// import InputAdornment from '@mui/material/InputAdornment';
 import { toEm, toRem } from '@/helpers/globalFunctions';
+import './index.styles.css';
 
+import SearchIcon from '@mui/icons-material/Search';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import GroupIcon from '@mui/icons-material/Group';
-import LinkIcon from '@mui/icons-material/Link';
-import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
-import CampaignIcon from '@mui/icons-material/Campaign';
-import TheatersIcon from '@mui/icons-material/Theaters';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
-import c from '@mui/icons-material/Storage';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import IconDashboard from '@/components/atoms/Icons/IconDashboard';
+import IconCampaign from '@/components/atoms/Icons/IconCampaign';
+import IconChannel from '@/components/atoms/Icons/IconChannel';
+import IconRecording from '@/components/atoms/Icons/IconRecording';
+import IconReport from '@/components/atoms/Icons/IconReport';
+import IconServerConfiguration from '@/components/atoms/Icons/IconServerConfiguration';
+import IconUserManagement from '@/components/atoms/Icons/IconUserManagement';
+import IconVideoJingle from '@/components/atoms/Icons/IconVideoJingle';
 
 import { paths } from '@/consts';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
@@ -50,6 +74,9 @@ const openedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: 'hidden',
+  color: '#fff',
+  background:
+    'linear-gradient(188.34deg, #263544 0%, #405A73 37.81%, #5585B5 71.15%, #79A9D9 100%)',
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
@@ -62,6 +89,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
+  color: '#fff',
+  background:
+    'linear-gradient(188.34deg, #263544 0%, #405A73 37.81%, #5585B5 71.15%, #79A9D9 100%)',
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -110,20 +140,32 @@ const Drawer = styled(MuiDrawer, {
     ...closedMixin(theme),
     '& .MuiDrawer-paper': closedMixin(theme),
   }),
+  '.Mui-selected': {
+    background: 'rgba(49, 80, 160, .45) !important',
+    borderLeft: '4px solid #E6E6E7',
+    color: '#fff',
+  },
 }));
 
 const menuLists = [
   {
+    label: 'Dashboard',
+    name: 'dashboard',
+    icon: <IconDashboard />,
+    link: paths.dashboard.href,
+    subMenus: null,
+  },
+  {
     label: 'Server Configuration',
     name: 'server-configuration',
-    icon: <SettingsApplicationsIcon />,
-    link: paths.home.href,
+    icon: <IconServerConfiguration />,
+    link: paths.serverConfiguration.href,
     subMenus: null,
   },
   {
     label: 'User Management',
     name: 'parent',
-    icon: <GroupIcon />,
+    icon: <IconUserManagement />,
     link: null,
     subMenus: [
       {
@@ -143,35 +185,35 @@ const menuLists = [
   {
     label: 'Channel',
     name: 'channel',
-    icon: <LinkIcon />,
-    link: paths.home.href,
+    icon: <IconChannel />,
+    link: paths.channel.href,
     subMenus: null,
   },
   {
     label: 'Video Jingle',
-    name: 'video-jingle',
-    icon: <OndemandVideoIcon />,
-    link: paths.home.href,
+    name: 'jingle-video',
+    icon: <IconVideoJingle />,
+    link: paths.jingleVideo.href,
     subMenus: null,
   },
   {
     label: 'Campaign',
     name: 'campaign',
-    icon: <CampaignIcon />,
-    link: paths.home.href,
+    icon: <IconCampaign />,
+    link: paths.campaign.href,
     subMenus: null,
   },
   {
     label: 'Recording',
     name: 'recording',
-    icon: <TheatersIcon />,
+    icon: <IconRecording />,
     link: paths.recording.href,
     subMenus: null,
   },
   {
     label: 'Report',
     name: 'parent',
-    icon: <ListAltIcon />,
+    icon: <IconReport />,
     link: null,
     subMenus: [
       {
@@ -196,7 +238,7 @@ const menuLists = [
   },
 ];
 
-const userSettings = ['Profile', 'Logout'];
+const userSettings = ['Profile', 'divider', 'Logout'];
 
 type AdminLayoutProps = {
   children: JSX.Element;
@@ -211,9 +253,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
+  const [search, setSearch] = useState<string>('');
+  console.log(search);
 
   useEffect(() => {
-    setExpandMenus(() => menuLists.map(list => false));
+    setExpandMenus(() => menuLists.map(() => false));
   }, []);
 
   const handleDrawerOpen = () => {
@@ -244,12 +288,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     setAnchorElUser(null);
   };
 
-  const isMenuExist = (path: string, menuName: string) => {
-    let exists: boolean = false,
+  const isMenuExist = (path: string | null, menuName: string) => {
+    let exists = false,
       lastPathName: string;
-    if (path !== '/') {
+    if (path) {
       const arr = path.split('/');
-      lastPathName = arr[arr.length - 1];
+      lastPathName =
+        arr[arr.length - 1] !== '' ? arr[arr.length - 1] : 'dashboard';
     } else {
       lastPathName = '';
     }
@@ -259,19 +304,19 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     return exists;
   };
 
-  const isSubMenuExist = (path: string, submenus: any[] | null) => {
-    let exists: boolean = false,
+  const isSubMenuExist = (path: string | null, submenus: any[] | null) => {
+    let exists = false,
       i = 0,
-      submn = submenus || [],
       lastPathName: string;
-    if (path !== '/') {
+    const submn = submenus || [];
+    if (path && path !== '/') {
       const arr = path.split('/');
       lastPathName = arr[arr.length - 1];
     } else {
       lastPathName = '';
     }
     while (i < submn.length && !exists) {
-      let name = submenus ? submn[i].name : '';
+      const name = submenus ? submn[i].name : '';
       if (lastPathName.indexOf(name) !== -1) {
         exists = true;
       }
@@ -283,7 +328,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar
+        position="fixed"
+        open={open}
+        sx={{
+          background:
+            'linear-gradient(88.34deg, #263544 0%, #405A73 37.81%, #5585B5 71.15%, #79A9D9 100%)',
+        }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -295,7 +347,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               ...(open && { display: 'none' }),
             }}
           >
-            <MenuIcon />
+            <MenuIcon
+              sx={{
+                color: '#D1D5D8',
+                background: '#3150A0',
+                borderRadius: '7px',
+              }}
+            />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
             Admin Console
@@ -326,35 +384,117 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {userSettings.map(usetting => (
-                <MenuItem key={usetting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{usetting}</Typography>
-                </MenuItem>
-              ))}
+              {userSettings.map((usetting, index) =>
+                usetting !== 'divider' ? (
+                  <MenuItem
+                    key={usetting + index}
+                    onClick={handleCloseUserMenu}
+                  >
+                    <Typography textAlign="center">{usetting}</Typography>
+                  </MenuItem>
+                ) : (
+                  <Divider key={index} />
+                )
+              )}
             </Menu>
           </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
+        <DrawerHeader
+          sx={{
+            justifyContent: 'space-between',
+          }}
+        >
+          <Avatar alt="user" sx={{ marginRight: toRem(10) }} />
+          <Typography
+            sx={{
+              fontSize: toEm(20),
+            }}
+          >
+            KYC Phincon
+          </Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? (
-              <ChevronRightIcon />
+              <ChevronRightIcon
+                sx={{
+                  color: '#D1D5D8',
+                  background: '#3150A0',
+                  borderRadius: '7px',
+                }}
+              />
             ) : (
-              <ChevronLeftIcon />
+              <ChevronLeftIcon
+                sx={{
+                  color: '#D1D5D8',
+                  background: '#3150A0',
+                  borderRadius: '7px',
+                }}
+              />
             )}
           </IconButton>
         </DrawerHeader>
-        <Divider />
-        <List
+        <Divider sx={{ background: '#808080' }} />
+        {open && (
+          <TextField
+            id="input-with-icon-textfield"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon
+                    sx={{
+                      color: '#B0B0B0',
+                    }}
+                  />
+                </InputAdornment>
+              ),
+            }}
+            placeholder="Search"
+            sx={{
+              marginTop: toRem(16),
+              marginLeft: toRem(16),
+              marginRight: toRem(16),
+              borderRadius: '10px',
+              backgroundColor: 'rgba(65, 68, 72, 0.34)',
+              borderBottom: '1px solid #808080',
+              '& input': {
+                color: '#B0B0B0',
+                padding: toRem(8),
+              },
+              '& fieldset': {
+                border: 0,
+              },
+            }}
+            onChange={e => setSearch(e.target.value)}
+          />
+        )}
+        <Typography
           sx={{
+            marginTop: toRem(16),
+            marginLeft: toRem(16),
+            marginRight: toRem(16),
+            color: '#B0B0B0',
+            fontWeight: 'bold',
+          }}
+        >
+          Menu
+        </Typography>
+        <List
+          component="div"
+          sx={{
+            maxHeight: '300px',
             '& .MuiListItemText-primary': {
               fontSize: toEm(14),
             },
           }}
         >
           {menuLists.map((list, index) => (
-            <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+            <ListItem
+              component="div"
+              key={index}
+              disablePadding
+              sx={{ display: 'block' }}
+            >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -372,8 +512,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
-                      mr: open ? 3 : 'auto',
+                      mr: open ? toRem(16) : 'auto',
                       justifyContent: 'center',
+                      color: '#D1D5D8',
                     }}
                   >
                     {list.icon}
@@ -383,7 +524,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   primary={list.label}
                   sx={{ opacity: open ? 1 : 0 }}
                 />
-                {list.subMenus && (
+                {list.subMenus && open && (
                   <>
                     {expandMenus[index] ||
                     isSubMenuExist(pathname, list.subMenus) ? (
@@ -404,6 +545,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 <List component="div" disablePadding>
                   {(list.subMenus || []).map((subMenu, indexSb) => (
                     <ListItem
+                      component="div"
                       key={`submenu${index}${indexSb}`}
                       disablePadding
                       sx={{ display: 'block' }}
@@ -416,8 +558,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                           <ListItemIcon
                             sx={{
                               minWidth: 0,
-                              mr: open ? 3 : 'auto',
+                              ml: open ? toRem(8) : 'auto',
+                              mr: open ? toRem(24) : 'auto',
                               justifyContent: 'center',
+                              '& svg': {
+                                fontSize: toEm(16),
+                              },
+                              color: '#D1D5D8',
                             }}
                           >
                             {subMenu.icon}
@@ -436,7 +583,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{ width: open ? 'calc(100% - 15rem)' : 'calc(100% - 5rem)', p: 3 }}
+      >
         <DrawerHeader />
         {children}
       </Box>

@@ -3,10 +3,13 @@ import { Theme, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
+import FormLabel from '@mui/material/FormLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import { styled } from '@mui/material/styles';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+import { toRem } from '@/helpers/globalFunctions';
 
 import styles from './index.styles';
 
@@ -35,28 +38,46 @@ function getStyles(
 }
 
 interface OptionsType {
-  value: string;
+  value: string | number;
   label: string;
 }
 
+const FormControlStyle = styled(FormControl)(({ theme }) => ({
+  margin: toRem(8),
+  width: toRem(200),
+
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+  },
+}));
+
 type Props = {
-  label: string;
+  id?: string;
+  label?: string;
   options: OptionsType[];
   value: any;
+  // eslint-disable-next-line no-unused-vars
   onChange: (e: any) => void;
+  sx?: any;
   isMultipleSelect?: boolean;
+  isFormInput?: boolean;
 };
 
-export const SelectComp = ({
+const SelectComp = ({
+  id,
   label,
   options,
   value,
   onChange,
   isMultipleSelect = false,
+  isFormInput = false,
+  ...props
 }: Props) => {
   const theme = useTheme();
   const [selectValue, setSelectValue] = useState('');
   const [selectValueArr, setSelectValueArr] = useState<string[]>([]);
+  const usedId = id ? { id } : {};
+  const usedLabel = label && !isFormInput ? { label } : {};
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectValue(event.target.value as string);
@@ -85,56 +106,69 @@ export const SelectComp = ({
     }
   }, [value, isMultipleSelect]);
 
-  return isMultipleSelect ? (
-    <Box>
-      <FormControl sx={styles.formControl}>
-        <InputLabel id="multiple-chip-label">{label}</InputLabel>
-        <Select
-          labelId="multiple-chip-label"
-          id="multiple-chip"
-          multiple
-          value={selectValueArr}
-          onChange={handleChangeArr}
-          input={<OutlinedInput id="select-multiple-chip" label={label} />}
-          renderValue={selected => (
-            <Box sx={styles.selectedSelect}>
-              {selected.map(value => (
-                <Chip key={value} label={value} />
-              ))}
-            </Box>
-          )}
-          MenuProps={MenuProps}
-        >
-          {options.map(item => (
-            <MenuItem
-              key={item.value}
-              value={item.value}
-              style={getStyles(item.label, selectValueArr, theme)}
-            >
-              {item.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Box>
+  const renderSelectType = () => {
+    return isMultipleSelect ? (
+      <Select
+        {...usedId}
+        {...usedLabel}
+        displayEmpty={!isFormInput}
+        labelId="multiple-chip-label"
+        multiple
+        value={selectValueArr}
+        onChange={handleChangeArr}
+        input={<OutlinedInput id="select-multiple-chip" label={label} />}
+        renderValue={selected => (
+          <Box sx={styles.selectedSelect}>
+            {selected.map(value => (
+              <Chip key={value} label={value} />
+            ))}
+          </Box>
+        )}
+        MenuProps={MenuProps}
+        {...props}
+      >
+        {options.map(item => (
+          <MenuItem
+            key={item.value}
+            value={item.value}
+            style={getStyles(item.label, selectValueArr, theme)}
+          >
+            {item.label}
+          </MenuItem>
+        ))}
+      </Select>
+    ) : (
+      <Select
+        {...usedId}
+        {...usedLabel}
+        displayEmpty={!isFormInput}
+        labelId="simple-select-label"
+        value={selectValue}
+        onChange={handleChange}
+        {...props}
+      >
+        {options.map(item => (
+          <MenuItem key={item.value} value={item.value}>
+            {item.label}
+          </MenuItem>
+        ))}
+      </Select>
+    );
+  };
+
+  return !isFormInput ? (
+    <FormControlStyle>
+      <InputLabel {...usedId}>{label}</InputLabel>
+      {renderSelectType()}
+    </FormControlStyle>
   ) : (
-    <Box>
-      <FormControl sx={styles.formControl}>
-        <InputLabel id="simple-select-label">{label}</InputLabel>
-        <Select
-          labelId="simple-select-label"
-          id="simple-select"
-          value={selectValue}
-          label={label}
-          onChange={handleChange}
-        >
-          {options.map(item => (
-            <MenuItem key={item.value} value={item.value}>
-              {item.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Box>
+    <FormControlStyle>
+      <FormLabel {...usedId} sx={styles.bottomSpace}>
+        {label}
+      </FormLabel>
+      {renderSelectType()}
+    </FormControlStyle>
   );
 };
+
+export default SelectComp;
