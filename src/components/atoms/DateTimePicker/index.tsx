@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 import styles, { FormControlStyle } from './index.styles';
+
+dayjs.locale('en');
+dayjs.Ls.en.weekStart = 1;
 
 type Props = {
   label?: string;
