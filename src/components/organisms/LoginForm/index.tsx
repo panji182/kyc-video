@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Stack from '@mui/material/Stack';
-import { useRouter } from 'next/navigation';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
@@ -10,20 +9,12 @@ import TextField from '@mui/material/TextField';
 import FormLabel from '@mui/material/FormLabel';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 
-import { paths } from '@/consts';
 import { toEm, toRem } from '@/helpers/globalFunctions';
 
-import styles, {
-  LoginButton,
-  RegisterButton,
-  BpIcon,
-  BpCheckedIcon,
-} from './index.styles';
+import styles, { LoginButton, BpIcon, BpCheckedIcon } from './index.styles';
 
 const LoginForm = () => {
-  const router = useRouter();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [remember, setRemember] = useState<boolean>(false);
@@ -122,21 +113,11 @@ const LoginForm = () => {
             },
           }}
         />
-        <Link href={paths.forgotPassword.href} sx={styles.forgotPassword}>
-          Forgot Password?
-        </Link>
       </Stack>
-      <Stack direction="row" justifyContent={'space-between'}>
+      <Stack direction="row" justifyContent={'center'}>
         <LoginButton variant="contained" onClick={handleLogin} disableRipple>
           Login
         </LoginButton>
-        <RegisterButton
-          variant="contained"
-          disableRipple
-          onClick={() => router.push(paths.register.href)}
-        >
-          Register
-        </RegisterButton>
       </Stack>
     </>
   );

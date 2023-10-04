@@ -13,6 +13,7 @@ type Props = {
     | 'info'
     | 'warning';
   startIcon?: React.ReactNode;
+  disabled?: boolean;
   // eslint-disable-next-line no-unused-vars
   onClick?: (e: any) => void;
   sx?: any;

@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { HeadCell } from '@/types/atoms/table';
+import IconButton from '@mui/material/IconButton';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 
 const Table = dynamic(() => import('@/components/atoms/Table'));
 const Button = dynamic(() => import('@/components/atoms/Button'));
@@ -149,6 +151,10 @@ const RecordingPage = () => {
     console.log(21, paramResult);
   };
 
+  const handlePlayVideo = (id: any) => {
+    alert(`Video with id ${id} is played !`);
+  };
+
   return (
     <>
       <Typography variant="h5" sx={{ fontWeight: '600' }} gutterBottom>
@@ -166,7 +172,22 @@ const RecordingPage = () => {
           onClick={handleShowAdvancedSearch}
         />
       </Stack>
-      <Table data={dataRows} fieldOrderBy={'agentId'} headCells={headCells} />
+      <Table
+        data={dataRows}
+        fieldOrderBy={'agentId'}
+        headCells={headCells}
+        showEditor={false}
+        idFieldName={'id'}
+        customActionButton={(id: any) => (
+          <IconButton
+            aria-label="playVideo"
+            color="primary"
+            onClick={() => handlePlayVideo(id)}
+          >
+            <PlayCircleOutlineIcon />
+          </IconButton>
+        )}
+      />
       <PopupAdvancedSearchRecording
         open={open}
         onSearched={handleSearchResult}

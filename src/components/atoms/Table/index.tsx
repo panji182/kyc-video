@@ -65,7 +65,14 @@ function stableSort<T>(
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const { headCells, order, orderBy, onRequestSort, showEditor } = props;
+  const {
+    headCells,
+    order,
+    orderBy,
+    onRequestSort,
+    showEditor,
+    customActionButton,
+  } = props;
   const createSortHandler =
     (property: any) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -96,7 +103,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        {showEditor && <TableCell>&nbsp;</TableCell>}
+        {(showEditor || customActionButton) && <TableCell>&nbsp;</TableCell>}
       </TableRow>
     </TableHead>
   );
@@ -107,6 +114,9 @@ type Props = {
   fieldOrderBy: string;
   headCells: HeadCell[];
   showEditor?: boolean;
+  idFieldName?: string;
+  // eslint-disable-next-line no-unused-vars
+  customActionButton?: (id: any) => React.ReactNode;
   sx?: any;
 };
 
@@ -115,6 +125,8 @@ const TableComp = ({
   fieldOrderBy,
   headCells,
   showEditor = true,
+  idFieldName,
+  customActionButton,
 }: Props) => {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<any>(fieldOrderBy);
@@ -179,10 +191,11 @@ const TableComp = ({
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
               showEditor={showEditor}
+              customActionButton={customActionButton}
             />
             <TableBody>
-              {visibleRows.map(row => (
-                <TableRow hover key={row.firstName}>
+              {visibleRows.map((row, index) => (
+                <TableRow hover key={index}>
                   {headCells.map(cell => {
                     const cellValue = cell.id ? row[cell.id.toString()] : null;
                     return (
@@ -195,7 +208,7 @@ const TableComp = ({
                     );
                   })}
                   {showEditor && (
-                    <TableCell key={'editor'} align={'center'}>
+                    <TableCell key={`editor${index}`} align={'center'}>
                       <Stack direction="row" spacing={1}>
                         <IconButton
                           aria-label="edit"
@@ -211,6 +224,13 @@ const TableComp = ({
                         >
                           <DeleteIcon />
                         </IconButton>
+                      </Stack>
+                    </TableCell>
+                  )}
+                  {idFieldName && customActionButton && (
+                    <TableCell key={`action${index}`} align={'center'}>
+                      <Stack direction="row" spacing={1}>
+                        {customActionButton(row[idFieldName])}
                       </Stack>
                     </TableCell>
                   )}

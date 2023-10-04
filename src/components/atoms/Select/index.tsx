@@ -111,7 +111,7 @@ const SelectComp = ({
       <Select
         {...usedId}
         {...usedLabel}
-        displayEmpty={!isFormInput}
+        displayEmpty={isFormInput}
         labelId="multiple-chip-label"
         multiple
         value={selectValueArr}
@@ -141,7 +141,7 @@ const SelectComp = ({
       <Select
         {...usedId}
         {...usedLabel}
-        displayEmpty={!isFormInput}
+        displayEmpty={isFormInput}
         labelId="simple-select-label"
         value={selectValue}
         onChange={handleChange}
@@ -162,7 +162,13 @@ const SelectComp = ({
       {renderSelectType()}
     </FormControlStyle>
   ) : (
-    <FormControlStyle>
+    <FormControlStyle
+      sx={{
+        '& .MuiOutlinedInput-notchedOutline legend': {
+          display: 'none',
+        },
+      }}
+    >
       <FormLabel {...usedId} sx={styles.bottomSpace}>
         {label}
       </FormLabel>

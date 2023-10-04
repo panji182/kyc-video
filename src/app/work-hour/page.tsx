@@ -4,18 +4,18 @@ import { checkValidAuth } from '@/app/helpers/globalFunctions';
 const AdminLayout = dynamic(
   () => import('@/components/template/Layouts/AdminLayout')
 );
-const ServerConfigurationPage = dynamic(
-  () => import('@/components/template/ServerConfigurationPage')
+const WorkHourPage = dynamic(
+  () => import('@/components/template/WorkHourPage')
 );
 
-const ServerConfiguration = () => {
+const WorkHour = () => {
   checkValidAuth();
 
   return (
     <AdminLayout>
-      <ServerConfigurationPage />
+      <WorkHourPage />
     </AdminLayout>
   );
 };
 
-export default ServerConfiguration;
+export default WorkHour;

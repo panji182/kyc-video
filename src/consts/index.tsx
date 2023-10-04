@@ -41,6 +41,12 @@ export const paths = {
   forgotPassword: {
     href: '/forgot-password',
   },
+  workHour: {
+    href: '/work-hour',
+  },
+  holiday: {
+    href: '/holiday',
+  },
 };
 
 export const colors = {

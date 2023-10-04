@@ -4,9 +4,6 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
-import Typography from '@mui/material/Typography';
 
 import { CampaignInput } from '@/types/template/Campaign';
 import { toRem } from '@/helpers/globalFunctions';
@@ -16,21 +13,6 @@ const Modal = dynamic(() => import('@/components/atoms/Modal'));
 const TextInput = dynamic(() => import('@/components/atoms/TextInput'));
 const Select = dynamic(() => import('@/components/atoms/Select'));
 const Button = dynamic(() => import('@/components/atoms/Button'));
-const DatePicker = dynamic(() => import('@/components/atoms/DatePicker'));
-const TimePicker = dynamic(() => import('@/components/atoms/TimePicker'));
-const HolidayPicker = dynamic(() => import('@/components/atoms/HolidayPicker'));
-const DayOfWeekPicker = dynamic(
-  () => import('@/components/atoms/DayOfWeekPicker')
-);
-
-const initCampaignInput: CampaignInput = {
-  name: '',
-  type: '',
-  dateStart: undefined,
-  dateEnd: undefined,
-  timeStart: undefined,
-  timeEnd: undefined,
-};
 
 type Props = {
   open: boolean;
@@ -39,16 +21,41 @@ type Props = {
   onClosePopup: () => void;
 };
 
-const optionsCampaignType = [
+const optionsWorkHour = [
   {
-    value: 'default',
-    label: 'Default',
+    value: 'wha',
+    label: 'Work Hour A',
   },
   {
-    value: 'special',
-    label: 'Special Campaign',
+    value: 'whb',
+    label: 'Work Hour B',
   },
 ];
+
+const optionsHolidays = [
+  {
+    value: 'Idul Fitri',
+    label: 'Idul Fitri',
+  },
+  {
+    value: 'Maulud Nabi',
+    label: 'Maulud Nabi',
+  },
+  {
+    value: 'Idul Adha',
+    label: 'Idul Adha',
+  },
+  {
+    value: 'Tahun Baru Hijriyah',
+    label: 'Tahun Baru Hijriyah',
+  },
+];
+
+const initCampaignInput: CampaignInput = {
+  name: '',
+  workHour: '',
+  holiday: [optionsHolidays[0].value],
+};
 
 const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
   const [campaignInput, setCampaignInput] =
@@ -77,10 +84,6 @@ const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
     onClosePopup();
   };
 
-  const handleSelectDays = (selectedDays: boolean[]) => {
-    console.log(81, selectedDays);
-  };
-
   return (
     <Modal open={open} title={'Create Campaign'} onClose={() => onClosePopup()}>
       <>
@@ -98,139 +101,27 @@ const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
           </Grid>
           <Grid item xs={12} sm={12} md={6} lg={6}>
             <Select
-              id="type"
-              label="Campaign Type"
-              options={optionsCampaignType}
+              id="workHour"
+              label="Work Hour"
+              options={optionsWorkHour}
               isFormInput={true}
-              value={campaignInput.type}
-              onChange={val => handleSelect(val, 'type')}
+              value={campaignInput.workHour}
+              onChange={val => handleSelect(val, 'workHour')}
               sx={{ margin: 0 }}
             />
           </Grid>
-          {campaignInput.type === 'default' && (
-            <>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <Typography>Working Hour</Typography>
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <>
-                  <DayOfWeekPicker
-                    lang={'en'}
-                    onSelectDays={handleSelectDays}
-                  />
-                </>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
-                <FormControl
-                  sx={{
-                    marginLeft: toRem(8),
-                    marginRight: toRem(8),
-                    maxWidth: toRem(200),
-                  }}
-                >
-                  <FormLabel sx={{ mb: toRem(8) }}>From</FormLabel>
-                  <TimePicker
-                    value={campaignInput.timeStart}
-                    onChange={newValue => handleInput(newValue, 'timeStart')}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
-                <FormControl
-                  sx={{
-                    marginLeft: toRem(8),
-                    marginRight: toRem(8),
-                    maxWidth: toRem(200),
-                  }}
-                >
-                  <FormLabel sx={{ mb: toRem(8) }}>To</FormLabel>
-                  <TimePicker
-                    value={campaignInput.timeEnd}
-                    onChange={newValue => handleInput(newValue, 'timeEnd')}
-                  />
-                </FormControl>
-              </Grid>
-            </>
-          )}
-          {campaignInput.type === 'special' && (
-            <>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <Typography>Period</Typography>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
-                <FormControl
-                  sx={{
-                    marginLeft: toRem(8),
-                    marginRight: toRem(8),
-                    maxWidth: toRem(200),
-                  }}
-                >
-                  <FormLabel sx={{ mb: toRem(8) }}>From</FormLabel>
-                  <DatePicker
-                    value={campaignInput.dateStart}
-                    onChange={newValue => handleInput(newValue, 'dateStart')}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
-                <FormControl
-                  sx={{
-                    marginLeft: toRem(8),
-                    marginRight: toRem(8),
-                    maxWidth: toRem(200),
-                  }}
-                >
-                  <FormLabel sx={{ mb: toRem(8) }}>To</FormLabel>
-                  <DatePicker
-                    value={campaignInput.dateEnd}
-                    onChange={newValue => handleInput(newValue, 'dateEnd')}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <Typography>Time</Typography>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
-                <FormControl
-                  sx={{
-                    marginLeft: toRem(8),
-                    marginRight: toRem(8),
-                    maxWidth: toRem(200),
-                  }}
-                >
-                  <FormLabel sx={{ mb: toRem(8) }}>From</FormLabel>
-                  <TimePicker
-                    value={campaignInput.timeStart}
-                    onChange={newValue => handleInput(newValue, 'timeStart')}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
-                <FormControl
-                  sx={{
-                    marginLeft: toRem(8),
-                    marginRight: toRem(8),
-                    maxWidth: toRem(200),
-                  }}
-                >
-                  <FormLabel sx={{ mb: toRem(8) }}>To</FormLabel>
-                  <TimePicker
-                    value={campaignInput.timeEnd}
-                    onChange={newValue => handleInput(newValue, 'timeEnd')}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <Typography>Holiday</Typography>
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <HolidayPicker
-                  minDate={campaignInput.dateStart}
-                  maxDate={campaignInput.dateEnd}
-                />
-              </Grid>
-            </>
-          )}
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Select
+              id="holiday"
+              label="Holiday"
+              options={optionsHolidays}
+              isFormInput={true}
+              value={campaignInput.holiday}
+              onChange={val => handleSelect(val, 'holiday')}
+              isMultipleSelect={true}
+              sx={{ margin: 0 }}
+            />
+          </Grid>
         </Grid>
         <Stack direction="row" justifyContent="flex-end" gap={2}>
           <Button

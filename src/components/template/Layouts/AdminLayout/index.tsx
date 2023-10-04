@@ -38,6 +38,7 @@ import IconReport from '@/components/atoms/Icons/IconReport';
 import IconServerConfiguration from '@/components/atoms/Icons/IconServerConfiguration';
 import IconUserManagement from '@/components/atoms/Icons/IconUserManagement';
 import IconVideoJingle from '@/components/atoms/Icons/IconVideoJingle';
+import IconTimesManagement from '@/components/atoms/Icons/IconTimesManagement';
 
 import { paths } from '@/consts';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
@@ -90,6 +91,26 @@ const menuLists = [
     icon: <IconVideoJingle />,
     link: paths.jingleVideo.href,
     subMenus: null,
+  },
+  {
+    label: 'Working Times Management',
+    name: 'parent',
+    icon: <IconTimesManagement />,
+    link: null,
+    subMenus: [
+      {
+        label: 'Work Hour',
+        name: 'work-hour',
+        icon: <PanoramaFishEyeIcon />,
+        link: paths.workHour.href,
+      },
+      {
+        label: 'Holidays',
+        name: 'holiday',
+        icon: <PanoramaFishEyeIcon />,
+        link: paths.holiday.href,
+      },
+    ],
   },
   {
     label: 'Campaign',
@@ -254,13 +275,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             Admin Console
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ marginRight: '1rem' }}>
+          <Box sx={{ marginRight: toRem(16) }}>
             <Typography textAlign="center">Welcome, Remy</Typography>
           </Box>
           <Box>
-            <Tooltip title="Open settings">
+            <Tooltip title="">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="user" src="/assets/images/user.jpg" />
+                <Avatar alt="user" src="/assets/images/user-women.png" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -482,7 +503,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       </Drawer>
       <Box
         component="main"
-        sx={{ width: open ? 'calc(100% - 15rem)' : 'calc(100% - 5rem)', p: 3 }}
+        sx={{
+          width: open ? 'calc(100% - 18rem)' : 'calc(100% - 3.4rem)',
+          padding: toRem(24),
+          paddingBottom: 0,
+        }}
       >
         <DrawerHeader />
         {children}
