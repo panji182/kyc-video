@@ -25,7 +25,7 @@ import {
   Order,
   EnhancedTableToolbarProps,
   EnhancedTableProps,
-} from '@/types/atoms/selectableTable';
+} from '@/types/atoms/collapsableTable';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {

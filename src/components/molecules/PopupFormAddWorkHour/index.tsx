@@ -149,7 +149,9 @@ const PopupFormAddWorkHour = ({ open, onSubmited, onClosePopup }: Props) => {
                 >
                   <FormLabel sx={{ mb: toRem(8) }}>From</FormLabel>
                   <TimePicker
-                    value={workHourInput[`${day.name}From`]}
+                    value={
+                      workHourInput[`${day.name}From` as keyof WorkHourInput]
+                    }
                     onChange={newValue =>
                       handleInput(newValue, `${day.name}From`)
                     }
@@ -166,7 +168,9 @@ const PopupFormAddWorkHour = ({ open, onSubmited, onClosePopup }: Props) => {
                 >
                   <FormLabel sx={{ mb: toRem(8) }}>To</FormLabel>
                   <TimePicker
-                    value={workHourInput[`${day.name}To`]}
+                    value={
+                      workHourInput[`${day.name}To` as keyof WorkHourInput]
+                    }
                     onChange={newValue =>
                       handleInput(newValue, `${day.name}To`)
                     }
