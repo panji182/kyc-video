@@ -27,31 +27,31 @@ interface daysType {
 const days: daysType[] = [
   {
     name: 'monday',
-    label: 'Senin',
+    label: 'Monday',
   },
   {
     name: 'tuesday',
-    label: 'Selasa',
+    label: 'Tuesday',
   },
   {
     name: 'wednesday',
-    label: 'Rabu',
+    label: 'Wednesday',
   },
   {
     name: 'thursday',
-    label: 'Kamis',
+    label: 'Thursday',
   },
   {
     name: 'friday',
-    label: 'Jumat',
+    label: 'Friday',
   },
   {
     name: 'saturday',
-    label: 'Sabtu',
+    label: 'Saturday',
   },
   {
     name: 'sunday',
-    label: 'Minggu',
+    label: 'Sunday',
   },
 ];
 

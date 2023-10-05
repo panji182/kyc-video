@@ -24,6 +24,7 @@ const dataRows = [
     video: 'campaign1.mp4',
     image: null,
     audio: null,
+    status: 'Active',
   },
   {
     name: 'Campaign 2',
@@ -31,6 +32,7 @@ const dataRows = [
     video: null,
     image: 'campaign2.jpg',
     audio: 'campaign2.wav',
+    status: 'Not Active',
   },
   {
     name: 'Campaign 3',
@@ -38,6 +40,7 @@ const dataRows = [
     video: 'campaign3.mp4',
     image: null,
     audio: null,
+    status: 'Not Active',
   },
 ];
 
@@ -72,6 +75,12 @@ const headCells: HeadCell[] = [
     disablePadding: false,
     label: 'Audio',
   },
+  {
+    id: 'status',
+    numeric: false,
+    disablePadding: false,
+    label: 'Status',
+  },
 ];
 
 const JingleVideoPage = () => {
@@ -87,11 +96,11 @@ const JingleVideoPage = () => {
   return (
     <>
       <Typography variant="h5" sx={{ fontWeight: '600' }} gutterBottom>
-        Jingle Video
+        Video Jingle
       </Typography>
       <Stack direction="row" mb={toRem(24)} justifyContent="flex-end">
         <Button
-          label="Create Jingle Video"
+          label="Create Video Jingle"
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleOnClick}

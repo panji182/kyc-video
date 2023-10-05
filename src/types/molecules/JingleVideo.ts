@@ -4,4 +4,5 @@ export interface JingleVideoInput {
   video: string;
   image: string;
   audio: string;
+  status: string;
 }

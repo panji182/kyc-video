@@ -250,6 +250,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         sx={{
           background:
             'linear-gradient(88.34deg, #263544 0%, #405A73 37.81%, #5585B5 71.15%, #79A9D9 100%)',
+          paddingRight: '0 !important',
         }}
       >
         <Toolbar>

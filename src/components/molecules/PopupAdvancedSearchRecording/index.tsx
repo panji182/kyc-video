@@ -330,6 +330,8 @@ const PopupAdvancedSearchKyc = ({ open, onSearched, onClosePopup }: Props) => {
                 />
                 <TimePicker
                   label="Duration"
+                  ampm={false}
+                  format="HH:mm:ss"
                   value={duration}
                   onChange={newValue => setDuration(newValue)}
                   sx={{ margin: toRem(8) }}

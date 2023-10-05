@@ -13,12 +13,23 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import { visuallyHidden } from '@mui/utils';
+import { alpha } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Toolbar from '@mui/material/Toolbar';
+import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 
+import { toRem } from '@/helpers/globalFunctions';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
-import { HeadCell, Order, EnhancedTableProps } from '@/types/atoms/table';
+import {
+  HeadCell,
+  Order,
+  EnhancedTableToolbarProps,
+  EnhancedTableProps,
+} from '@/types/atoms/table';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -62,6 +73,47 @@ function stableSort<T>(
     return a[1] - b[1];
   });
   return stabilizedThis.map(el => el[0]);
+}
+
+function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+  const { setSearch } = props;
+
+  return (
+    <Toolbar
+      sx={{
+        p: toRem(8),
+        bgcolor: theme =>
+          alpha(
+            theme.palette.primary.main,
+            theme.palette.action.activatedOpacity
+          ),
+      }}
+    >
+      <TextField
+        id="input-with-icon-textfield"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        placeholder="Search"
+        sx={{
+          width: '150px',
+          borderRadius: '10px',
+          backgroundColor: '#fff',
+          '& input': {
+            padding: toRem(8),
+          },
+          '& fieldset': {
+            border: 0,
+          },
+        }}
+        onChange={e => setSearch(e.target.value)}
+      />
+    </Toolbar>
+  );
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -132,6 +184,8 @@ const TableComp = ({
   const [orderBy, setOrderBy] = React.useState<any>(fieldOrderBy);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [search, setSearch] = React.useState<string>('');
+  console.log(188, search);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -178,6 +232,7 @@ const TableComp = ({
           mb: 2,
         }}
       >
+        <EnhancedTableToolbar setSearch={setSearch} />
         <TableContainer
           sx={{
             width: '100%',

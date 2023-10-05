@@ -98,7 +98,7 @@ const CampaignPage = () => {
   };
 
   const handleSubmit = (paramResult: CampaignInput) => {
-    console.log(21, paramResult);
+    console.log(101, paramResult);
   };
 
   return (

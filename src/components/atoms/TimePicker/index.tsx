@@ -18,6 +18,8 @@ const FormControlStyle = styled(FormControl)(({ theme }) => ({
 
 type Props = {
   label?: string;
+  ampm?: boolean;
+  format?: string;
   value: any;
   // eslint-disable-next-line no-unused-vars
   onChange: (e: Dayjs | null) => void;

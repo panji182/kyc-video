@@ -16,6 +16,7 @@ const ExportButton = dynamic(
 const PopupAdvancedSearchRecording = dynamic(
   () => import('@/components/molecules/PopupAdvancedSearchRecording')
 );
+const VideoPlayer = dynamic(() => import('@/components/molecules/VideoPlayer'));
 
 import { toRem } from '@/helpers/globalFunctions';
 
@@ -23,9 +24,9 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const dataRows = [
   {
-    id: 1,
+    interactionId: 1,
     agentId: 14,
-    customerId: 11,
+    customerName: 'Nurul',
     startTime: '2023-09-13T10:14:00',
     endTime: '2023-09-13T11:00:00',
     duration: 200,
@@ -36,9 +37,9 @@ const dataRows = [
     customerChannelType: 'web',
   },
   {
-    id: 2,
+    interactionId: 2,
     agentId: 15,
-    customerId: 12,
+    customerName: 'Rahmat',
     startTime: '2023-09-13T12:14:00',
     endTime: '2023-09-13T13:00:00',
     duration: 150,
@@ -49,9 +50,9 @@ const dataRows = [
     customerChannelType: 'mobile',
   },
   {
-    id: 3,
+    interactionId: 3,
     agentId: 16,
-    customerId: 13,
+    customerName: 'Zulfikar',
     startTime: '2023-09-13T14:14:00',
     endTime: '2023-09-13T15:00:00',
     duration: 100,
@@ -65,10 +66,10 @@ const dataRows = [
 
 const headCells: HeadCell[] = [
   {
-    id: 'id',
+    id: 'interactionId',
     numeric: true,
     disablePadding: false,
-    label: 'Conversation ID',
+    label: 'Interaction ID',
   },
   {
     id: 'agentId',
@@ -77,10 +78,10 @@ const headCells: HeadCell[] = [
     label: 'Agent ID',
   },
   {
-    id: 'customerId',
-    numeric: true,
+    id: 'customerName',
+    numeric: false,
     disablePadding: false,
-    label: 'Customer ID',
+    label: 'Customer Name',
   },
   {
     id: 'startTime',
@@ -134,6 +135,7 @@ const headCells: HeadCell[] = [
 
 const RecordingPage = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const [openVideoPlayer, setOpenVideoPlayer] = useState<boolean>(false);
 
   const handleExportCSV = () => {
     alert('CSV Data Exported !');
@@ -152,7 +154,8 @@ const RecordingPage = () => {
   };
 
   const handlePlayVideo = (id: any) => {
-    alert(`Video with id ${id} is played !`);
+    console.log(157, `Video with id ${id} is played !`);
+    setOpenVideoPlayer(true);
   };
 
   return (
@@ -192,6 +195,13 @@ const RecordingPage = () => {
         open={open}
         onSearched={handleSearchResult}
         onClosePopup={() => setOpen(false)}
+      />
+      <VideoPlayer
+        open={openVideoPlayer}
+        title="Customer Video KYC Rahmat"
+        src="https://assets.codepen.io/6093409/river.mp4"
+        videoType="video/mp4"
+        onClosePopup={() => setOpenVideoPlayer(false)}
       />
     </>
   );

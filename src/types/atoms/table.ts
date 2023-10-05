@@ -7,6 +7,10 @@ export interface HeadCell {
 
 export type Order = 'asc' | 'desc';
 
+export interface EnhancedTableToolbarProps {
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+}
+
 export interface EnhancedTableProps {
   headCells: HeadCell[];
   onRequestSort: (

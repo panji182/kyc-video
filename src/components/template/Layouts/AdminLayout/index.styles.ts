@@ -87,7 +87,7 @@ export const Drawer = styled(MuiDrawer, {
 const styles = {
   scrollStyles: {
     '& .MuiPaper-elevation::-webkit-scrollbar': {
-      width: '6px',
+      width: '8px',
     },
     '& .MuiPaper-elevation::-webkit-scrollbar-track': {
       background: '#f1f1f1',
@@ -97,6 +97,10 @@ const styles = {
     },
     '& .MuiPaper-elevation::-webkit-scrollbar-thumb:hover': {
       background: '#808080',
+    },
+    '& > div': {
+      scrollbarColor: '#808080 #f1f1f1',
+      scrollbarWidth: 'thin',
     },
   },
 };
