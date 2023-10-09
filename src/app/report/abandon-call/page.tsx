@@ -1,5 +1,9 @@
 import dynamic from 'next/dynamic';
 import { checkValidAuth } from '@/app/helpers/globalFunctions';
+import { headers } from 'next/headers';
+
+import { paths } from '@/consts';
+
 const AdminLayout = dynamic(
   () => import('@/components/template/Layouts/AdminLayout')
 );
