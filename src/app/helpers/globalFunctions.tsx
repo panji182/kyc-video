@@ -20,9 +20,14 @@ export const checkValidAuth = async () => {
 
   const cookieStore = cookies();
   const auth = cookieStore.get('auth');
-
+  console.log(23, auth);
   if (auth) {
     const authValues: any = decrypt(auth.value, secretKey);
+    console.log(
+      26,
+      authValues,
+      userMenuAccess[authValues.role as keyof UserMenuAccess]
+    );
     authValues.isVerified !== 'verified' && redirect('/login');
     !(userMenuAccess[authValues.role as keyof UserMenuAccess] || []).includes(
       currParentMenu
