@@ -17,10 +17,10 @@ export const checkValidAuth = async () => {
   const pathValues = Object.values(paths);
   const currPath: any = pathValues.find(d => d.href === pathname);
   const currParentMenu: string = currPath ? currPath.parentMenu : '';
-
+  console.log(20, pathname, pathValues, currParentMenu, currPath);
   const cookieStore = cookies();
   const auth = cookieStore.get('auth');
-  console.log(23, auth);
+
   if (auth) {
     const authValues: any = decrypt(auth.value, secretKey);
     authValues.isVerified !== 'verified' && redirect('/login');

@@ -61,7 +61,6 @@ const LoginForm = ({ users, secretKey }: Login) => {
         };
         const encAuthInfo = encrypt(authInfos, secretKey);
         setCookie('auth', encAuthInfo);
-        // router.refresh(); //resolve error, cookie not updated on server side
         switch (enteredUser.role) {
           case 'Administrator':
             router.push(paths.dashboard.href);
