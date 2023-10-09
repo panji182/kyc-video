@@ -1,8 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
 
-import { paths, userMenuAccess } from '@/consts';
+import { userMenuAccess } from '@/consts';
 import { UserMenuAccess } from '@/types/const';
 import { decrypt } from '@/helpers/globalFunctions';
 
@@ -10,17 +9,12 @@ export const secretKeyPromise = new Promise<string>(myResolve => {
   myResolve('cimb-phincon-09-2023');
 });
 
-export const checkValidAuth = async () => {
+export const checkValidAuth = async (currParentMenu: string) => {
   const secretKey: string = await secretKeyPromise;
-  const headersList = headers();
-  const pathname = headersList.get('x-invoke-path') || '';
-  const pathValues = Object.values(paths);
-  const currPath: any = pathValues.find(d => d.href === pathname);
-  const currParentMenu: string = currPath ? currPath.parentMenu : '';
-  console.log(20, pathname, pathValues, currParentMenu, currPath);
   const cookieStore = cookies();
   const auth = cookieStore.get('auth');
 
+  console.log(17, currParentMenu);
   if (auth) {
     const authValues: any = decrypt(auth.value, secretKey);
     authValues.isVerified !== 'verified' && redirect('/login');
