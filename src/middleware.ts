@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request: Request) {
-  // Store current request url in a custom header, which you can read later
   const requestHeaders = new Headers(request.headers);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const pathname = request.nextUrl.pathname;
   requestHeaders.set('x-my-pathname', pathname);
   return NextResponse.next({
