@@ -7,11 +7,11 @@ const DailySummaryPage = dynamic(
   () => import('@/components/template/DailySummaryReportPage')
 );
 
-const DailySummaryReport = () => {
-  checkValidAuth();
+const DailySummaryReport = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <DailySummaryPage />
     </AdminLayout>
   );

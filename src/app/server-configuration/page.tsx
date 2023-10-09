@@ -8,11 +8,11 @@ const ServerConfigurationPage = dynamic(
   () => import('@/components/template/ServerConfigurationPage')
 );
 
-const ServerConfiguration = () => {
-  checkValidAuth();
+const ServerConfiguration = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <ServerConfigurationPage />
     </AdminLayout>
   );

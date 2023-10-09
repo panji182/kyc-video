@@ -8,11 +8,11 @@ const RecordingPage = dynamic(
   () => import('@/components/template/RecordingPage')
 );
 
-const Recording = () => {
-  checkValidAuth();
+const Recording = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <RecordingPage />
     </AdminLayout>
   );

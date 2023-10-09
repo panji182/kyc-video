@@ -8,11 +8,11 @@ const CampaignPage = dynamic(
   () => import('@/components/template/CampaignPage')
 );
 
-const ServerConfiguration = () => {
-  checkValidAuth();
+const ServerConfiguration = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <CampaignPage />
     </AdminLayout>
   );

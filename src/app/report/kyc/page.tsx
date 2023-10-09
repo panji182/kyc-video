@@ -7,11 +7,11 @@ const KycReportPage = dynamic(
   () => import('@/components/template/KycReportPage')
 );
 
-const KycReport = () => {
-  checkValidAuth();
+const KycReport = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <KycReportPage />
     </AdminLayout>
   );

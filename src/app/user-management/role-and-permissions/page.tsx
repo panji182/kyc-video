@@ -8,11 +8,11 @@ const SetRoleAndPermissions = dynamic(
   () => import('@/components/template/SetRoleAndPermissionsPage')
 );
 
-const RoleAndPermissions = () => {
-  checkValidAuth();
+const RoleAndPermissions = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <SetRoleAndPermissions />
     </AdminLayout>
   );

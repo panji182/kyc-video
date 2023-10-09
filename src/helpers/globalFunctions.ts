@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js';
+
 export const toRem = (pxValue: number) => {
   // maesurement for spacing
   //1rem = 16px
@@ -10,4 +12,14 @@ export const toEm = (pxValue: number) => {
   //1em = 16px
   const em = pxValue / 16;
   return `${em}em`;
+};
+
+export const encrypt = (obj: any, secretKey: string) => {
+  return CryptoJS.AES.encrypt(JSON.stringify(obj), secretKey).toString();
+};
+
+export const decrypt = (cipherText: string, secretKey: string) => {
+  const bytes = CryptoJS.AES.decrypt(cipherText, secretKey);
+  const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  return data;
 };

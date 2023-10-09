@@ -7,11 +7,11 @@ const ViewUsersPage = dynamic(
   () => import('@/components/template/ViewUsersPage')
 );
 
-const ViewUsers = () => {
-  checkValidAuth();
+const ViewUsers = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <ViewUsersPage />
     </AdminLayout>
   );

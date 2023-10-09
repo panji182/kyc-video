@@ -7,11 +7,11 @@ const AbandonCallReportPage = dynamic(
   () => import('@/components/template/AbandonCallReportPage')
 );
 
-const AbandonCallReport = () => {
-  checkValidAuth();
+const AbandonCallReport = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <AbandonCallReportPage />
     </AdminLayout>
   );

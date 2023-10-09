@@ -2,11 +2,11 @@ import { checkValidAuth } from '@/app/helpers/globalFunctions';
 import AdminLayout from '@/components/template/Layouts/AdminLayout';
 import Typography from '@mui/material/Typography';
 
-const Home = () => {
-  checkValidAuth();
+const Home = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <>
         <Typography variant="h5" sx={{ fontWeight: '600' }} gutterBottom>
           This is Dahsboard Page

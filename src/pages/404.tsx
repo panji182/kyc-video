@@ -1,3 +1,9 @@
+import dynamic from 'next/dynamic';
+
+const ErrorLayout = dynamic(
+  () => import('@/components/template/Layouts/ErrorLayout')
+);
+
 export default function Custom404() {
-  return <h1>404 - Page Not Found !</h1>;
+  return <ErrorLayout errorCode="404" errorDescription="Page Not Found !" />;
 }

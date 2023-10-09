@@ -8,11 +8,11 @@ const WorkHourPage = dynamic(
   () => import('@/components/template/WorkHourPage')
 );
 
-const WorkHour = () => {
-  checkValidAuth();
+const WorkHour = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <WorkHourPage />
     </AdminLayout>
   );

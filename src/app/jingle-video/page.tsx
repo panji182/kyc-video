@@ -7,11 +7,11 @@ const AdminLayout = dynamic(
 const JingleVideoPage = dynamic(
   () => import('@/components/template/JingleVideoPage')
 );
-const JingleVideo = () => {
-  checkValidAuth();
+const JingleVideo = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <JingleVideoPage />
     </AdminLayout>
   );

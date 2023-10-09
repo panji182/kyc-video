@@ -6,11 +6,11 @@ const AdminLayout = dynamic(
 );
 const HolidayPage = dynamic(() => import('@/components/template/HolidayPage'));
 
-const Holiday = () => {
-  checkValidAuth();
+const Holiday = async () => {
+  const secretKey: string = await checkValidAuth();
 
   return (
-    <AdminLayout>
+    <AdminLayout secretKey={secretKey}>
       <HolidayPage />
     </AdminLayout>
   );

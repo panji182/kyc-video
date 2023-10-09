@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
+import { getCookie, deleteCookie } from 'cookies-next';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
@@ -26,7 +27,7 @@ import styles, { DrawerHeader, AppBar, Drawer } from './index.styles';
 
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { toEm, toRem } from '@/helpers/globalFunctions';
+import { toEm, toRem, decrypt } from '@/helpers/globalFunctions';
 import SearchIcon from '@mui/icons-material/Search';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -40,7 +41,8 @@ import IconUserManagement from '@/components/atoms/Icons/IconUserManagement';
 import IconVideoJingle from '@/components/atoms/Icons/IconVideoJingle';
 import IconTimesManagement from '@/components/atoms/Icons/IconTimesManagement';
 
-import { paths } from '@/consts';
+import { paths, userMenuAccess } from '@/consts';
+import { UserMenuAccess } from '@/types/const';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 
 const menuLists = [
@@ -157,10 +159,11 @@ const menuLists = [
 const userSettings = ['Profile', 'divider', 'Logout'];
 
 type AdminLayoutProps = {
+  secretKey: string;
   children: JSX.Element;
 };
 
-const AdminLayout = ({ children }: AdminLayoutProps) => {
+const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
@@ -171,10 +174,21 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   );
   const [search, setSearch] = useState<string>('');
   console.log(search);
+  const auth: string = getCookie('auth') || '';
+  const authCookie = auth !== '' ? decrypt(auth, secretKey) : null;
+  const [currentUserInfo, setCurrentUserInfo] = useState({
+    username: '',
+    isVerified: '',
+    role: '',
+  });
 
   useEffect(() => {
     setExpandMenus(() => menuLists.map(() => false));
   }, []);
+
+  useEffect(() => {
+    auth !== '' && setCurrentUserInfo(authCookie);
+  }, [auth]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -241,6 +255,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     return exists;
   };
 
+  const handleLogout = () => {
+    deleteCookie('auth');
+    router.refresh();
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -277,12 +296,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ marginRight: toRem(16) }}>
-            <Typography textAlign="center">Welcome, Remy</Typography>
+            <Typography component="div" textAlign="center">
+              Welcome, {currentUserInfo.username}
+            </Typography>
           </Box>
           <Box>
             <Tooltip title="">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="user" src="/assets/images/user-women.png" />
+                <Avatar alt="user" src="/assets/images/user-men.png" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -305,7 +326,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 usetting !== 'divider' ? (
                   <MenuItem
                     key={usetting + index}
-                    onClick={handleCloseUserMenu}
+                    onClick={() => {
+                      usetting === 'Logout'
+                        ? handleLogout()
+                        : handleCloseUserMenu();
+                    }}
                   >
                     <Typography textAlign="center">{usetting}</Typography>
                   </MenuItem>
@@ -407,99 +432,104 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             },
           }}
         >
-          {menuLists.map((list, index) => (
-            <ListItem
-              component="div"
-              key={index}
-              disablePadding
-              sx={{ display: 'block' }}
-            >
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-                onClick={() => {
-                  list.subMenus
-                    ? handleExpandMenuClick(index)
-                    : handleRedirect(list.link);
-                }}
-                selected={isMenuExist(pathname, list.name)}
+          {menuLists.map((list, index) =>
+            (
+              userMenuAccess[currentUserInfo.role as keyof UserMenuAccess] || []
+            ).includes(list.label) ? (
+              <ListItem
+                component="div"
+                key={index}
+                disablePadding
+                sx={{ display: 'block' }}
               >
-                {list.icon && (
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? toRem(16) : 'auto',
-                      justifyContent: 'center',
-                      color: '#D1D5D8',
-                    }}
-                  >
-                    {list.icon}
-                  </ListItemIcon>
-                )}
-                <ListItemText
-                  primary={list.label}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-                {list.subMenus && open && (
-                  <>
-                    {expandMenus[index] ||
-                    isSubMenuExist(pathname, list.subMenus) ? (
-                      <ExpandLess />
-                    ) : (
-                      <ExpandMore />
-                    )}
-                  </>
-                )}
-              </ListItemButton>
-              <Collapse
-                in={
-                  expandMenus[index] || isSubMenuExist(pathname, list.subMenus)
-                }
-                timeout="auto"
-                unmountOnExit
-              >
-                <List component="div" disablePadding>
-                  {(list.subMenus || []).map((subMenu, indexSb) => (
-                    <ListItem
-                      component="div"
-                      key={`submenu${index}${indexSb}`}
-                      disablePadding
-                      sx={{ display: 'block' }}
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }}
+                  onClick={() => {
+                    list.subMenus
+                      ? handleExpandMenuClick(index)
+                      : handleRedirect(list.link);
+                  }}
+                  selected={isMenuExist(pathname, list.name)}
+                >
+                  {list.icon && (
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? toRem(16) : 'auto',
+                        justifyContent: 'center',
+                        color: '#D1D5D8',
+                      }}
                     >
-                      <ListItemButton
-                        onClick={() => handleRedirect(subMenu.link)}
-                        selected={isMenuExist(pathname, subMenu.name)}
+                      {list.icon}
+                    </ListItemIcon>
+                  )}
+                  <ListItemText
+                    primary={list.label}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                  {list.subMenus && open && (
+                    <>
+                      {expandMenus[index] ||
+                      isSubMenuExist(pathname, list.subMenus) ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )}
+                    </>
+                  )}
+                </ListItemButton>
+                <Collapse
+                  in={
+                    expandMenus[index] ||
+                    isSubMenuExist(pathname, list.subMenus)
+                  }
+                  timeout="auto"
+                  unmountOnExit
+                >
+                  <List component="div" disablePadding>
+                    {(list.subMenus || []).map((subMenu, indexSb) => (
+                      <ListItem
+                        component="div"
+                        key={`submenu${index}${indexSb}`}
+                        disablePadding
+                        sx={{ display: 'block' }}
                       >
-                        {subMenu.icon && (
-                          <ListItemIcon
-                            sx={{
-                              minWidth: 0,
-                              ml: open ? toRem(8) : 'auto',
-                              mr: open ? toRem(24) : 'auto',
-                              justifyContent: 'center',
-                              '& svg': {
-                                fontSize: toEm(16),
-                              },
-                              color: '#D1D5D8',
-                            }}
-                          >
-                            {subMenu.icon}
-                          </ListItemIcon>
-                        )}
-                        <ListItemText
-                          primary={subMenu.label}
-                          sx={{ opacity: open ? 1 : 0 }}
-                        />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
-              </Collapse>
-            </ListItem>
-          ))}
+                        <ListItemButton
+                          onClick={() => handleRedirect(subMenu.link)}
+                          selected={isMenuExist(pathname, subMenu.name)}
+                        >
+                          {subMenu.icon && (
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                ml: open ? toRem(8) : 'auto',
+                                mr: open ? toRem(24) : 'auto',
+                                justifyContent: 'center',
+                                '& svg': {
+                                  fontSize: toEm(16),
+                                },
+                                color: '#D1D5D8',
+                              }}
+                            >
+                              {subMenu.icon}
+                            </ListItemIcon>
+                          )}
+                          <ListItemText
+                            primary={subMenu.label}
+                            sx={{ opacity: open ? 1 : 0 }}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Collapse>
+              </ListItem>
+            ) : null
+          )}
         </List>
       </Drawer>
       <Box
