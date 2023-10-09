@@ -19,11 +19,8 @@ export const checkValidAuth = async () => {
   const currParentMenu: string = currPath ? currPath.parentMenu : '';
 
   const cookieStore = cookies();
-  let auth: any;
-  setTimeout(() => {
-    auth = cookieStore.get('auth');
-  }, 1000);
-  console.log(26, auth);
+  const auth = cookieStore.get('auth');
+
   if (auth) {
     const authValues: any = decrypt(auth.value, secretKey);
     authValues.isVerified !== 'verified' && redirect('/login');
