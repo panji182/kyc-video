@@ -15,6 +15,7 @@ type Props = {
   value: any;
   // eslint-disable-next-line no-unused-vars
   onChange: (e: Dayjs | null) => void;
+  slotProps?: any;
   sx?: any;
 };
 

@@ -1,9 +1,11 @@
 import React from 'react';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 
 type Props = {
-  label: string;
-  variant: 'text' | 'outlined' | 'contained';
+  label?: string;
+  buttonIcon?: React.ReactNode;
+  variant?: 'text' | 'outlined' | 'contained';
   color?:
     | 'inherit'
     | 'primary'
@@ -19,11 +21,20 @@ type Props = {
   sx?: any;
 };
 
-const ButtonComp = ({ label, variant, color, startIcon, ...props }: Props) => {
-  return (
+const ButtonComp = ({
+  label,
+  buttonIcon,
+  variant,
+  color,
+  startIcon,
+  ...props
+}: Props) => {
+  return label ? (
     <Button variant={variant} startIcon={startIcon} color={color} {...props}>
       {label}
     </Button>
+  ) : (
+    <IconButton {...props}>{buttonIcon}</IconButton>
   );
 };
 

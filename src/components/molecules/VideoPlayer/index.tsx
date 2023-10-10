@@ -9,6 +9,7 @@ const BoxStyled = styled(Box)(({ theme }) => ({
 
   '& video': {
     width: '100%',
+    maxHeight: '400px',
     borderRadius: '5px',
   },
 

@@ -153,8 +153,11 @@ const RecordingPage = () => {
     console.log(21, paramResult);
   };
 
-  const handlePlayVideo = (id: any) => {
-    console.log(157, `Video with id ${id} is played !`);
+  const handlePlayVideo = (fields: any, index?: number) => {
+    console.log(
+      157,
+      `Video with interactionId ${fields.interactionId} is played ${index} !`
+    );
     setOpenVideoPlayer(true);
   };
 
@@ -179,13 +182,12 @@ const RecordingPage = () => {
         data={dataRows}
         fieldOrderBy={'agentId'}
         headCells={headCells}
-        showEditor={false}
-        idFieldName={'id'}
-        customActionButton={(id: any) => (
+        // eslint-disable-next-line no-unused-vars
+        customActionButton={(fields: any, index?: number) => (
           <IconButton
             aria-label="playVideo"
             color="primary"
-            onClick={() => handlePlayVideo(id)}
+            onClick={() => handlePlayVideo(fields, index)}
           >
             <PlayCircleOutlineIcon />
           </IconButton>
@@ -199,7 +201,7 @@ const RecordingPage = () => {
       <VideoPlayer
         open={openVideoPlayer}
         title="Customer Video KYC Rahmat"
-        src="https://assets.codepen.io/6093409/river.mp4"
+        src="https://www.w3schools.com/tags/movie.mp4"
         videoType="video/mp4"
         onClosePopup={() => setOpenVideoPlayer(false)}
       />

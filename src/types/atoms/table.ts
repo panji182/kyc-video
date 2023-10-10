@@ -24,5 +24,6 @@ export interface EnhancedTableProps {
   orderBy: string;
   showEditor: boolean;
   // eslint-disable-next-line no-unused-vars
-  customActionButton?: (id: any) => React.ReactNode;
+  customActionButton?: (fields: any, index?: number) => React.ReactNode;
+  isSortable: boolean;
 }

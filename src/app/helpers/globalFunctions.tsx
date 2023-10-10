@@ -17,7 +17,7 @@ export const checkValidAuth = async () => {
   const pathValues = Object.values(paths);
   const currPath: any = pathValues.find(d => d.href === pathname);
   const currParentMenu: string = currPath ? currPath.parentMenu : '';
-  console.log(20, pathname);
+
   const cookieStore = cookies();
   const auth = cookieStore.get('auth');
 

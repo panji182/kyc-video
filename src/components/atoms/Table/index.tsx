@@ -124,6 +124,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     onRequestSort,
     showEditor,
     customActionButton,
+    isSortable,
   } = props;
   const createSortHandler =
     (property: any) => (event: React.MouseEvent<unknown>) => {
@@ -141,18 +142,24 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             sortDirection={orderBy === headCell.id ? order : false}
             sx={{ fontWeight: 'bold' }}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {isSortable ? (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc'
+                      ? 'sorted descending'
+                      : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            ) : (
+              <Box>{headCell.label}</Box>
+            )}
           </TableCell>
         ))}
         {(showEditor || customActionButton) && <TableCell>&nbsp;</TableCell>}
@@ -166,9 +173,9 @@ type Props = {
   fieldOrderBy: string;
   headCells: HeadCell[];
   showEditor?: boolean;
-  idFieldName?: string;
+  isSortable?: boolean;
   // eslint-disable-next-line no-unused-vars
-  customActionButton?: (id: any) => React.ReactNode;
+  customActionButton?: (fields: any, index?: number) => React.ReactNode;
   sx?: any;
 };
 
@@ -177,7 +184,7 @@ const TableComp = ({
   fieldOrderBy,
   headCells,
   showEditor = true,
-  idFieldName,
+  isSortable = true,
   customActionButton,
 }: Props) => {
   const [order, setOrder] = React.useState<Order>('asc');
@@ -247,12 +254,14 @@ const TableComp = ({
               onRequestSort={handleRequestSort}
               showEditor={showEditor}
               customActionButton={customActionButton}
+              isSortable={isSortable}
             />
             <TableBody>
               {visibleRows.map((row, index) => (
                 <TableRow hover key={index}>
                   {headCells.map(cell => {
                     const cellValue = cell.id ? row[cell.id.toString()] : null;
+
                     return (
                       <TableCell
                         key={cell.id}
@@ -262,7 +271,7 @@ const TableComp = ({
                       </TableCell>
                     );
                   })}
-                  {showEditor && (
+                  {showEditor && !customActionButton && (
                     <TableCell key={`editor${index}`} align={'center'}>
                       <Stack direction="row" spacing={1}>
                         <IconButton
@@ -282,10 +291,10 @@ const TableComp = ({
                       </Stack>
                     </TableCell>
                   )}
-                  {idFieldName && customActionButton && (
+                  {customActionButton && (
                     <TableCell key={`action${index}`} align={'center'}>
                       <Stack direction="row" spacing={1}>
-                        {customActionButton(row[idFieldName])}
+                        {customActionButton(row, index)}
                       </Stack>
                     </TableCell>
                   )}

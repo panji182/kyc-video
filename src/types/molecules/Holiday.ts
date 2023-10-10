@@ -1,7 +1,11 @@
 import { Dayjs } from 'dayjs';
 
-export interface HolidayInput {
+interface Holidays {
   name: string;
   startDate: Dayjs | null;
   endDate: Dayjs | null;
+}
+export interface HolidayInput {
+  name: string;
+  holidays: Holidays[];
 }

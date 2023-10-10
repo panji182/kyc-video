@@ -38,20 +38,12 @@ const optionsWorkHour = [
 
 const optionsHolidays = [
   {
-    value: 'Idul Fitri',
-    label: 'Idul Fitri: 16 - 17 September',
+    value: 'bandungHoliday',
+    label: 'Bandung Holiday',
   },
   {
-    value: 'Maulud Nabi',
-    label: 'Maulud Nabi: 28 September',
-  },
-  {
-    value: 'Idul Adha',
-    label: 'Idul Adha: 24 Agustus',
-  },
-  {
-    value: 'Tahun Baru Hijriyah',
-    label: 'Tahun Baru Hijriyah: 1 Maret',
+    value: 'baliHoliday',
+    label: 'Bali Holiday',
   },
 ];
 
@@ -60,7 +52,7 @@ const initCampaignInput: CampaignInput = {
   dateStart: null,
   dateEnd: null,
   workHour: '',
-  holiday: [optionsHolidays[0].value],
+  holiday: null,
 };
 
 const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
@@ -131,6 +123,7 @@ const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
               <DatePicker
                 value={campaignInput.dateStart}
                 onChange={newValue => handleInput(newValue, 'dateStart')}
+                slotProps={{ popper: { placement: 'top-start' } }}
               />
             </FormControl>
           </Grid>
@@ -146,6 +139,7 @@ const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
               <DatePicker
                 value={campaignInput.dateEnd}
                 onChange={newValue => handleInput(newValue, 'dateEnd')}
+                slotProps={{ popper: { placement: 'top-start' } }}
               />
             </FormControl>
           </Grid>
@@ -157,7 +151,6 @@ const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
               isFormInput={true}
               value={campaignInput.holiday}
               onChange={val => handleSelect(val, 'holiday')}
-              isMultipleSelect={true}
               sx={{ margin: 0 }}
             />
           </Grid>
