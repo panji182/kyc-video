@@ -3,6 +3,8 @@ import dynamic from 'next/dynamic';
 import { Users } from '@/types/organisms/login';
 import { secretKeyPromise } from '@/app/helpers/globalFunctions';
 
+import { Roles } from '@/consts';
+
 const AuthLayout = dynamic(
   () => import('@/components/template/Layouts/AuthLayout')
 );
@@ -14,17 +16,17 @@ const Login = async () => {
       {
         username: 'admin',
         password: 'admin123',
-        role: 'Administrator',
+        role: Roles.admin,
       },
       {
         username: 'operator',
         password: 'operator123',
-        role: 'Operation',
+        role: Roles.operator,
       },
       {
         username: 'reporter',
         password: 'reporter123',
-        role: 'Reporting',
+        role: Roles.reporter,
       },
     ]);
   });

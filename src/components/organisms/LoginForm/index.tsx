@@ -18,7 +18,7 @@ import { toEm, toRem, encrypt } from '@/helpers/globalFunctions';
 
 import { Login } from '@/types/organisms/login';
 import styles, { LoginButton, BpIcon, BpCheckedIcon } from './index.styles';
-import { paths } from '@/consts';
+import { paths, Roles } from '@/consts';
 
 const validationSchema = yup.object({
   password: yup.string().required('Password is required'),
@@ -62,10 +62,10 @@ const LoginForm = ({ users, secretKey }: Login) => {
         const encAuthInfo = encrypt(authInfos, secretKey);
         setCookie('auth', encAuthInfo);
         switch (enteredUser.role) {
-          case 'Administrator':
+          case Roles.admin:
             router.push(paths.dashboard.href);
             break;
-          case 'Operation':
+          case Roles.operator:
             router.push(paths.channel.href);
             break;
           default:

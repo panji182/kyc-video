@@ -6,6 +6,8 @@ import { paths, userMenuAccess } from '@/consts';
 import { UserMenuAccess } from '@/types/const';
 import { decrypt } from '@/helpers/globalFunctions';
 
+import { Roles } from '@/consts';
+
 export const secretKeyPromise = new Promise<string>(myResolve => {
   myResolve('cimb-phincon-09-2023');
 });
@@ -24,9 +26,18 @@ export const checkValidAuth = async () => {
   if (auth) {
     const authValues: any = decrypt(auth.value, secretKey);
     authValues.isVerified !== 'verified' && redirect('/login');
-    !(userMenuAccess[authValues.role as keyof UserMenuAccess] || []).includes(
-      currParentMenu
-    ) && redirect('/404');
+    if (pathname === paths.dashboard.href) {
+      switch (authValues.role) {
+        case Roles.operator:
+          redirect(paths.channel.href);
+        case Roles.reporter:
+          redirect(paths.recording.href);
+      }
+    } else {
+      !(userMenuAccess[authValues.role as keyof UserMenuAccess] || []).includes(
+        currParentMenu
+      ) && redirect('/404');
+    }
   } else {
     redirect('/login');
   }

@@ -79,6 +79,12 @@ export const colors = {
   dark: '#000',
 };
 
+export const Roles = {
+  admin: 'Administrator',
+  operator: 'Operation',
+  reporter: 'Reporting',
+};
+
 export const userMenuAccess: UserMenuAccess = {
   Administrator: [
     'Dashboard',
