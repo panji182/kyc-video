@@ -1,16 +1,24 @@
 'use client';
 
-import { useState, createContext } from 'react';
+import { useState, useEffect, createContext, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import isEqual from 'lodash/isEqual';
+import differenceBy from 'lodash/differenceBy';
 import { HeadCell } from '@/types/atoms/table';
+import {
+  useGetServerConfigurationListQuery,
+  useAddNewServerConfigurationMutation,
+  useUpdateServerConfigurationMutation,
+} from '@/services/ServerConfiguration';
 
 const CollapsableTable = dynamic(
   () => import('@/components/atoms/CollapsableTable')
 );
 const Button = dynamic(() => import('@/components/atoms/Button'));
 const Dialog = dynamic(() => import('@/components/atoms/Dialog'));
+const Snackbar = dynamic(() => import('@/components/atoms/SnackBar'));
 const PopupFormConfiguration = dynamic(
   () => import('@/components/molecules/PopupFormConfiguration')
 );
@@ -24,72 +32,78 @@ import SaveIcon from '@mui/icons-material/Save';
 
 export const updatedDataContext = createContext<any>({});
 
-const dataRows = [
-  {
-    id: 1,
-    name: 'Section2\\Key1',
-    section: 'Section2',
-    key: 'Key1',
-    value: 'config1',
-  },
-  {
-    id: 2,
-    name: 'Section2\\Key2',
-    section: 'Section2',
-    key: 'Key2',
-    value: 'config2',
-  },
-  {
-    id: 3,
-    name: 'Section1\\Key1',
-    section: 'Section1',
-    key: 'Key1',
-    value: 'config1',
-  },
-  {
-    id: 4,
-    name: 'Section1\\Key2',
-    section: 'Section1',
-    key: 'Key2',
-    value: 'config2',
-  },
-];
-
 const headCells: HeadCell[] = [
+  {
+    id: 'id',
+    numeric: true,
+    disablePadding: false,
+    show: false,
+    label: '',
+  },
   {
     id: 'name',
     numeric: false,
     disablePadding: false,
+    show: true,
     label: 'Name',
   },
   {
     id: 'section',
     numeric: false,
     disablePadding: false,
+    show: true,
     label: 'Section',
   },
   {
     id: 'key',
     numeric: false,
     disablePadding: false,
+    show: true,
     label: 'Key',
   },
   {
     id: 'value',
     numeric: false,
     disablePadding: false,
+    show: true,
     label: 'Value',
   },
 ];
 
+const initNotif = {
+  show: false,
+  message: '',
+  severity: 'success',
+};
+
 const ServerConfiguration = () => {
+  const dataQuery = useGetServerConfigurationListQuery({ pageNo: 0 });
+  const dataRows = dataQuery?.data?.config || [];
   const [open, setOpen] = useState<boolean>(false);
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
-  const [datas, setDatas] = useState<any[]>(dataRows);
+  const [confirmCancel, setConfirmCancel] = useState<boolean>(false);
+  const [notif, setNotif] = useState<any>(initNotif);
+  const [datas, setDatas] = useState<any[]>([]);
+  const originalData = useRef<any[]>([]);
   const [editedData, setEditedData] = useState<any>({});
   const [formMode, setFormMode] = useState<string>('New');
   const [selectedData, setSelectedData] = useState<any[]>([]);
   const [resetTable, setResetTable] = useState<number>(0);
+
+  const [addServerConfiguration] = useAddNewServerConfigurationMutation();
+  const [updateServerConfiguration] = useUpdateServerConfigurationMutation();
+
+  useEffect(() => {
+    const mappedRows = dataRows.map((d, index) => ({
+      id: index + 1,
+      name: `${d.section}\\${d.optionname}`,
+      section: d.section,
+      key: d.optionname,
+      value: d.optionvalue,
+    }));
+    setDatas(mappedRows);
+    originalData.current = [...mappedRows];
+  }, [dataRows]);
 
   const handleOnDelete = () => {
     setConfirmDelete(true);
@@ -100,12 +114,66 @@ const ServerConfiguration = () => {
     setOpen(true);
   };
 
-  const handleOnCancel = () => {
-    alert('Canceled !!');
+  const handleCancel = () => {
+    setConfirmCancel(true);
   };
 
-  const handleOnSave = () => {
-    alert('Data saved !!');
+  const handleSave = async () => {
+    if (
+      !isEqual(datas, originalData.current) &&
+      datas.length > originalData.current.length
+    ) {
+      const newData = differenceBy(datas, originalData.current, 'name');
+      try {
+        const resp = await addServerConfiguration({
+          config: newData.map(d => ({
+            section: d.section,
+            optionname: d.key,
+            optionvalue: d.value,
+          })),
+        }).unwrap();
+        originalData.current = [...datas];
+        setNotif({
+          show: true,
+          message: resp.message,
+          severity: resp.status === 'Success' ? 'success' : 'error',
+        });
+      } catch (err: any) {
+        setNotif({
+          show: true,
+          message: err.error,
+          severity: 'error',
+        });
+      }
+    } else if (!isEqual(datas, originalData.current)) {
+      try {
+        const resp = await updateServerConfiguration({
+          config: datas.map(d => ({
+            section: d.section,
+            optionname: d.key,
+            optionvalue: d.value,
+          })),
+        }).unwrap();
+        originalData.current = [...datas];
+        setNotif({
+          show: true,
+          message: resp.message,
+          severity: resp.status === 'Success' ? 'success' : 'error',
+        });
+      } catch (err: any) {
+        setNotif({
+          show: true,
+          message: err.error,
+          severity: 'error',
+        });
+      }
+    } else {
+      setNotif({
+        show: true,
+        message: 'No updated configuration to save !',
+        severity: 'error',
+      });
+    }
   };
 
   const handleGetSelectedData = (selected: any[]) => {
@@ -130,7 +198,7 @@ const ServerConfiguration = () => {
       setDatas((prevState: any[]) => {
         const prev = [...prevState];
         const currDataIdx = prev.findIndex(d => d.id === editedData.id);
-        if (currDataIdx) {
+        if (currDataIdx !== -1) {
           prev[currDataIdx] = {
             ...prev[currDataIdx],
             name: `${paramResult.section}\\${paramResult.key}`,
@@ -148,15 +216,24 @@ const ServerConfiguration = () => {
 
   const handleOkDelete = () => {
     const selectDelete = selectedData.reduce((result, d) => {
-      result.push(d.id);
+      result.push(d.name);
       return result;
     }, []);
-    setDatas(datas.filter(d => !selectDelete.includes(d.id)));
+    setDatas(datas.filter(d => !selectDelete.includes(d.name)));
     setResetTable(Math.random());
   };
 
   const handleCancelDelete = () => {
-    console.log('Cancel Deleted !');
+    console.log('Canceling Delete !');
+  };
+
+  const handleOkCancelConfig = () => {
+    setDatas(originalData.current);
+    setResetTable(Math.random());
+  };
+
+  const handleCancelConfig = () => {
+    console.log('Canceling Cancel Config !');
   };
 
   return (
@@ -200,14 +277,14 @@ const ServerConfiguration = () => {
             label="Cancel"
             variant="contained"
             color="error"
-            onClick={handleOnCancel}
+            onClick={handleCancel}
           />
           <Button
             label="Save"
             variant="contained"
             startIcon={<SaveIcon />}
             color="success"
-            onClick={handleOnSave}
+            onClick={handleSave}
           />
         </Stack>
         <PopupFormConfiguration
@@ -224,6 +301,29 @@ const ServerConfiguration = () => {
         onOk={handleOkDelete}
         onCancel={handleCancelDelete}
         onClose={() => setConfirmDelete(false)}
+      />
+      <Dialog
+        open={confirmCancel}
+        title={'Confirm Cancel'}
+        description={
+          'Are you sure want to Cancel !?, all your added, edited, and deleted configuration(s) will be restored !'
+        }
+        onOk={handleOkCancelConfig}
+        onCancel={handleCancelConfig}
+        onClose={() => setConfirmCancel(false)}
+      />
+      <Snackbar
+        open={notif.show}
+        message={notif.message}
+        severity={notif.severity}
+        vertical="top"
+        horizontal="right"
+        onClose={() =>
+          setNotif((prevState: any) => ({
+            ...prevState,
+            show: false,
+          }))
+        }
       />
     </>
   );

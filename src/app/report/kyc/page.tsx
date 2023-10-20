@@ -8,10 +8,10 @@ const KycReportPage = dynamic(
 );
 
 const KycReport = async () => {
-  const secretKey: string = await checkValidAuth();
+  checkValidAuth();
 
   return (
-    <AdminLayout secretKey={secretKey}>
+    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
       <KycReportPage />
     </AdminLayout>
   );

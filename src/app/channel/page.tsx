@@ -6,10 +6,10 @@ const AdminLayout = dynamic(
 );
 const ChannelPage = dynamic(() => import('@/components/template/ChannelPage'));
 const Channel = async () => {
-  const secretKey: string = await checkValidAuth();
+  checkValidAuth();
 
   return (
-    <AdminLayout secretKey={secretKey}>
+    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
       <ChannelPage />
     </AdminLayout>
   );

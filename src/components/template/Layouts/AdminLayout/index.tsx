@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { getCookie, deleteCookie } from 'cookies-next';
@@ -24,6 +24,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import styles, { DrawerHeader, AppBar, Drawer } from './index.styles';
+import { Providers } from '@/redux/provider';
 
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -44,6 +45,8 @@ import IconTimesManagement from '@/components/atoms/Icons/IconTimesManagement';
 import { paths, userMenuAccess } from '@/consts';
 import { UserMenuAccess } from '@/types/const';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+
+export const sidebarOpenedContext = createContext<any>({});
 
 const menuLists = [
   {
@@ -89,9 +92,9 @@ const menuLists = [
   },
   {
     label: 'Video Jingle',
-    name: 'jingle-video',
+    name: 'video-jingle',
     icon: <IconVideoJingle />,
-    link: paths.jingleVideo.href,
+    link: paths.videoJingle.href,
     subMenus: null,
   },
   {
@@ -257,6 +260,7 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
 
   const handleLogout = () => {
     deleteCookie('auth');
+    deleteCookie('token');
     router.refresh();
   };
 
@@ -541,7 +545,15 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
         }}
       >
         <DrawerHeader />
-        {children}
+        <Providers>
+          <sidebarOpenedContext.Provider
+            value={{
+              sidebarOpened: open,
+            }}
+          >
+            {children}
+          </sidebarOpenedContext.Provider>
+        </Providers>
       </Box>
     </Box>
   );

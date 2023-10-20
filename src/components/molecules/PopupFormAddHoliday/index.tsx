@@ -1,18 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 import { toRem } from '@/helpers/globalFunctions';
-import { HolidayInput } from '@/types/molecules/Holiday';
+import {
+  HolidayList,
+  DetailHolidayList,
+  EditedHolidays,
+} from '@/types/api/Holiday';
 
 import styles from './index.styles';
 import AddIcon from '@mui/icons-material/Add';
@@ -20,36 +23,87 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const Modal = dynamic(() => import('@/components/atoms/Modal'));
 const ButtonComp = dynamic(() => import('@/components/atoms/Button'));
+const TextInput = dynamic(() => import('@/components/atoms/TextInput'));
 const DatePicker = dynamic(() => import('@/components/atoms/DatePicker'));
 
-const initHolidayInput: HolidayInput = {
-  name: '',
-  holidays: [
-    {
-      name: '',
-      startDate: null,
-      endDate: null,
-    },
-  ],
+const initHolidayInput: HolidayList = {
+  id: '',
+  holidayname: '',
 };
+
+const initDetailHoliday: DetailHolidayList[] = [
+  {
+    id: '',
+    name: '',
+    date: null,
+  },
+];
 
 type Props = {
   open: boolean;
+  editedData: EditedHolidays | null;
   // eslint-disable-next-line no-unused-vars
-  onSubmited: (e: HolidayInput) => void;
+  onSubmited: (e: EditedHolidays) => void;
   onClosePopup: () => void;
 };
 
-const PopupFormAddHoliday = ({ open, onSubmited, onClosePopup }: Props) => {
+const PopupFormAddHoliday = ({
+  open,
+  editedData,
+  onSubmited,
+  onClosePopup,
+}: Props) => {
   const [holidayInput, setHolidayInput] =
-    useState<HolidayInput>(initHolidayInput);
+    useState<HolidayList>(initHolidayInput);
+  const [detailHolidayInput, setDetailHolidayInput] =
+    useState<DetailHolidayList[]>(initDetailHoliday);
 
-  const handleNameInput = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { value, name } = e.target;
+  useEffect(() => {
+    if (editedData) {
+      setHolidayInput(editedData.holiday);
+      setDetailHolidayInput(() => {
+        const detail: DetailHolidayList[] = editedData.detailHolidays
+          ? editedData.detailHolidays.map(det => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              const date: string = det.date || '';
+              const dateEdited = date.split('-');
+              return {
+                ...det,
+                date: dayjs()
+                  .set('date', +dateEdited[2])
+                  .set('month', +dateEdited[1])
+                  .set('year', +dateEdited[0]),
+              };
+            })
+          : [
+              {
+                id: '',
+                name: '',
+                date: null,
+              },
+            ];
+        return detail;
+      });
+    } else {
+      setHolidayInput(initHolidayInput);
+      setDetailHolidayInput(initDetailHoliday);
+    }
+  }, [editedData]);
 
-    setHolidayInput((prevState: HolidayInput) => ({
+  // const handleHolidayInput = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  // ) => {
+  //   const { value, name } = e.target;
+
+  //   setHolidayInput((prevState: HolidayList) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+  // };
+
+  const handleHolidayInput = (value: string, name: string) => {
+    setHolidayInput((prevState: HolidayList) => ({
       ...prevState,
       [name]: value,
     }));
@@ -57,64 +111,57 @@ const PopupFormAddHoliday = ({ open, onSubmited, onClosePopup }: Props) => {
 
   const handleClear = () => {
     setHolidayInput({ ...initHolidayInput });
+    setDetailHolidayInput(initDetailHoliday);
   };
 
-  const handleArrHolidaysInput = (
+  const handleDetailHolidayInput = (
     index: number,
     value: string | Dayjs | null,
     name: string
   ) => {
-    setHolidayInput((prevState: HolidayInput) => {
-      const prev = { ...prevState };
-      const arr = [...prevState.holidays];
+    setDetailHolidayInput((prevState: DetailHolidayList[]) => {
+      const arr = [...prevState];
       arr[index] = {
         ...arr[index],
         [name]: value,
       };
-      return {
-        ...prev,
-        holidays: arr,
-      };
+      return arr;
     });
   };
 
   const handleSubmit = () => {
-    onSubmited({ ...holidayInput });
+    onSubmited({
+      holiday: holidayInput,
+      detailHolidays: detailHolidayInput,
+    });
+    handleClear();
     onClosePopup();
   };
 
-  const handleAddHoliday = () => {
-    setHolidayInput((prevState: HolidayInput) => {
-      const prev = { ...prevState };
-      const arr = [...prevState.holidays];
+  const handleAddDetailHoliday = () => {
+    setDetailHolidayInput((prevState: DetailHolidayList[]) => {
+      const arr = [...prevState];
       arr.push({
+        id: '',
         name: '',
-        startDate: null,
-        endDate: null,
+        date: null,
       });
-      return {
-        ...prev,
-        holidays: arr,
-      };
+      return arr;
     });
   };
 
-  const handleDeleteHoliday = (index: number) => {
-    setHolidayInput((prevState: HolidayInput) => {
-      const prev = { ...prevState };
-      const arr = [...prevState.holidays];
+  const handleDeleteDetailHoliday = (index: number) => {
+    setDetailHolidayInput((prevState: DetailHolidayList[]) => {
+      const arr = [...prevState];
       arr.splice(index, 1);
-      return {
-        ...prev,
-        holidays: arr,
-      };
+      return arr;
     });
   };
 
   return (
     <Modal
       open={open}
-      title={'Create Holiday'}
+      title={editedData ? 'Edit Holiday' : 'Create Holiday'}
       onClose={() => onClosePopup()}
       sx={(theme: any) => ({
         '&.MuiModal-root>.MuiBox-root': {
@@ -129,60 +176,54 @@ const PopupFormAddHoliday = ({ open, onSubmited, onClosePopup }: Props) => {
     >
       <>
         <Grid container spacing={1} sx={{ marginBottom: toRem(16) }}>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <FormControl>
-              <FormLabel id="name" sx={styles.bottomSpace}>
-                Name
-              </FormLabel>
-              <TextField
-                id="name"
-                name="name"
-                placeholder="Enter Name"
-                value={holidayInput.name}
-                variant="outlined"
-                onChange={e => handleNameInput(e)}
-              />
-            </FormControl>
+          <Grid item xs={12} sm={12} md={4} lg={4}>
+            <TextInput
+              id="id"
+              label="Id"
+              formInput={true}
+              placeholder="Enter Id"
+              value={holidayInput.id}
+              variant="outlined"
+              onChange={val => handleHolidayInput(val, 'id')}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={4} lg={4}>
+            <TextInput
+              id="holidayname"
+              label="Holiday Name"
+              formInput={true}
+              placeholder="Enter Holiday Name"
+              value={holidayInput.holidayname}
+              variant="outlined"
+              onChange={val => handleHolidayInput(val, 'holidayname')}
+            />
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <Typography>Add Holidays</Typography>
           </Grid>
-          {holidayInput.holidays.map((holiday, index) => (
+          {(detailHolidayInput || []).map((detailHoliday, index) => (
             <>
               <Grid item xs={12} sm={12} md={4} lg={4}>
-                <FormControl>
-                  <FormLabel id="name" sx={styles.bottomSpace}>
-                    Name
-                  </FormLabel>
-                  <TextField
-                    id="name"
-                    name="name"
-                    placeholder="Enter Holiday Name"
-                    value={holiday.name}
-                    variant="outlined"
-                    onChange={e =>
-                      handleArrHolidaysInput(index, e.target.value, 'name')
-                    }
-                  />
-                </FormControl>
+                <TextInput
+                  id="id"
+                  label="Id"
+                  formInput={true}
+                  placeholder="Enter Id"
+                  value={detailHoliday.id}
+                  variant="outlined"
+                  onChange={val => handleDetailHolidayInput(index, val, 'id')}
+                />
               </Grid>
               <Grid item xs={12} sm={12} md={4} lg={4}>
-                <FormControl
-                  sx={{
-                    marginLeft: toRem(8),
-                    marginRight: toRem(8),
-                    maxWidth: toRem(200),
-                  }}
-                >
-                  <FormLabel sx={{ mb: toRem(8) }}>From</FormLabel>
-                  <DatePicker
-                    value={holiday.startDate}
-                    onChange={newValue =>
-                      handleArrHolidaysInput(index, newValue, 'startDate')
-                    }
-                    slotProps={{ popper: { placement: 'top-start' } }}
-                  />
-                </FormControl>
+                <TextInput
+                  id="name"
+                  label="Name"
+                  formInput={true}
+                  placeholder="Enter Name"
+                  value={detailHoliday.name}
+                  variant="outlined"
+                  onChange={val => handleDetailHolidayInput(index, val, 'name')}
+                />
               </Grid>
               <Grid
                 item
@@ -194,16 +235,15 @@ const PopupFormAddHoliday = ({ open, onSubmited, onClosePopup }: Props) => {
               >
                 <FormControl
                   sx={{
-                    marginLeft: toRem(8),
-                    marginRight: toRem(8),
+                    margin: toRem(8),
                     maxWidth: toRem(200),
                   }}
                 >
-                  <FormLabel sx={{ mb: toRem(8) }}>To</FormLabel>
+                  <FormLabel sx={{ mb: toRem(16) }}>Date</FormLabel>
                   <DatePicker
-                    value={holiday.endDate}
+                    value={detailHoliday.date}
                     onChange={newValue =>
-                      handleArrHolidaysInput(index, newValue, 'endDate')
+                      handleDetailHolidayInput(index, newValue, 'date')
                     }
                     slotProps={{ popper: { placement: 'top-start' } }}
                   />
@@ -227,7 +267,7 @@ const PopupFormAddHoliday = ({ open, onSubmited, onClosePopup }: Props) => {
                     >
                       <ButtonComp
                         buttonIcon={<DeleteIcon />}
-                        onClick={() => handleDeleteHoliday(index)}
+                        onClick={() => handleDeleteDetailHoliday(index)}
                         sx={{ color: '#d32f2f' }}
                       />
                     </Stack>
@@ -247,7 +287,7 @@ const PopupFormAddHoliday = ({ open, onSubmited, onClosePopup }: Props) => {
               label="Add"
               variant="contained"
               startIcon={<AddIcon />}
-              onClick={handleAddHoliday}
+              onClick={handleAddDetailHoliday}
             />
           </Box>
           <Box>

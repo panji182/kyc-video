@@ -1,195 +1,187 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { HeadCell } from '@/types/atoms/table';
+import {
+  useGetUserListQuery,
+  useGetDetailUserQuery,
+  useAddNewUserMutation,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} from '@/services/UserManagement';
 
 const Table = dynamic(() => import('@/components/atoms/Table'));
 const Button = dynamic(() => import('@/components/atoms/Button'));
+const Dialog = dynamic(() => import('@/components/atoms/Dialog'));
+const Snackbar = dynamic(() => import('@/components/atoms/SnackBar'));
 const PopupFormAddUser = dynamic(
   () => import('@/components/molecules/PopupFormAddUser')
 );
 
 import { toRem } from '@/helpers/globalFunctions';
-import { UserInput } from '@/types/template/UserManagement';
+import { UserList } from '@/types/api/UserManagement';
 
 import AddIcon from '@mui/icons-material/Add';
 
-const dataRows = [
-  {
-    firstName: 'Panji1',
-    middleName: 'test1',
-    lastName: 'Mantra1',
-    email: 'panji@yahoo.com1',
-    userLevel: 'Admin1',
-    status: 'Active1',
-    picture: 'http://image/to/path/panji.jpg1',
-  },
-  {
-    firstName: 'mantra2',
-    middleName: 'test2',
-    lastName: 'panji2',
-    email: 'panji@yahoo.com2',
-    userLevel: 'Admin2',
-    status: 'Not Active2',
-    picture: 'http://image/to/path/mantra.jpg2',
-  },
-  {
-    firstName: 'Panji3',
-    middleName: 'test3',
-    lastName: 'Mantra3',
-    email: 'panji@yahoo.com3',
-    userLevel: 'Admin3',
-    status: 'Active3',
-    picture: 'http://image/to/path/panji.jpg3',
-  },
-  {
-    firstName: 'mantra4',
-    middleName: 'test4',
-    lastName: 'panji4',
-    email: 'panji@yahoo.com4',
-    userLevel: 'Admin4',
-    status: 'Not Active4',
-    picture: 'http://image/to/path/mantra.jpg4',
-  },
-  {
-    firstName: 'Panji5',
-    middleName: 'test5',
-    lastName: 'Mantra5',
-    email: 'panji@yahoo.com5',
-    userLevel: 'Admin5',
-    status: 'Active5',
-    picture: 'http://image/to/path/panji.jpg5',
-  },
-  {
-    firstName: 'mantra6',
-    middleName: 'test6',
-    lastName: 'panji6',
-    email: 'panji@yahoo.com6',
-    userLevel: 'Admin6',
-    status: 'Not Active6',
-    picture: 'http://image/to/path/mantra.jpg6',
-  },
-  {
-    firstName: 'Panji7',
-    middleName: 'test7',
-    lastName: 'Mantra7',
-    email: 'panji@yahoo.com7',
-    userLevel: 'Admin7',
-    status: 'Active7',
-    picture: 'http://image/to/path/panji.jpg7',
-  },
-  {
-    firstName: 'mantr8a',
-    middleName: 'te8st',
-    lastName: 'panji8',
-    email: 'panji@yah8oo.com',
-    userLevel: 'Admi8n',
-    status: 'Not Act8ive',
-    picture: 'http://image/to/path/man8tra.jpg',
-  },
-  {
-    firstName: 'Panj9i',
-    middleName: 'tes9t',
-    lastName: 'Mant9ra',
-    email: 'panji@ya9hoo.com',
-    userLevel: 'Adm9in',
-    status: 'Act9ive',
-    picture: 'http://image/to/9path/panji.jpg',
-  },
-  {
-    firstName: 'mantr10a',
-    middleName: 'test10',
-    lastName: 'panji10',
-    email: 'panji@yahoo.com10',
-    userLevel: 'Admin10',
-    status: 'Not Active10',
-    picture: 'http://image/to/path/mantra.jpg10',
-  },
-  {
-    firstName: 'Panji11',
-    middleName: 'test11',
-    lastName: 'Mantra11',
-    email: 'panji@yahoo.com11',
-    userLevel: 'Admin11',
-    status: 'Active11',
-    picture: 'http://image/to/path/panji.jpg11',
-  },
-  {
-    firstName: 'mantra12',
-    middleName: 'test12',
-    lastName: 'panji12',
-    email: 'panji@yahoo12.com',
-    userLevel: 'Admin12',
-    status: 'Not Active12',
-    picture: 'http://image/to/path/mantra.jpg12',
-  },
-  {
-    firstName: 'Panji13',
-    middleName: 'test13',
-    lastName: 'Mantra13',
-    email: 'panji@yahoo.com13',
-    userLevel: 'Admin13',
-    status: 'Active13',
-    picture: 'http://image/to/path/panji.jpg13',
-  },
-];
-
 const headCells: HeadCell[] = [
   {
-    id: 'firstName',
+    id: 'id',
     numeric: false,
     disablePadding: false,
-    label: 'First Name',
+    show: true,
+    label: 'Id',
   },
   {
-    id: 'middleName',
+    id: 'username',
     numeric: false,
     disablePadding: false,
-    label: 'Middle Name',
+    show: true,
+    label: 'Username',
   },
   {
-    id: 'lastName',
+    id: 'fullname',
     numeric: false,
     disablePadding: false,
-    label: 'Last Name',
+    show: true,
+    label: 'Fullname',
   },
   {
-    id: 'email',
+    id: 'extid',
     numeric: false,
     disablePadding: false,
-    label: 'Email',
+    show: true,
+    label: 'Ext Id',
   },
   {
-    id: 'userLevel',
+    id: 'roles',
     numeric: false,
     disablePadding: false,
-    label: 'User Level',
-  },
-  {
-    id: 'status',
-    numeric: false,
-    disablePadding: false,
-    label: 'Status',
-  },
-  {
-    id: 'picture',
-    numeric: false,
-    disablePadding: false,
-    label: 'Picture',
+    show: true,
+    label: 'Roles',
   },
 ];
 
+const initNotif = {
+  show: false,
+  message: '',
+  severity: 'success',
+};
+
 const ViewUsersPage = () => {
+  const [search, setSearch] = useState<string>('');
+  const dataQuery = useGetUserListQuery(
+    { pageNo: 0, search },
+    { refetchOnMountOrArgChange: true }
+  );
+  const dataRows = useMemo(() => {
+    return (dataQuery?.data?.users || []).map(user => {
+      return {
+        ...user,
+        roles: (user.roles || []).reduce((result, role, index) => {
+          if (index !== user.roles.length - 1) {
+            result += role + ',';
+          } else {
+            result += role;
+          }
+          return result;
+        }, ''),
+      };
+    });
+  }, [dataQuery?.data?.users]);
   const [open, setOpen] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<any | null>(null);
+  const [notif, setNotif] = useState<any>(initNotif);
+  const detailDataQuery = useGetDetailUserQuery(
+    { id: selectedId },
+    { refetchOnMountOrArgChange: true }
+  );
+  const detailData = detailDataQuery?.data || null;
+  const [addUser] = useAddNewUserMutation();
+  const [updateUser] = useUpdateUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
+
   const handleOnClick = () => {
+    setIsEditing(false);
     setOpen(true);
   };
 
-  const handleSubmit = (paramResult: UserInput) => {
-    console.log(21, paramResult);
+  const handleSubmit = async (paramResult: UserList) => {
+    if (isEditing) {
+      try {
+        const resp: any = await updateUser({
+          user: paramResult,
+        }).unwrap();
+        setNotif({
+          show: true,
+          message: resp.message,
+          severity: resp.status === 'Success' ? 'success' : 'error',
+        });
+      } catch (err: any) {
+        setNotif({
+          show: true,
+          message: err.error,
+          severity: 'error',
+        });
+      }
+    } else {
+      try {
+        const resp = await addUser({
+          ...paramResult,
+        }).unwrap();
+        setNotif({
+          show: true,
+          message: resp.message,
+          severity: resp.status === 'Success' ? 'success' : 'error',
+        });
+      } catch (err: any) {
+        setNotif({
+          show: true,
+          message: err.error,
+          severity: 'error',
+        });
+      }
+    }
+  };
+
+  const handleEditData = async (data: any) => {
+    setIsEditing(true);
+    setSelectedId(data.id);
+    setOpen(true);
+  };
+
+  const handleDeleteData = (id: any) => {
+    setSelectedId(id);
+    setConfirmDelete(true);
+  };
+
+  const handleOkDelete = async () => {
+    try {
+      const resp = await deleteUser({ id: selectedId }).unwrap();
+      setNotif({
+        show: true,
+        message: resp.message,
+        severity: resp.status === 'Success' ? 'success' : 'error',
+      });
+    } catch (err: any) {
+      setNotif({
+        show: true,
+        message: err.error,
+        severity: 'error',
+      });
+    }
+  };
+
+  const handleCancelDelete = () => {
+    console.log('Cancel Delete !');
+  };
+
+  const handleQuickSearch = (searchStr: string) => {
+    setSearch(searchStr);
   };
 
   return (
@@ -205,12 +197,41 @@ const ViewUsersPage = () => {
           onClick={handleOnClick}
         />
       </Stack>
-      <Table data={dataRows} fieldOrderBy={'firstName'} headCells={headCells} />
-
+      <Table
+        data={dataRows}
+        fieldOrderBy={'firstName'}
+        headCells={headCells}
+        idActionName="id"
+        onEditAction={handleEditData}
+        onDeleteAction={handleDeleteData}
+        onQuickSearch={handleQuickSearch}
+      />
       <PopupFormAddUser
         open={open}
+        editedData={isEditing ? detailData : null}
         onSubmited={handleSubmit}
         onClosePopup={() => setOpen(false)}
+      />
+      <Dialog
+        open={confirmDelete}
+        title={'Confirm Delete'}
+        description={'Are you sure want to delete !?'}
+        onOk={handleOkDelete}
+        onCancel={handleCancelDelete}
+        onClose={() => setConfirmDelete(false)}
+      />
+      <Snackbar
+        open={notif.show}
+        message={notif.message}
+        severity={notif.severity}
+        vertical="top"
+        horizontal="right"
+        onClose={() =>
+          setNotif((prevState: any) => ({
+            ...prevState,
+            show: false,
+          }))
+        }
       />
     </>
   );

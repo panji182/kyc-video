@@ -9,10 +9,10 @@ const RecordingPage = dynamic(
 );
 
 const Recording = async () => {
-  const secretKey: string = await checkValidAuth();
+  checkValidAuth();
 
   return (
-    <AdminLayout secretKey={secretKey}>
+    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
       <RecordingPage />
     </AdminLayout>
   );

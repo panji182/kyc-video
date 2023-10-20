@@ -23,6 +23,7 @@ import { toRem } from '@/helpers/globalFunctions';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
+import useDebounce from '@/hooks/Debounce';
 
 import {
   HeadCell,
@@ -77,6 +78,7 @@ function stableSort<T>(
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { setSearch } = props;
+  const { debouncing } = useDebounce(500);
 
   return (
     <Toolbar
@@ -110,7 +112,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             border: 0,
           },
         }}
-        onChange={e => setSearch(e.target.value)}
+        onChange={e =>
+          debouncing(() => {
+            setSearch(e.target.value);
+          })
+        }
       />
     </Toolbar>
   );
@@ -134,34 +140,36 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow sx={{ backgroundColor: 'rgba(222,222,222, .3)' }}>
-        {headCells.map(headCell => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'center'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ fontWeight: 'bold' }}
-          >
-            {isSortable ? (
-              <TableSortLabel
-                active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
-                onClick={createSortHandler(headCell.id)}
-              >
-                {headCell.label}
-                {orderBy === headCell.id ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </TableSortLabel>
-            ) : (
-              <Box>{headCell.label}</Box>
-            )}
-          </TableCell>
-        ))}
+        {headCells.map(headCell =>
+          headCell.show ? (
+            <TableCell
+              key={headCell.id}
+              align={headCell.numeric ? 'right' : 'center'}
+              padding={headCell.disablePadding ? 'none' : 'normal'}
+              sortDirection={orderBy === headCell.id ? order : false}
+              sx={{ fontWeight: 'bold' }}
+            >
+              {isSortable ? (
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : 'asc'}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                  {orderBy === headCell.id ? (
+                    <Box component="span" sx={visuallyHidden}>
+                      {order === 'desc'
+                        ? 'sorted descending'
+                        : 'sorted ascending'}
+                    </Box>
+                  ) : null}
+                </TableSortLabel>
+              ) : (
+                <Box>{headCell.label}</Box>
+              )}
+            </TableCell>
+          ) : null
+        )}
         {(showEditor || customActionButton) && <TableCell>&nbsp;</TableCell>}
       </TableRow>
     </TableHead>
@@ -172,27 +180,40 @@ type Props = {
   data: any[];
   fieldOrderBy: string;
   headCells: HeadCell[];
+  idActionName?: string;
   showEditor?: boolean;
   isSortable?: boolean;
+  sx?: any;
   // eslint-disable-next-line no-unused-vars
   customActionButton?: (fields: any, index?: number) => React.ReactNode;
-  sx?: any;
+  // eslint-disable-next-line no-unused-vars
+  onEditAction?: (editedData: any) => void;
+  // eslint-disable-next-line no-unused-vars
+  onDeleteAction?: (id: any) => void;
+  // eslint-disable-next-line no-unused-vars
+  onQuickSearch?: (searchStr: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  onClickData?: (data: any) => void;
 };
 
 const TableComp = ({
   data,
   fieldOrderBy,
   headCells,
+  idActionName,
   showEditor = true,
   isSortable = true,
   customActionButton,
+  onEditAction,
+  onDeleteAction,
+  onQuickSearch,
+  onClickData,
 }: Props) => {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<any>(fieldOrderBy);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [search, setSearch] = React.useState<string>('');
-  console.log(188, search);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -220,15 +241,23 @@ const TableComp = ({
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [data, order, orderBy, page, rowsPerPage]
   );
 
-  const handleEdit = (id: number) => {
-    alert(`${id} Edited !`);
+  React.useEffect(() => {
+    onQuickSearch && onQuickSearch(search);
+  }, [search, onQuickSearch]);
+
+  const handleEdit = (editedData: any) => {
+    onEditAction && onEditAction(editedData);
   };
 
-  const handleDelete = (id: number) => {
-    alert(`${id} Deleted !`);
+  const handleDelete = (id: any) => {
+    onDeleteAction && onDeleteAction(id);
+  };
+
+  const handleClickData = (data: any) => {
+    onClickData && onClickData(data);
   };
 
   return (
@@ -262,14 +291,22 @@ const TableComp = ({
                   {headCells.map(cell => {
                     const cellValue = cell.id ? row[cell.id.toString()] : null;
 
-                    return (
+                    return cell.show ? (
                       <TableCell
                         key={cell.id}
                         align={cell.numeric ? 'right' : 'left'}
+                        onClick={() => handleClickData(row)}
+                        sx={
+                          onClickData
+                            ? {
+                                cursor: 'pointer',
+                              }
+                            : {}
+                        }
                       >
                         {cellValue ?? '-'}
                       </TableCell>
-                    );
+                    ) : null;
                   })}
                   {showEditor && !customActionButton && (
                     <TableCell key={`editor${index}`} align={'center'}>
@@ -277,14 +314,18 @@ const TableComp = ({
                         <IconButton
                           aria-label="edit"
                           color="primary"
-                          onClick={() => handleEdit(0)}
+                          onClick={() => handleEdit(row)}
                         >
                           <EditIcon />
                         </IconButton>
                         <IconButton
                           aria-label="delete"
                           color="primary"
-                          onClick={() => handleDelete(0)}
+                          onClick={() => {
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            handleDelete(row[idActionName]);
+                          }}
                         >
                           <DeleteIcon />
                         </IconButton>

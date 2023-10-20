@@ -61,24 +61,28 @@ const headCells: HeadCell[] = [
     id: 'userLevel',
     numeric: false,
     disablePadding: false,
+    show: true,
     label: 'User Level',
   },
   {
     id: 'read',
     numeric: false,
     disablePadding: false,
+    show: true,
     label: 'Read',
   },
   {
     id: 'update',
     numeric: false,
     disablePadding: false,
+    show: true,
     label: 'Update',
   },
   {
     id: 'delete',
     numeric: false,
     disablePadding: false,
+    show: true,
     label: 'Delete',
   },
 ];

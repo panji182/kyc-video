@@ -7,10 +7,10 @@ const AdminLayout = dynamic(
 const HolidayPage = dynamic(() => import('@/components/template/HolidayPage'));
 
 const Holiday = async () => {
-  const secretKey: string = await checkValidAuth();
+  checkValidAuth();
 
   return (
-    <AdminLayout secretKey={secretKey}>
+    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
       <HolidayPage />
     </AdminLayout>
   );

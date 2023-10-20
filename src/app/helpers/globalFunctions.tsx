@@ -8,12 +8,7 @@ import { decrypt } from '@/helpers/globalFunctions';
 
 import { Roles } from '@/consts';
 
-export const secretKeyPromise = new Promise<string>(myResolve => {
-  myResolve('cimb-phincon-09-2023');
-});
-
-export const checkValidAuth = async () => {
-  const secretKey: string = await secretKeyPromise;
+export const checkValidAuth = () => {
   const headersList = headers();
   const pathname = headersList.get('x-my-pathname') || '';
   const pathValues = Object.values(paths);
@@ -24,7 +19,7 @@ export const checkValidAuth = async () => {
   const auth = cookieStore.get('auth');
 
   if (auth) {
-    const authValues: any = decrypt(auth.value, secretKey);
+    const authValues: any = decrypt(auth.value, process.env.SECRET_KEY || '');
     authValues.isVerified !== 'verified' && redirect('/login');
     if (pathname === paths.dashboard.href) {
       switch (authValues.role) {
@@ -41,5 +36,4 @@ export const checkValidAuth = async () => {
   } else {
     redirect('/login');
   }
-  return secretKey;
 };

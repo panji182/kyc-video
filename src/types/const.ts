@@ -1,5 +1,5 @@
 export interface UserMenuAccess {
-  Administrator: string[];
-  Operation: string[];
-  Reporting: string[];
+  administrator: string[];
+  operator: string[];
+  reporting: string[];
 }

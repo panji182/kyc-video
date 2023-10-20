@@ -32,7 +32,7 @@ const IconButtonCustom = styled(IconButton)({
 
 type Props = {
   open: boolean;
-  title: string;
+  title?: string;
   onClose: () => void;
   sx?: any;
   children: JSX.Element;

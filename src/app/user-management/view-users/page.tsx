@@ -8,10 +8,10 @@ const ViewUsersPage = dynamic(
 );
 
 const ViewUsers = async () => {
-  const secretKey: string = await checkValidAuth();
+  checkValidAuth();
 
   return (
-    <AdminLayout secretKey={secretKey}>
+    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
       <ViewUsersPage />
     </AdminLayout>
   );

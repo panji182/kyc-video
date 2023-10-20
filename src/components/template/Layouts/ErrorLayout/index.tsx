@@ -4,17 +4,17 @@ import { styled } from '@mui/material/styles';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Typography from '@mui/material/Typography';
 
-import { toRem } from '@/helpers/globalFunctions';
+import { toEm } from '@/helpers/globalFunctions';
 
 const ErrorCode = styled(Typography)(({ theme }) => ({
   color: '#fff',
   textAlign: 'center',
 
   [theme.breakpoints.down('md')]: {
-    fontSize: toRem(76.8),
+    fontSize: toEm(76.8),
   },
   [theme.breakpoints.down('sm')]: {
-    fontSize: toRem(48),
+    fontSize: toEm(48),
   },
 }));
 
@@ -23,10 +23,10 @@ const ErrorDescription = styled(Typography)(({ theme }) => ({
   textAlign: 'center',
 
   [theme.breakpoints.down('md')]: {
-    fontSize: toRem(38.4),
+    fontSize: toEm(38.4),
   },
   [theme.breakpoints.down('sm')]: {
-    fontSize: toRem(24),
+    fontSize: toEm(24),
   },
 }));
 

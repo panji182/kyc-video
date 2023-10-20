@@ -1,7 +1,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { Users } from '@/types/organisms/login';
-import { secretKeyPromise } from '@/app/helpers/globalFunctions';
 
 import { Roles } from '@/consts';
 
@@ -31,11 +30,10 @@ const Login = async () => {
     ]);
   });
   const usersLogin: Users[] = await usersPromise;
-  const secretKey = await secretKeyPromise;
 
   return (
     <AuthLayout>
-      <LoginForm users={usersLogin} secretKey={secretKey} />
+      <LoginForm users={usersLogin} secretKey={process.env.SECRET_KEY || ''} />
     </AuthLayout>
   );
 };

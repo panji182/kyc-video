@@ -8,10 +8,10 @@ const AbandonCallReportPage = dynamic(
 );
 
 const AbandonCallReport = async () => {
-  const secretKey: string = await checkValidAuth();
+  checkValidAuth();
 
   return (
-    <AdminLayout secretKey={secretKey}>
+    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
       <AbandonCallReportPage />
     </AdminLayout>
   );

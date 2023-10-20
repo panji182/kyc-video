@@ -8,12 +8,12 @@ const styles = {
   buttonDeleteRowBox: {
     position: 'absolute',
     right: '-32px',
-    top: '33%',
+    top: '40%',
   },
   buttonDeleteRowBoxResponsive: {
     position: 'absolute',
     right: '-22px',
-    top: '33%',
+    top: '40%',
   },
 };
 

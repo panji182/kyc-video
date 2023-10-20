@@ -3,6 +3,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
+import { Providers } from '@/redux/provider';
 
 const AuthImageContainer = dynamic(
   () => import('@/components/atoms/AuthImageContainer')
@@ -23,7 +24,9 @@ const AuthLayout = ({ children }: Props) => {
       sx={styles.container}
     >
       <AuthImageContainer />
-      <AuthFormContainer>{children}</AuthFormContainer>
+      <AuthFormContainer>
+        <Providers>{children}</Providers>
+      </AuthFormContainer>
     </Stack>
   );
 };

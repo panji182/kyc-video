@@ -9,10 +9,10 @@ const WorkHourPage = dynamic(
 );
 
 const WorkHour = async () => {
-  const secretKey: string = await checkValidAuth();
+  checkValidAuth();
 
   return (
-    <AdminLayout secretKey={secretKey}>
+    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
       <WorkHourPage />
     </AdminLayout>
   );

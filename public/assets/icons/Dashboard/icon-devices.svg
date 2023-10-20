@@ -1,0 +1,10 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="vaadin:mobile-browser" clip-path="url(#clip0_1261_3529)">
+<path id="Vector" d="M24 0H4.5V7.5H0V24H10.5V19.5H24V0ZM9 1.5H22.5V3H9V1.5ZM6 1.5H7.5V3H6V1.5ZM6 22.5H4.5V21H6V22.5ZM9 19.5H1.5V9H9V19.5ZM22.5 18H10.5V7.5H6V4.5H22.5V18Z" fill="#012E70"/>
+</g>
+<defs>
+<clipPath id="clip0_1261_3529">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>

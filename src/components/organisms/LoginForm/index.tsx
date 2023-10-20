@@ -14,7 +14,9 @@ import Checkbox from '@mui/material/Checkbox';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-import { toEm, toRem, encrypt } from '@/helpers/globalFunctions';
+import { useGetAuthLoginMutation } from '@/services/Login';
+
+import { toEm, toRem, encrypt, encryptString } from '@/helpers/globalFunctions';
 
 import { Login } from '@/types/organisms/login';
 import styles, { LoginButton, BpIcon, BpCheckedIcon } from './index.styles';
@@ -26,6 +28,7 @@ const validationSchema = yup.object({
 
 const LoginForm = ({ users, secretKey }: Login) => {
   const router = useRouter();
+  const [authLogin] = useGetAuthLoginMutation();
   const isValidUserName = (uname: string) => {
     const isEmail = (str: string) =>
       /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(str);
@@ -51,7 +54,7 @@ const LoginForm = ({ users, secretKey }: Login) => {
       return errors.username !== '' ? errors : {};
     },
     validationSchema: validationSchema,
-    onSubmit: values => {
+    onSubmit: async values => {
       const enteredUser = users.find(d => d.username === values.username);
       if (enteredUser && enteredUser.password === values.password) {
         const authInfos = {
@@ -61,6 +64,13 @@ const LoginForm = ({ users, secretKey }: Login) => {
         };
         const encAuthInfo = encrypt(authInfos, secretKey);
         setCookie('auth', encAuthInfo);
+        try {
+          const resp: any = await authLogin({
+            username: values.username,
+            password: encryptString(values.password, secretKey),
+          }).unwrap();
+          setCookie('token', resp.token);
+        } catch (err: any) {}
         switch (enteredUser.role) {
           case Roles.admin:
             router.push(paths.dashboard.href);

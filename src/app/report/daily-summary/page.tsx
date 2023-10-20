@@ -8,10 +8,10 @@ const DailySummaryPage = dynamic(
 );
 
 const DailySummaryReport = async () => {
-  const secretKey: string = await checkValidAuth();
+  checkValidAuth();
 
   return (
-    <AdminLayout secretKey={secretKey}>
+    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
       <DailySummaryPage />
     </AdminLayout>
   );

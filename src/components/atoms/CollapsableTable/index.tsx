@@ -27,6 +27,8 @@ import {
   EnhancedTableProps,
 } from '@/types/atoms/collapsableTable';
 
+import { ServerConfigurationList } from '@/types/api/ServerConfiguration';
+
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -100,28 +102,32 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             }}
           />
         </TableCell>
-        {headCells.map(headCell => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ fontWeight: 'bold' }}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
+        {headCells.map(headCell =>
+          headCell.show ? (
+            <TableCell
+              key={headCell.id}
+              align={headCell.numeric ? 'right' : 'left'}
+              padding={headCell.disablePadding ? 'none' : 'normal'}
+              sortDirection={orderBy === headCell.id ? order : false}
+              sx={{ fontWeight: 'bold' }}
             >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc'
+                      ? 'sorted descending'
+                      : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
+          ) : null
+        )}
       </TableRow>
     </TableHead>
   );
@@ -159,7 +165,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 type Props = {
-  data: any[];
+  data: ServerConfigurationList[];
   fieldOrderBy: string;
   headCells: HeadCell[];
   // eslint-disable-next-line no-unused-vars
@@ -186,7 +192,7 @@ const CollapsableTable = ({
   const { setEditedData, setOpenEditor, usedMode } =
     React.useContext(updatedDataContext);
 
-  const rowGrouping = (p_data: any[]) => {
+  const rowGrouping = (p_data: ServerConfigurationList[]) => {
     const groupObject = p_data.reduce((result: any, d) => {
       if (!result[d.section]) result[d.section] = [];
       result[d.section].push(d);
@@ -195,6 +201,7 @@ const CollapsableTable = ({
     let finalResult: any[] = [];
     Object.keys(groupObject).forEach(d => {
       finalResult.push({
+        id: null,
         name: d,
         section: null,
         key: null,
@@ -297,7 +304,7 @@ const CollapsableTable = ({
       data.reduce((result, d) => {
         if (!result[d.section]) result[d.section] = false;
         return result;
-      }, {})
+      }, {} as any)
     );
   }, [data]);
 
@@ -369,7 +376,7 @@ const CollapsableTable = ({
                       const cellValue = cell.id
                         ? row[cell.id.toString()]
                         : null;
-                      return (
+                      return cell.show ? (
                         <TableCell
                           key={`${cell.id}${index}`}
                           align={cell.numeric ? 'right' : 'left'}
@@ -394,7 +401,7 @@ const CollapsableTable = ({
                             {cellValue ?? '-'}
                           </Typography>
                         </TableCell>
-                      );
+                      ) : null;
                     })}
                   </TableRow>
                 ) : null;

@@ -41,9 +41,9 @@ export const paths = {
     parentMenu: 'Server Configuration',
     href: '/server-configuration',
   },
-  jingleVideo: {
+  videoJingle: {
     parentMenu: 'Video Jingle',
-    href: '/jingle-video',
+    href: '/video-jingle',
   },
   login: {
     parentMenu: null,
@@ -80,13 +80,13 @@ export const colors = {
 };
 
 export const Roles = {
-  admin: 'Administrator',
-  operator: 'Operation',
-  reporter: 'Reporting',
+  admin: 'administrator',
+  operator: 'operator',
+  reporter: 'reporting',
 };
 
 export const userMenuAccess: UserMenuAccess = {
-  Administrator: [
+  administrator: [
     'Dashboard',
     'Server Configuration',
     'User Management',
@@ -95,11 +95,6 @@ export const userMenuAccess: UserMenuAccess = {
     'Working Times Management',
     'Campaign',
   ],
-  Operation: [
-    'Channel',
-    'Video Jingle',
-    'Working Times Management',
-    'Campaign',
-  ],
-  Reporting: ['Recording', 'Report'],
+  operator: ['Channel', 'Video Jingle', 'Working Times Management', 'Campaign'],
+  reporting: ['Recording', 'Report'],
 };
