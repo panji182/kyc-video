@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-import { sidebarOpenedContext } from '@/components/template/Layouts/AdminLayout';
+import { adminLayoutContext } from '@/components/template/Layouts/AdminLayout';
 import styles from './index.styles';
 
 const CardStatistic = dynamic(
@@ -47,6 +47,11 @@ const dummyStatistic: StatisticProps[] = [
     title: 'Service Level :',
     value: '60%',
     colour: 4,
+  },
+  {
+    title: 'Abandon Rate :',
+    value: '10%',
+    colour: 5,
   },
   {
     title: 'Abandon Rate :',
@@ -111,10 +116,19 @@ const dummyRealtime: RealtimeProps[] = [
     colour: 'error',
     icon: 'android',
   },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
 ];
 
 const DashboardPage = () => {
-  const { sidebarOpened } = useContext(sidebarOpenedContext);
+  const { sidebarOpened } = useContext(adminLayoutContext);
   const [open, setOpen] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<string>('');
   console.log(120, selectedId);
@@ -123,7 +137,7 @@ const DashboardPage = () => {
     [sidebarOpened]
   );
   const realtimeBreakPoint = useMemo(
-    () => (sidebarOpened ? 4 : 3),
+    () => (sidebarOpened ? 3 : 2),
     [sidebarOpened]
   );
   const handleClick = (id: string) => {
@@ -140,7 +154,7 @@ const DashboardPage = () => {
       >
         Today Statistic
       </Typography>
-      <Grid container spacing={2} sx={{ marginBottom: toRem(32) }}>
+      <Grid container spacing={2}>
         {dummyStatistic.map((d: StatisticProps, index) => (
           <Grid
             key={`statistic${index}`}

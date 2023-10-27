@@ -58,6 +58,9 @@ type Props = {
   value: any;
   // eslint-disable-next-line no-unused-vars
   onChange: (e: any) => void;
+  // eslint-disable-next-line no-unused-vars
+  onBlur?: (e: any) => void;
+  error?: boolean;
   sx?: any;
   isMultipleSelect?: boolean;
   isFormInput?: boolean;
@@ -71,6 +74,7 @@ const SelectComp = ({
   onChange,
   isMultipleSelect = false,
   isFormInput = false,
+  error = false,
   ...props
 }: Props) => {
   const theme = useTheme();
@@ -157,19 +161,25 @@ const SelectComp = ({
   };
 
   return !isFormInput ? (
-    <FormControlStyle>
-      <InputLabel {...usedId}>{label}</InputLabel>
+    <FormControlStyle error={error}>
+      <InputLabel {...usedId} sx={styles.textLabel}>
+        {label}
+      </InputLabel>
       {renderSelectType()}
     </FormControlStyle>
   ) : (
     <FormControlStyle
+      error={error}
       sx={{
         '& .MuiOutlinedInput-notchedOutline legend': {
           display: 'none',
         },
       }}
     >
-      <FormLabel {...usedId} sx={styles.bottomSpace}>
+      <FormLabel
+        {...usedId}
+        sx={{ ...styles.textLabel, ...styles.bottomSpace }}
+      >
         {label}
       </FormLabel>
       {renderSelectType()}

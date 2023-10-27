@@ -176,6 +176,7 @@ const ChannelPage = () => {
       <Table
         data={dataRows}
         fieldOrderBy={'channel'}
+        rowsPerpageCount={25}
         headCells={headCells}
         idActionName="id"
         onEditAction={handleEditData}

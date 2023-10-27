@@ -277,6 +277,7 @@ const HolidayPage = () => {
       <Table
         data={data}
         fieldOrderBy={''}
+        rowsPerpageCount={25}
         headCells={headCells}
         idActionName="id"
         onQuickSearch={handleQuickSearch}

@@ -27,6 +27,9 @@ type Props = {
   placeholder?: string;
   // eslint-disable-next-line no-unused-vars
   onChange: (e: any) => void;
+  // eslint-disable-next-line no-unused-vars
+  onBlur?: (e: any) => void;
+  error?: boolean;
   sx?: any;
 };
 

@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { updatedDataContext } from '@/components/template/ServerConfigurationPage';
 import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
-// import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 import { toRem } from '@/helpers/globalFunctions';
 import { ServerConfiguration } from '@/types/template/ServerConfiguration';
@@ -17,6 +19,11 @@ import styles from './index.styles';
 
 const Modal = dynamic(() => import('@/components/atoms/Modal'));
 const ButtonComp = dynamic(() => import('@/components/atoms/Button'));
+
+const validationSchema = yup.object({
+  section: yup.string().max(30, 'Too Long!').required('Required !'),
+  key: yup.string().max(30, 'Too Long!').required('Required !'),
+});
 
 const initServerConfigInput: ServerConfiguration = {
   section: '',
@@ -38,41 +45,53 @@ const PopupFormConfiguration = ({
   onSubmited,
   onClosePopup,
 }: Props) => {
-  const [serverConfigInput, setServerConfigInput] =
-    useState<ServerConfiguration>(initServerConfigInput);
+  // const [serverConfigInput, setServerConfigInput] =
+  //   useState<ServerConfiguration>(initServerConfigInput);
   const { editedData } = useContext(updatedDataContext);
+
+  const formik = useFormik<ServerConfiguration>({
+    initialValues: initServerConfigInput,
+    validationSchema: validationSchema,
+    onSubmit: async values => {
+      onSubmited({ ...values });
+      onClosePopup();
+      formik.resetForm();
+    },
+  });
 
   useEffect(() => {
     mode === 'Edit' &&
       Object.keys(editedData).length > 0 &&
       editedData.section &&
-      setServerConfigInput({
+      formik.setValues({
         section: editedData.section,
         key: editedData.key,
         value: editedData.value,
       });
-    mode === 'New' && setServerConfigInput({ ...initServerConfigInput });
+    // setServerConfigInput({
+    //   section: editedData.section,
+    //   key: editedData.key,
+    //   value: editedData.value,
+    // });
+    mode === 'New' && formik.setValues({ ...initServerConfigInput });
   }, [mode, editedData]);
 
-  const handleServerConfigInput = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { value, name } = e.target;
+  // const handleServerConfigInput = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  // ) => {
+  //   const { value, name } = e.target;
 
-    setServerConfigInput((prevState: ServerConfiguration) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  //   setServerConfigInput((prevState: ServerConfiguration) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+  // };
 
   const handleCancel = () => {
     onClosePopup();
   };
 
-  const handleSubmit = () => {
-    onSubmited({ ...serverConfigInput });
-    onClosePopup();
-  };
+  // const handleSubmit = () => {};
 
   return (
     <Modal
@@ -86,7 +105,7 @@ const PopupFormConfiguration = ({
         },
       }}
     >
-      <>
+      <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={1} sx={styles.wrapBottomSpace}>
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <FormControl sx={styles.fullWidth}>
@@ -100,10 +119,18 @@ const PopupFormConfiguration = ({
                 id="section"
                 name="section"
                 fullWidth
-                value={serverConfigInput.section}
+                value={formik.values.section}
                 variant="outlined"
-                onChange={e => handleServerConfigInput(e)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.section && Boolean(formik.errors.section)}
+                // onChange={e => handleServerConfigInput(e)}
               />
+              {formik.errors.section && formik.touched.section ? (
+                <Typography sx={styles.textError}>
+                  {formik.errors.section}
+                </Typography>
+              ) : null}
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -118,10 +145,18 @@ const PopupFormConfiguration = ({
                 id="key"
                 name="key"
                 fullWidth
-                value={serverConfigInput.key}
+                value={formik.values.key}
                 variant="outlined"
-                onChange={e => handleServerConfigInput(e)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.key && Boolean(formik.errors.key)}
+                // onChange={e => handleServerConfigInput(e)}
               />
+              {formik.errors.key && formik.touched.key ? (
+                <Typography sx={styles.textError}>
+                  {formik.errors.key}
+                </Typography>
+              ) : null}
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -136,9 +171,11 @@ const PopupFormConfiguration = ({
                 id="value"
                 name="value"
                 fullWidth
-                value={serverConfigInput.value}
+                value={formik.values.value}
                 variant="outlined"
-                onChange={e => handleServerConfigInput(e)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                // onChange={e => handleServerConfigInput(e)}
               />
             </FormControl>
           </Grid>
@@ -150,9 +187,14 @@ const PopupFormConfiguration = ({
             color="error"
             onClick={handleCancel}
           />
-          <ButtonComp label="OK" variant="contained" onClick={handleSubmit} />
+          <ButtonComp
+            label="OK"
+            type="submit"
+            variant="contained"
+            // onClick={handleSubmit}
+          />
         </Stack>
-      </>
+      </form>
     </Modal>
   );
 };

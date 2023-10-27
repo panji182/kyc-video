@@ -167,7 +167,12 @@ const ViewUsersPage = () => {
           onClick={handleShowAdvancedSearch}
         />
       </Stack>
-      <Table data={dataRows} fieldOrderBy={'channel'} headCells={headCells} />
+      <Table
+        data={dataRows}
+        fieldOrderBy={'channel'}
+        rowsPerpageCount={25}
+        headCells={headCells}
+      />
       <PopupAdvancedSearchDailySummary
         open={open}
         onSearched={handleSearchResult}

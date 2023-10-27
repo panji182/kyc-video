@@ -206,6 +206,7 @@ const RecordingPage = () => {
       <Table
         data={dataRows}
         fieldOrderBy={'agentId'}
+        rowsPerpageCount={25}
         headCells={headCells}
         onClickData={handleClickData}
         customActionButton={(fields: any, index?: number) => (

@@ -231,6 +231,7 @@ const WorkHourPage = () => {
       <Table
         data={dataRows}
         fieldOrderBy={'workhourname'}
+        rowsPerpageCount={25}
         headCells={headCells}
         idActionName="id"
         onEditAction={handleEditData}

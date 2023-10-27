@@ -193,6 +193,7 @@ const VideoJinglePage = () => {
       <Table
         data={dataRows}
         fieldOrderBy={'jinglename'}
+        rowsPerpageCount={25}
         headCells={headCells}
         idActionName="id"
         onEditAction={handleEditData}

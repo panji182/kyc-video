@@ -1,9 +1,15 @@
 import { toEm, toRem } from '@/helpers/globalFunctions';
 
 const styles = {
-  bottomSpace: { mb: toRem(8) },
-  errorConfirm: {
-    marginLeft: toRem(8),
+  buttonDeleteRowBox: {
+    position: 'absolute',
+    right: '-38px',
+    top: '49%',
+  },
+  buttonDeleteRowBoxResponsive: {
+    position: 'absolute',
+    right: '-22px',
+    top: '40%',
   },
   textError: {
     marginBottom: toRem(8),

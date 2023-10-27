@@ -16,7 +16,7 @@ import * as yup from 'yup';
 
 import { useGetAuthLoginMutation } from '@/services/Login';
 
-import { toEm, toRem, encrypt, encryptString } from '@/helpers/globalFunctions';
+import { toEm, toRem, encrypt, encryptSHA256 } from '@/helpers/globalFunctions';
 
 import { Login } from '@/types/organisms/login';
 import styles, { LoginButton, BpIcon, BpCheckedIcon } from './index.styles';
@@ -56,7 +56,8 @@ const LoginForm = ({ users, secretKey }: Login) => {
     validationSchema: validationSchema,
     onSubmit: async values => {
       const enteredUser = users.find(d => d.username === values.username);
-      if (enteredUser && enteredUser.password === values.password) {
+      const encPassword = encryptSHA256(values.password);
+      if (enteredUser && enteredUser.password === encPassword) {
         const authInfos = {
           username: enteredUser.username,
           isVerified: 'verified',
@@ -67,7 +68,7 @@ const LoginForm = ({ users, secretKey }: Login) => {
         try {
           const resp: any = await authLogin({
             username: values.username,
-            password: encryptString(values.password, secretKey),
+            password: encPassword,
           }).unwrap();
           setCookie('token', resp.token);
         } catch (err: any) {}

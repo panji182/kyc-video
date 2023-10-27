@@ -30,9 +30,7 @@ const CardStatistic = ({ title, value, colour }: Props) => {
   return (
     <Box sx={{ ...styles.cardStatistic, ...colourUsed }}>
       <Stack
-        sx={{
-          height: '100%',
-        }}
+        sx={styles.innerWrap}
         justifyContent="center"
         alignItems="center"
         spacing={2}

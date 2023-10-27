@@ -21,6 +21,8 @@ type Props = {
   ampm?: boolean;
   format?: string;
   value: any;
+  minTime?: Dayjs;
+  maxTime?: Dayjs;
   // eslint-disable-next-line no-unused-vars
   onChange: (e: Dayjs | null) => void;
   sx?: any;

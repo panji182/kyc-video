@@ -98,3 +98,8 @@ export const userMenuAccess: UserMenuAccess = {
   operator: ['Channel', 'Video Jingle', 'Working Times Management', 'Campaign'],
   reporting: ['Recording', 'Report'],
 };
+
+export const optionsVideoJingleType = {
+  video: 'video',
+  imageAndAudio: 'imageaudio',
+};

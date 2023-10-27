@@ -1,14 +1,15 @@
-import { toRem } from '@/helpers/globalFunctions';
+import { toEm, toRem } from '@/helpers/globalFunctions';
 
 const styles = {
   frame: {
     position: 'relative',
-    height: '138px',
+    height: '112px',
     borderRadius: '15px',
     overflow: 'hidden',
     boxShadow: '0px 4px 4px #00000040',
     padding: toRem(10),
     cursor: 'pointer',
+    mt: toRem(8),
   },
 
   frameWarning: {
@@ -59,9 +60,8 @@ const styles = {
   textWrapper: {
     textAlign: 'center',
     fontFamily: 'myArimoBoldFont, Helvetica',
-    fontWeight: 700,
     color: '#013a90',
-    fontSize: '18px',
+    fontSize: toEm(13),
     letterSpacing: 0,
     lineHeight: 'normal',
     whiteSpace: 'nowrap',
@@ -72,7 +72,7 @@ const styles = {
     fontFamily: '"Segoe UI Regular", Helvetica',
     fontWeight: 400,
     color: '#060606',
-    fontSize: '15px',
+    fontSize: toEm(13),
     letterSpacing: 0,
     lineHeight: 'normal',
   },
@@ -81,21 +81,24 @@ const styles = {
     width: '100%',
     textAlign: 'center',
     fontFamily: 'myArimoBoldFont, Helvetica',
-    fontWeight: 700,
     color: '#060606',
-    fontSize: '18px',
+    fontSize: toEm(15),
     letterSpacing: 0,
     lineHeight: 'normal',
     whiteSpace: 'nowrap',
-    marginBottom: toRem(40),
+    mb: toRem(26),
   },
 
   vaadinMobile: {
     position: 'absolute',
-    width: '24px',
-    height: '24px',
+    width: '18px',
+    height: '18px',
     top: '7%',
     left: '3%',
+
+    '& svg': {
+      width: '100%',
+    },
   },
 };
 

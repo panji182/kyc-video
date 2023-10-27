@@ -200,6 +200,7 @@ const ViewUsersPage = () => {
       <Table
         data={dataRows}
         fieldOrderBy={'firstName'}
+        rowsPerpageCount={25}
         headCells={headCells}
         idActionName="id"
         onEditAction={handleEditData}

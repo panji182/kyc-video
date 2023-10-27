@@ -226,6 +226,7 @@ const ViewUsersPage = () => {
       <Table
         data={dataRows}
         fieldOrderBy={'conversationId'}
+        rowsPerpageCount={25}
         headCells={headCells}
       />
       <PopupAdvancedSearchKyc

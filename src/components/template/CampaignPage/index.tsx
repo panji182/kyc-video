@@ -120,7 +120,12 @@ const CampaignPage = () => {
           onClick={handleOnClick}
         />
       </Stack>
-      <Table data={dataRows} fieldOrderBy={'name'} headCells={headCells} />
+      <Table
+        data={dataRows}
+        fieldOrderBy={'name'}
+        rowsPerpageCount={25}
+        headCells={headCells}
+      />
       <PopupFormAddCampaign
         open={open}
         onSubmited={handleSubmit}

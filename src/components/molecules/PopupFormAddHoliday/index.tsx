@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
 import Typography from '@mui/material/Typography';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 import { toRem } from '@/helpers/globalFunctions';
 import {
@@ -19,12 +19,13 @@ import {
 
 import styles from './index.styles';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 const Modal = dynamic(() => import('@/components/atoms/Modal'));
 const ButtonComp = dynamic(() => import('@/components/atoms/Button'));
 const TextInput = dynamic(() => import('@/components/atoms/TextInput'));
-const DatePicker = dynamic(() => import('@/components/atoms/DatePicker'));
+const HolidayInputs = dynamic(
+  () => import('@/components/atoms/Holiday/HolidayInputs')
+);
 
 const initHolidayInput: HolidayList = {
   id: '',
@@ -47,114 +48,107 @@ type Props = {
   onClosePopup: () => void;
 };
 
+const validationSchema = yup.object({
+  holiday: yup.object().shape({
+    holidayname: yup.string().max(30, 'Too Long!').required('Required !'),
+  }),
+  detailHolidays: yup.array().of(
+    yup.object().shape({
+      name: yup.string().max(30, 'Too Long!').required('Required !'),
+      date: yup.object().required('Required !'),
+    })
+  ),
+});
+
 const PopupFormAddHoliday = ({
   open,
   editedData,
   onSubmited,
   onClosePopup,
 }: Props) => {
-  const [holidayInput, setHolidayInput] =
-    useState<HolidayList>(initHolidayInput);
-  const [detailHolidayInput, setDetailHolidayInput] =
-    useState<DetailHolidayList[]>(initDetailHoliday);
+  const formik = useFormik<EditedHolidays>({
+    initialValues: {
+      holiday: {
+        ...initHolidayInput,
+      },
+      detailHolidays: [...initDetailHoliday],
+    },
+    validationSchema: validationSchema,
+    onSubmit: async values => {
+      onSubmited({
+        holiday: values.holiday,
+        detailHolidays: values.detailHolidays,
+      });
+      onClosePopup();
+      formik.resetForm();
+    },
+  });
+  const holidayNameTouched =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    formik.touched.holidayname ?? formik.touched.holiday?.holidayname;
 
   useEffect(() => {
     if (editedData) {
-      setHolidayInput(editedData.holiday);
-      setDetailHolidayInput(() => {
-        const detail: DetailHolidayList[] = editedData.detailHolidays
-          ? editedData.detailHolidays.map(det => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              const date: string = det.date || '';
-              const dateEdited = date.split('-');
-              return {
-                ...det,
-                date: dayjs()
-                  .set('date', +dateEdited[2])
-                  .set('month', +dateEdited[1])
-                  .set('year', +dateEdited[0]),
-              };
-            })
-          : [
-              {
-                id: '',
-                name: '',
-                date: null,
-              },
-            ];
-        return detail;
+      const detail: DetailHolidayList[] = editedData.detailHolidays
+        ? editedData.detailHolidays.map(det => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const date: string = det.date || '';
+            const dateEdited = date.split('-');
+            return {
+              ...det,
+              date: dayjs()
+                .set('date', +dateEdited[2])
+                .set('month', +dateEdited[1])
+                .set('year', +dateEdited[0]),
+            };
+          })
+        : [
+            {
+              id: '',
+              name: '',
+              date: null,
+            },
+          ];
+      formik.setValues({
+        holiday: editedData.holiday,
+        detailHolidays: [...detail],
       });
     } else {
-      setHolidayInput(initHolidayInput);
-      setDetailHolidayInput(initDetailHoliday);
+      formik.resetForm();
     }
   }, [editedData]);
 
-  // const handleHolidayInput = (
-  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  // ) => {
-  //   const { value, name } = e.target;
-
-  //   setHolidayInput((prevState: HolidayList) => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
-
   const handleHolidayInput = (value: string, name: string) => {
-    setHolidayInput((prevState: HolidayList) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    formik.setValues((prevState: EditedHolidays) => {
+      const holiday = { ...prevState.holiday };
+      return {
+        ...prevState,
+        holiday: {
+          ...holiday,
+          [name]: value,
+        },
+      };
+    });
   };
 
   const handleClear = () => {
-    setHolidayInput({ ...initHolidayInput });
-    setDetailHolidayInput(initDetailHoliday);
-  };
-
-  const handleDetailHolidayInput = (
-    index: number,
-    value: string | Dayjs | null,
-    name: string
-  ) => {
-    setDetailHolidayInput((prevState: DetailHolidayList[]) => {
-      const arr = [...prevState];
-      arr[index] = {
-        ...arr[index],
-        [name]: value,
-      };
-      return arr;
-    });
-  };
-
-  const handleSubmit = () => {
-    onSubmited({
-      holiday: holidayInput,
-      detailHolidays: detailHolidayInput,
-    });
-    handleClear();
-    onClosePopup();
+    formik.resetForm();
   };
 
   const handleAddDetailHoliday = () => {
-    setDetailHolidayInput((prevState: DetailHolidayList[]) => {
-      const arr = [...prevState];
-      arr.push({
+    formik.setValues((prevState: EditedHolidays) => {
+      const detailHolidays = [...prevState.detailHolidays];
+      detailHolidays.push({
         id: '',
         name: '',
         date: null,
       });
-      return arr;
-    });
-  };
-
-  const handleDeleteDetailHoliday = (index: number) => {
-    setDetailHolidayInput((prevState: DetailHolidayList[]) => {
-      const arr = [...prevState];
-      arr.splice(index, 1);
-      return arr;
+      return {
+        ...prevState,
+        detailHolidays,
+      };
     });
   };
 
@@ -165,7 +159,7 @@ const PopupFormAddHoliday = ({
       onClose={() => onClosePopup()}
       sx={(theme: any) => ({
         '&.MuiModal-root>.MuiBox-root': {
-          width: toRem(750),
+          width: toRem(500),
         },
         [theme.breakpoints.down('md')]: {
           '&.MuiModal-root>.MuiBox-root': {
@@ -174,108 +168,61 @@ const PopupFormAddHoliday = ({
         },
       })}
     >
-      <>
+      <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={1} sx={{ marginBottom: toRem(16) }}>
-          <Grid item xs={12} sm={12} md={4} lg={4}>
-            <TextInput
-              id="id"
-              label="Id"
-              formInput={true}
-              placeholder="Enter Id"
-              value={holidayInput.id}
-              variant="outlined"
-              onChange={val => handleHolidayInput(val, 'id')}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={4} lg={4}>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
             <TextInput
               id="holidayname"
               label="Holiday Name"
               formInput={true}
               placeholder="Enter Holiday Name"
-              value={holidayInput.holidayname}
+              value={formik.values.holiday.holidayname}
               variant="outlined"
+              onBlur={formik.handleBlur}
+              error={
+                holidayNameTouched &&
+                Boolean(formik.errors.holiday?.holidayname)
+              }
               onChange={val => handleHolidayInput(val, 'holidayname')}
             />
+            {formik.errors.holiday?.holidayname && holidayNameTouched ? (
+              <Typography sx={styles.textError}>
+                {formik.errors.holiday?.holidayname}
+              </Typography>
+            ) : null}
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <Typography>Add Holidays</Typography>
           </Grid>
-          {(detailHolidayInput || []).map((detailHoliday, index) => (
-            <>
-              <Grid item xs={12} sm={12} md={4} lg={4}>
-                <TextInput
-                  id="id"
-                  label="Id"
-                  formInput={true}
-                  placeholder="Enter Id"
-                  value={detailHoliday.id}
-                  variant="outlined"
-                  onChange={val => handleDetailHolidayInput(index, val, 'id')}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={4} lg={4}>
-                <TextInput
-                  id="name"
-                  label="Name"
-                  formInput={true}
-                  placeholder="Enter Name"
-                  value={detailHoliday.name}
-                  variant="outlined"
-                  onChange={val => handleDetailHolidayInput(index, val, 'name')}
-                />
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={4}
-                lg={4}
-                sx={styles.containerButtonDeleteRow}
-              >
-                <FormControl
-                  sx={{
-                    margin: toRem(8),
-                    maxWidth: toRem(200),
-                  }}
-                >
-                  <FormLabel sx={{ mb: toRem(16) }}>Date</FormLabel>
-                  <DatePicker
-                    value={detailHoliday.date}
-                    onChange={newValue =>
-                      handleDetailHolidayInput(index, newValue, 'date')
-                    }
-                    slotProps={{ popper: { placement: 'top-start' } }}
-                  />
-                </FormControl>
-                {index !== 0 && (
-                  <Box
-                    sx={(theme: any) => ({
-                      ...styles.buttonDeleteRowBox,
-                      [theme.breakpoints.down('md')]: {
-                        ...styles.buttonDeleteRowBoxResponsive,
-                      },
-                    })}
-                  >
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      sx={{
-                        height: '100%',
-                        marginTop: toRem(16),
-                      }}
-                    >
-                      <ButtonComp
-                        buttonIcon={<DeleteIcon />}
-                        onClick={() => handleDeleteDetailHoliday(index)}
-                        sx={{ color: '#d32f2f' }}
-                      />
-                    </Stack>
-                  </Box>
-                )}
-              </Grid>
-            </>
-          ))}
+          {(formik.values.detailHolidays || []).map((detailHoliday, index) => {
+            let detailHolidaysErrors: any;
+            if (formik.errors.detailHolidays) {
+              detailHolidaysErrors = formik.errors.detailHolidays[index];
+            }
+            let detailHolidaysTouched: any;
+            if (formik.touched.detailHolidays) {
+              detailHolidaysTouched = formik.touched.detailHolidays[index];
+            }
+            const nameError =
+              detailHolidaysErrors?.name && detailHolidaysTouched?.name
+                ? detailHolidaysErrors.name
+                : '';
+            const dateError =
+              detailHolidaysErrors?.date && detailHolidaysTouched?.date
+                ? detailHolidaysErrors.date
+                : '';
+            return (
+              <HolidayInputs
+                key={index}
+                index={index}
+                name={detailHoliday.name}
+                date={detailHoliday.date}
+                nameError={nameError}
+                dateError={dateError}
+                setValues={formik.setValues}
+              />
+            );
+          })}
         </Grid>
         <Stack
           direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
@@ -298,14 +245,10 @@ const PopupFormAddHoliday = ({
               onClick={handleClear}
               sx={{ marginRight: toRem(16) }}
             />
-            <ButtonComp
-              label="Submit"
-              variant="contained"
-              onClick={handleSubmit}
-            />
+            <ButtonComp label="Submit" type="submit" variant="contained" />
           </Box>
         </Stack>
-      </>
+      </form>
     </Modal>
   );
 };

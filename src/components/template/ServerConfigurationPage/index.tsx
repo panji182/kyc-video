@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, createContext, useRef } from 'react';
+import { useState, useEffect, createContext, useRef, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -12,6 +12,7 @@ import {
   useAddNewServerConfigurationMutation,
   useUpdateServerConfigurationMutation,
 } from '@/services/ServerConfiguration';
+import { adminLayoutContext } from '@/components/template/Layouts/AdminLayout';
 
 const CollapsableTable = dynamic(
   () => import('@/components/atoms/CollapsableTable')
@@ -89,6 +90,7 @@ const ServerConfiguration = () => {
   const [formMode, setFormMode] = useState<string>('New');
   const [selectedData, setSelectedData] = useState<any[]>([]);
   const [resetTable, setResetTable] = useState<number>(0);
+  const { setAlertPage } = useContext(adminLayoutContext);
 
   const [addServerConfiguration] = useAddNewServerConfigurationMutation();
   const [updateServerConfiguration] = useUpdateServerConfigurationMutation();
@@ -101,9 +103,19 @@ const ServerConfiguration = () => {
       key: d.optionname,
       value: d.optionvalue,
     }));
-    setDatas(mappedRows);
-    originalData.current = [...mappedRows];
+    if (mappedRows.length > 0) {
+      setDatas(mappedRows);
+      originalData.current = [...mappedRows];
+    }
   }, [dataRows]);
+
+  useEffect(() => {
+    if (!isEqual(datas, originalData.current)) {
+      setAlertPage(true);
+    } else {
+      setAlertPage(false);
+    }
+  }, [datas]);
 
   const handleOnDelete = () => {
     setConfirmDelete(true);
@@ -219,7 +231,9 @@ const ServerConfiguration = () => {
       result.push(d.name);
       return result;
     }, []);
-    setDatas(datas.filter(d => !selectDelete.includes(d.name)));
+    setDatas((prevState: any[]) =>
+      prevState.filter((d: any) => !selectDelete.includes(d.name))
+    );
     setResetTable(Math.random());
   };
 
@@ -269,6 +283,7 @@ const ServerConfiguration = () => {
           key={resetTable}
           data={datas}
           fieldOrderBy={'name'}
+          rowsPerpageCount={25}
           headCells={headCells}
           onGetSelectedData={handleGetSelectedData}
         />

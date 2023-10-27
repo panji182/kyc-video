@@ -18,12 +18,12 @@ import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
+import debounce from 'lodash/debounce';
 
 import { toRem } from '@/helpers/globalFunctions';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-import useDebounce from '@/hooks/Debounce';
 
 import {
   HeadCell,
@@ -78,7 +78,6 @@ function stableSort<T>(
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { setSearch } = props;
-  const { debouncing } = useDebounce(500);
 
   return (
     <Toolbar
@@ -113,9 +112,9 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           },
         }}
         onChange={e =>
-          debouncing(() => {
+          debounce(() => {
             setSearch(e.target.value);
-          })
+          }, 500)
         }
       />
     </Toolbar>
@@ -179,6 +178,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 type Props = {
   data: any[];
   fieldOrderBy: string;
+  rowsPerpageCount: number;
   headCells: HeadCell[];
   idActionName?: string;
   showEditor?: boolean;
@@ -199,6 +199,7 @@ type Props = {
 const TableComp = ({
   data,
   fieldOrderBy,
+  rowsPerpageCount,
   headCells,
   idActionName,
   showEditor = true,
@@ -212,7 +213,7 @@ const TableComp = ({
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<any>(fieldOrderBy);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerpageCount);
   const [search, setSearch] = React.useState<string>('');
 
   const handleRequestSort = (
@@ -286,61 +287,78 @@ const TableComp = ({
               isSortable={isSortable}
             />
             <TableBody>
-              {visibleRows.map((row, index) => (
-                <TableRow hover key={index}>
-                  {headCells.map(cell => {
-                    const cellValue = cell.id ? row[cell.id.toString()] : null;
+              {visibleRows.length > 0 ? (
+                visibleRows.map((row, index) => (
+                  <TableRow hover key={index}>
+                    {headCells.map(cell => {
+                      const cellValue = cell.id
+                        ? row[cell.id.toString()]
+                        : null;
 
-                    return cell.show ? (
-                      <TableCell
-                        key={cell.id}
-                        align={cell.numeric ? 'right' : 'left'}
-                        onClick={() => handleClickData(row)}
-                        sx={
-                          onClickData
-                            ? {
-                                cursor: 'pointer',
-                              }
-                            : {}
-                        }
-                      >
-                        {cellValue ?? '-'}
+                      return cell.show ? (
+                        <TableCell
+                          key={cell.id}
+                          align={cell.numeric ? 'right' : 'left'}
+                          onClick={() => handleClickData(row)}
+                          sx={
+                            onClickData
+                              ? {
+                                  cursor: 'pointer',
+                                }
+                              : {}
+                          }
+                        >
+                          {cellValue ?? '-'}
+                        </TableCell>
+                      ) : null;
+                    })}
+                    {showEditor && !customActionButton && (
+                      <TableCell key={`editor${index}`} align={'center'}>
+                        <Stack direction="row" spacing={1}>
+                          <IconButton
+                            aria-label="edit"
+                            color="primary"
+                            onClick={() => handleEdit(row)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            aria-label="delete"
+                            color="primary"
+                            onClick={() => {
+                              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                              // @ts-ignore
+                              handleDelete(row[idActionName]);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Stack>
                       </TableCell>
-                    ) : null;
-                  })}
-                  {showEditor && !customActionButton && (
-                    <TableCell key={`editor${index}`} align={'center'}>
-                      <Stack direction="row" spacing={1}>
-                        <IconButton
-                          aria-label="edit"
-                          color="primary"
-                          onClick={() => handleEdit(row)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          color="primary"
-                          onClick={() => {
-                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                            // @ts-ignore
-                            handleDelete(row[idActionName]);
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Stack>
-                    </TableCell>
-                  )}
-                  {customActionButton && (
-                    <TableCell key={`action${index}`} align={'center'}>
-                      <Stack direction="row" spacing={1}>
-                        {customActionButton(row, index)}
-                      </Stack>
-                    </TableCell>
-                  )}
+                    )}
+                    {customActionButton && (
+                      <TableCell key={`action${index}`} align={'center'}>
+                        <Stack direction="row" spacing={1}>
+                          {customActionButton(row, index)}
+                        </Stack>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    colSpan={
+                      showEditor || customActionButton
+                        ? headCells.length + 1
+                        : headCells.length
+                    }
+                  >
+                    Data not found
+                  </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>

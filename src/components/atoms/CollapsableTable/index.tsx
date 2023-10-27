@@ -167,6 +167,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 type Props = {
   data: ServerConfigurationList[];
   fieldOrderBy: string;
+  rowsPerpageCount: number;
   headCells: HeadCell[];
   // eslint-disable-next-line no-unused-vars
   onGetSelectedData: (selData: any[]) => void;
@@ -175,6 +176,7 @@ type Props = {
 const CollapsableTable = ({
   data,
   fieldOrderBy,
+  rowsPerpageCount,
   headCells,
   onGetSelectedData,
 }: Props) => {
@@ -183,7 +185,7 @@ const CollapsableTable = ({
   const [orderBy, setOrderBy] = React.useState<any>(fieldOrderBy);
   const [selected, setSelected] = React.useState<any[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerpageCount);
   const [collapsedRow, setCollapsedRow] = React.useState<any>({});
   const countedSelectedData = React.useMemo(
     () => selected.filter(d => !!d.section),
@@ -345,67 +347,75 @@ const CollapsableTable = ({
               rowCount={groupedData.length}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.name);
-                const labelId = `enhanced-table-checkbox-${index}`;
-                const sectionValue = (row['section'] || '').toString();
-                const nameValue = row['name'].toString();
-                const showRow = collapsedRow[sectionValue] ?? true;
+              {visibleRows.length > 0 ? (
+                visibleRows.map((row, index) => {
+                  const isItemSelected = isSelected(row.name);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+                  const sectionValue = (row['section'] || '').toString();
+                  const nameValue = row['name'].toString();
+                  const showRow = collapsedRow[sectionValue] ?? true;
 
-                return sectionValue === '' || showRow ? (
-                  <TableRow
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.name}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        onChange={event =>
-                          handleClick(event, nameValue, sectionValue)
-                        }
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-                    {headCells.map(cell => {
-                      const cellValue = cell.id
-                        ? row[cell.id.toString()]
-                        : null;
-                      return cell.show ? (
-                        <TableCell
-                          key={`${cell.id}${index}`}
-                          align={cell.numeric ? 'right' : 'left'}
-                          sx={cell.id === 'name' ? styles.tableCell : {}}
-                        >
-                          {cell.id === 'name' && sectionValue === '' && (
-                            <>
-                              {collapsedRow[nameValue] ? (
-                                <ArrowDropDownIcon
-                                  onClick={() => handleRowCollapse(nameValue)}
-                                  sx={styles.collapsedButton}
-                                />
-                              ) : (
-                                <ArrowRightIcon
-                                  onClick={() => handleRowCollapse(nameValue)}
-                                  sx={styles.collapsedButton}
-                                />
-                              )}
-                            </>
-                          )}
-                          <Typography onClick={() => handleGetData(row)}>
-                            {cellValue ?? '-'}
-                          </Typography>
-                        </TableCell>
-                      ) : null;
-                    })}
-                  </TableRow>
-                ) : null;
-              })}
+                  return sectionValue === '' || showRow ? (
+                    <TableRow
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.name}
+                      selected={isItemSelected}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          onChange={event =>
+                            handleClick(event, nameValue, sectionValue)
+                          }
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      </TableCell>
+                      {headCells.map(cell => {
+                        const cellValue = cell.id
+                          ? row[cell.id.toString()]
+                          : null;
+                        return cell.show ? (
+                          <TableCell
+                            key={`${cell.id}${index}`}
+                            align={cell.numeric ? 'right' : 'left'}
+                            sx={cell.id === 'name' ? styles.tableCell : {}}
+                          >
+                            {cell.id === 'name' && sectionValue === '' && (
+                              <>
+                                {collapsedRow[nameValue] ? (
+                                  <ArrowDropDownIcon
+                                    onClick={() => handleRowCollapse(nameValue)}
+                                    sx={styles.collapsedButton}
+                                  />
+                                ) : (
+                                  <ArrowRightIcon
+                                    onClick={() => handleRowCollapse(nameValue)}
+                                    sx={styles.collapsedButton}
+                                  />
+                                )}
+                              </>
+                            )}
+                            <Typography onClick={() => handleGetData(row)}>
+                              {cellValue ?? '-'}
+                            </Typography>
+                          </TableCell>
+                        ) : null;
+                      })}
+                    </TableRow>
+                  ) : null;
+                })
+              ) : (
+                <TableRow>
+                  <TableCell align="center" colSpan={headCells.length}>
+                    Data not found
+                  </TableCell>
+                </TableRow>
+              )}
               {emptyRows > 0 && (
                 <TableRow>
                   <TableCell colSpan={6} />

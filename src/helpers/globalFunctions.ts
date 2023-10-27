@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js';
+import sha256 from 'crypto-js/sha256';
 
 export const toRem = (pxValue: number) => {
   // maesurement for spacing
@@ -20,6 +21,10 @@ export const encrypt = (obj: any, secretKey: string) => {
 
 export const encryptString = (str: string, secretKey: string) => {
   return CryptoJS.AES.encrypt(str, secretKey).toString();
+};
+
+export const encryptSHA256 = (str: string) => {
+  return sha256(str).toString();
 };
 
 export const decrypt = (cipherText: string, secretKey: string) => {

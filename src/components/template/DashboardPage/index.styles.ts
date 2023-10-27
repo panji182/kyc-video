@@ -5,14 +5,15 @@ const styles = {
     fontFamily: 'myArimoRegularFont',
     fontWeight: 600,
     color: '#3150A0',
-    mb: toRem(16),
   },
   titleStatistic: {
-    fontSize: toEm(25),
-    mt: toRem(16),
+    fontSize: toEm(30),
+    mb: 0,
   },
   titleRealtime: {
     fontSize: toEm(30),
+    mt: toRem(16),
+    mb: 0,
   },
 };
 

@@ -46,7 +46,7 @@ import { paths, userMenuAccess } from '@/consts';
 import { UserMenuAccess } from '@/types/const';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 
-export const sidebarOpenedContext = createContext<any>({});
+export const adminLayoutContext = createContext<any>({});
 
 const menuLists = [
   {
@@ -177,6 +177,7 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
   );
   const [search, setSearch] = useState<string>('');
   console.log(search);
+  const [alertPage, setAlertPage] = useState<boolean>(false);
   const auth: string = getCookie('auth') || '';
   const authCookie = auth !== '' ? decrypt(auth, secretKey) : null;
   const [currentUserInfo, setCurrentUserInfo] = useState({
@@ -192,6 +193,18 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
   useEffect(() => {
     auth !== '' && setCurrentUserInfo(authCookie);
   }, [auth]);
+
+  const handleBeforeUnload = (e: any) => {
+    e.returnValue = '';
+  };
+
+  useEffect(() => {
+    alertPage && window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      alertPage &&
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [alertPage]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -210,7 +223,13 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
   };
 
   const handleRedirect = (link: string | null) => {
-    link && router.push(link);
+    if (alertPage) {
+      if (confirm('Changes you made may not be saved.')) {
+        link && router.push(link);
+      }
+    } else {
+      link && router.push(link);
+    }
   };
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -546,13 +565,15 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
       >
         <DrawerHeader />
         <Providers>
-          <sidebarOpenedContext.Provider
+          <adminLayoutContext.Provider
             value={{
               sidebarOpened: open,
+              alertPage,
+              setAlertPage,
             }}
           >
             {children}
-          </sidebarOpenedContext.Provider>
+          </adminLayoutContext.Provider>
         </Providers>
       </Box>
     </Box>
