@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 
 type Props = {
   label?: string;
-  type?: string;
+  type?: 'submit' | 'reset' | 'button' | undefined;
   buttonIcon?: React.ReactNode;
   variant?: 'text' | 'outlined' | 'contained';
   color?:
