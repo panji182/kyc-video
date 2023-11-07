@@ -3,6 +3,7 @@
 import { useState, useMemo, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { adminLayoutContext } from '@/components/template/Layouts/AdminLayout';
@@ -18,8 +19,12 @@ const PopupContent = dynamic(
   () => import('@/components/atoms/Dashboard/PopupContent')
 );
 const Modal = dynamic(() => import('@/components/atoms/Modal'));
+const FilterButton = dynamic(
+  () => import('@/components/atoms/Dashboard/FilterButton')
+);
 
 import { toRem } from '@/helpers/globalFunctions';
+import { FilterDropdown, sortType } from '@/types/atoms/filterButton';
 
 interface StatisticProps {
   title: string;
@@ -47,11 +52,6 @@ const dummyStatistic: StatisticProps[] = [
     title: 'Service Level :',
     value: '60%',
     colour: 4,
-  },
-  {
-    title: 'Abandon Rate :',
-    value: '10%',
-    colour: 5,
   },
   {
     title: 'Abandon Rate :',
@@ -125,6 +125,223 @@ const dummyRealtime: RealtimeProps[] = [
     colour: 'error',
     icon: 'android',
   },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+  {
+    id: '1',
+    title: 'ME445',
+    bitRate: '600Kbps',
+    jitter: '80 ms',
+    frameRate: '46 fps',
+    colour: 'warning',
+    icon: 'devices',
+  },
+  {
+    id: '2',
+    title: 'MP768',
+    bitRate: '3Mbps',
+    jitter: '25 ms',
+    frameRate: '55 fps',
+    colour: 'success',
+    icon: 'devices',
+  },
+  {
+    id: '3',
+    title: 'MS156',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'devices',
+  },
+  {
+    id: '4',
+    title: 'MY648',
+    bitRate: '3Mbps',
+    jitter: '25 ms',
+    frameRate: '55 fps',
+    colour: 'success',
+    icon: 'android',
+  },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+  {
+    id: '1',
+    title: 'ME445',
+    bitRate: '600Kbps',
+    jitter: '80 ms',
+    frameRate: '46 fps',
+    colour: 'warning',
+    icon: 'devices',
+  },
+  {
+    id: '2',
+    title: 'MP768',
+    bitRate: '3Mbps',
+    jitter: '25 ms',
+    frameRate: '55 fps',
+    colour: 'success',
+    icon: 'devices',
+  },
+  {
+    id: '3',
+    title: 'MS156',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'devices',
+  },
+  {
+    id: '4',
+    title: 'MY648',
+    bitRate: '3Mbps',
+    jitter: '25 ms',
+    frameRate: '55 fps',
+    colour: 'success',
+    icon: 'android',
+  },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+  {
+    id: '1',
+    title: 'ME445',
+    bitRate: '600Kbps',
+    jitter: '80 ms',
+    frameRate: '46 fps',
+    colour: 'warning',
+    icon: 'devices',
+  },
+  {
+    id: '2',
+    title: 'MP768',
+    bitRate: '3Mbps',
+    jitter: '25 ms',
+    frameRate: '55 fps',
+    colour: 'success',
+    icon: 'devices',
+  },
+  {
+    id: '3',
+    title: 'MS156',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'devices',
+  },
+  {
+    id: '4',
+    title: 'MY648',
+    bitRate: '3Mbps',
+    jitter: '25 ms',
+    frameRate: '55 fps',
+    colour: 'success',
+    icon: 'android',
+  },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+  {
+    id: '5',
+    title: 'ME545',
+    bitRate: '300Kbps',
+    jitter: '120 ms',
+    frameRate: '60 fps',
+    colour: 'error',
+    icon: 'android',
+  },
+];
+
+const filterDropdown: FilterDropdown[] = [
+  {
+    label: 'Default',
+    value: 'default',
+  },
+  {
+    label: 'Green',
+    value: 'green',
+  },
+  {
+    label: 'Yellow',
+    value: 'yellow',
+  },
+  {
+    label: 'Red',
+    value: 'red',
+  },
 ];
 
 const DashboardPage = () => {
@@ -144,6 +361,13 @@ const DashboardPage = () => {
     setSelectedId(id);
     setOpen(true);
   };
+  const handleClickFilter = (data: FilterDropdown) => {
+    console.log(99, data);
+  };
+
+  const handleClickSort = (sorted: sortType) => {
+    console.log(103, sorted);
+  };
 
   return (
     <>
@@ -154,36 +378,75 @@ const DashboardPage = () => {
       >
         Today Statistic
       </Typography>
-      <Grid container spacing={2}>
+      <Grid
+        container
+        spacing={2}
+        sx={theme => ({
+          [theme.breakpoints.up('lg')]: {
+            ...styles.widthChangeStatisticXl,
+          },
+        })}
+      >
         {dummyStatistic.map((d: StatisticProps, index) => (
           <Grid
             key={`statistic${index}`}
             item
             xs={12}
-            sm={12}
+            sm={6}
             md={statisticBreakPoint}
             xl={statisticBreakPoint}
+            sx={styles.gridItem}
           >
             <CardStatistic title={d.title} value={d.value} colour={d.colour} />
           </Grid>
         ))}
       </Grid>
-      <Typography
-        variant="h5"
-        sx={{ ...styles.title, ...styles.titleRealtime }}
-        gutterBottom
+      <Stack
+        direction={{ xs: 'column', sm: 'row', md: 'row', lg: 'row' }}
+        sx={{
+          marginTop: toRem(16),
+          marginBottom: toRem(16),
+        }}
       >
-        Realtime Monitoring
-      </Typography>
-      <Grid container spacing={2} sx={{ marginBottom: toRem(32) }}>
+        <Typography
+          variant="h5"
+          sx={theme => ({
+            ...styles.title,
+            ...styles.titleRealtime,
+            [theme.breakpoints.only('xs')]: {
+              marginBottom: toRem(8),
+            },
+          })}
+          gutterBottom
+        >
+          Realtime Monitoring
+        </Typography>
+        <FilterButton
+          filterDropdown={filterDropdown}
+          variant="contained"
+          onClickFilter={handleClickFilter}
+          onClickSort={handleClickSort}
+        />
+      </Stack>
+      <Grid
+        container
+        spacing={2}
+        sx={theme => ({
+          height: 'calc(100% - 13rem)',
+          [theme.breakpoints.up('lg')]: {
+            ...styles.widthChangeRealtimeXl,
+          },
+        })}
+      >
         {dummyRealtime.map((d: RealtimeProps, index) => (
           <Grid
             key={`realtime${index}`}
             item
             xs={12}
-            sm={12}
+            sm={6}
             md={realtimeBreakPoint}
             xl={realtimeBreakPoint}
+            sx={styles.gridItem}
           >
             <CardRealtimeMonitoring
               id={d.id}

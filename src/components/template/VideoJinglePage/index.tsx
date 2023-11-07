@@ -20,9 +20,14 @@ const Snackbar = dynamic(() => import('@/components/atoms/SnackBar'));
 const PopupFormAddVideoJingle = dynamic(
   () => import('@/components/molecules/PopupFormAddVideoJingle')
 );
+const VideoPlayer = dynamic(() => import('@/components/molecules/VideoPlayer'));
+const ImageAudioPlayer = dynamic(
+  () => import('@/components/molecules/ImageAudioPlayer')
+);
 
 import { toRem } from '@/helpers/globalFunctions';
 import { VideoJingleList } from '@/types/api/VideoJingle';
+import { optionsVideoJingleType } from '@/consts';
 
 import AddIcon from '@mui/icons-material/Add';
 
@@ -88,6 +93,7 @@ const VideoJinglePage = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<any | null>(null);
+  const [selectedData, setSelectedData] = useState<any | null>(null);
   const [notif, setNotif] = useState<any>(initNotif);
   const detailDataQuery = useGetDetailVideoJingleQuery(
     { id: selectedId },
@@ -97,6 +103,9 @@ const VideoJinglePage = () => {
   const [addVideoJingle] = useAddNewVideoJingleMutation();
   const [updateVideoJingle] = useUpdateVideoJingleMutation();
   const [deleteVideoJingle] = useDeleteVideoJingleMutation();
+  const [openVideoPlayer, setOpenVideoPlayer] = useState<boolean>(false);
+  const [openImageAudioPlayer, setOpenImageAudioPlayer] =
+    useState<boolean>(false);
 
   const handleOnClick = () => {
     setIsEditing(false);
@@ -177,6 +186,15 @@ const VideoJinglePage = () => {
     setSearch(searchStr);
   };
 
+  const handleClickData = (data: any) => {
+    setSelectedData(data);
+    if (data.jingletype === optionsVideoJingleType.video) {
+      setOpenVideoPlayer(true);
+    } else {
+      setOpenImageAudioPlayer(true);
+    }
+  };
+
   return (
     <>
       <Typography variant="h5" sx={{ fontWeight: '600' }} gutterBottom>
@@ -199,6 +217,25 @@ const VideoJinglePage = () => {
         onEditAction={handleEditData}
         onDeleteAction={handleDeleteData}
         onQuickSearch={handleQuickSearch}
+        onClickData={handleClickData}
+      />
+      <VideoPlayer
+        open={openVideoPlayer}
+        title={selectedData?.jinglename ?? ''}
+        src="https://www.w3schools.com/tags/movie.mp4"
+        videoType="video/mp4"
+        onClosePopup={() => setOpenVideoPlayer(false)}
+        muted={false}
+      />
+      <ImageAudioPlayer
+        open={openImageAudioPlayer}
+        title={selectedData?.jinglename ?? ''}
+        imageSrc={
+          'https://gifdb.com/images/high/cool-horse-yay-meme-jump-2ztivt2lx4ahlxeh.gif'
+        }
+        audioSrc={'https://www.w3schools.com/tags/horse.mp3'}
+        audioType={'audio/mpeg'}
+        onClosePopup={() => setOpenImageAudioPlayer(false)}
       />
       <PopupFormAddVideoJingle
         open={open}

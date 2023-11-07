@@ -195,7 +195,7 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
   }, [auth]);
 
   const handleBeforeUnload = (e: any) => {
-    e.returnValue = '';
+    e.returnValue = 'beforeunload';
   };
 
   useEffect(() => {
@@ -284,7 +284,7 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -559,6 +559,7 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
         component="main"
         sx={{
           width: open ? 'calc(100% - 18rem)' : 'calc(100% - 3.4rem)',
+          height: '100%',
           padding: toRem(24),
           paddingBottom: 0,
         }}

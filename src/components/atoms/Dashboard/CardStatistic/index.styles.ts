@@ -1,14 +1,13 @@
-import { toEm, toRem } from '@/helpers/globalFunctions';
+import { toEm } from '@/helpers/globalFunctions';
 
 const styles = {
   cardStatistic: {
-    height: '107px',
-    borderRadius: '15px',
+    height: '55px',
+    borderRadius: '5px',
     boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
   },
   innerWrap: {
     height: '100%',
-    mt: toRem(8),
   },
   card01: {
     background: 'linear-gradient(180deg, #04DACD 0%, #82A4FC 100%)',
@@ -30,12 +29,12 @@ const styles = {
   title: {
     color: '#10021B',
     fontWeight: 600,
-    fontSize: toEm(17),
+    fontSize: toEm(14),
   },
   value: {
     color: '#fff',
     fontWeight: 700,
-    fontSize: toEm(30),
+    fontSize: toEm(20),
     marginTop: '0 !important',
   },
 };

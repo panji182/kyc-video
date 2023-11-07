@@ -9,7 +9,7 @@ const BoxStyled = styled(Box)(({ theme }) => ({
 
   '& video': {
     width: '100%',
-    maxHeight: '400px',
+    height: '400px',
     borderRadius: '5px',
   },
 
@@ -24,9 +24,17 @@ type Props = {
   src: string;
   videoType: string;
   onClosePopup: () => void;
+  muted?: boolean;
 };
 
-const VideoPlayer = ({ open, title, src, videoType, onClosePopup }: Props) => {
+const VideoPlayer = ({
+  open,
+  title,
+  src,
+  videoType,
+  onClosePopup,
+  muted = true,
+}: Props) => {
   return (
     <Modal
       open={open}
@@ -35,7 +43,7 @@ const VideoPlayer = ({ open, title, src, videoType, onClosePopup }: Props) => {
       sx={(theme: any) => ({
         '&.MuiModal-root>.MuiBox-root': {
           width: '60%',
-          overflowY: 'visible',
+          overflowY: 'auto',
           maxHeight: '92vh',
         },
         [theme.breakpoints.down('md')]: {
@@ -49,7 +57,7 @@ const VideoPlayer = ({ open, title, src, videoType, onClosePopup }: Props) => {
         <video
           autoPlay
           loop
-          muted
+          muted={muted}
           controls
           controlsList="nodownload"
           onContextMenu={e => e.preventDefault()}

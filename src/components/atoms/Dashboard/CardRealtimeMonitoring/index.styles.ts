@@ -3,13 +3,12 @@ import { toEm, toRem } from '@/helpers/globalFunctions';
 const styles = {
   frame: {
     position: 'relative',
-    height: '112px',
-    borderRadius: '15px',
+    height: '89px',
+    borderRadius: '5px',
     overflow: 'hidden',
     boxShadow: '0px 4px 4px #00000040',
     padding: toRem(10),
     cursor: 'pointer',
-    mt: toRem(8),
   },
 
   frameWarning: {
@@ -26,9 +25,9 @@ const styles = {
 
   ellipse: {
     position: 'absolute',
-    width: '123px',
-    height: '123px',
-    top: '-30px',
+    width: '67px',
+    height: '67px',
+    top: '-10px',
     right: '-14px',
     backgroundColor: '#ffffff8a',
     borderRadius: '61.5px',
@@ -37,10 +36,10 @@ const styles = {
 
   ellipse2: {
     position: 'absolute',
-    width: '123px',
-    height: '123px',
-    top: '40px',
-    left: '-17px',
+    width: '78px',
+    height: '78px',
+    top: '34px',
+    left: '-22px',
     borderRadius: '61.5px',
     mixBlendMode: 'soft-light',
   },
@@ -61,7 +60,7 @@ const styles = {
     textAlign: 'center',
     fontFamily: 'myArimoBoldFont, Helvetica',
     color: '#013a90',
-    fontSize: toEm(13),
+    fontSize: toEm(9),
     letterSpacing: 0,
     lineHeight: 'normal',
     whiteSpace: 'nowrap',
@@ -72,7 +71,7 @@ const styles = {
     fontFamily: '"Segoe UI Regular", Helvetica',
     fontWeight: 400,
     color: '#060606',
-    fontSize: toEm(13),
+    fontSize: toEm(9),
     letterSpacing: 0,
     lineHeight: 'normal',
   },
@@ -82,11 +81,11 @@ const styles = {
     textAlign: 'center',
     fontFamily: 'myArimoBoldFont, Helvetica',
     color: '#060606',
-    fontSize: toEm(15),
+    fontSize: toEm(18),
     letterSpacing: 0,
     lineHeight: 'normal',
     whiteSpace: 'nowrap',
-    mb: toRem(26),
+    mb: toRem(14),
   },
 
   vaadinMobile: {
