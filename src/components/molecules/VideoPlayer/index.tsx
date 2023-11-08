@@ -6,10 +6,11 @@ const Modal = dynamic(() => import('@/components/atoms/Modal'));
 
 const BoxStyled = styled(Box)(({ theme }) => ({
   width: '100%',
+  height: '83vh',
 
   '& video': {
     width: '100%',
-    height: '400px',
+    height: '100%',
     borderRadius: '5px',
   },
 
@@ -40,18 +41,11 @@ const VideoPlayer = ({
       open={open}
       title={title}
       onClose={() => onClosePopup()}
-      sx={(theme: any) => ({
+      sx={{
         '&.MuiModal-root>.MuiBox-root': {
-          width: '60%',
-          overflowY: 'auto',
-          maxHeight: '92vh',
+          width: '60vw',
         },
-        [theme.breakpoints.down('md')]: {
-          '&.MuiModal-root>.MuiBox-root': {
-            width: '90%',
-          },
-        },
-      })}
+      }}
     >
       <BoxStyled>
         <video

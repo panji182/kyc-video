@@ -36,6 +36,7 @@ module.exports = {
 
   rules: {
     'no-unused-vars': 'error',
+    '@typescript-eslint/no-explicit-any': 'off',
     'react-hooks/exhaustive-deps': 'off',
     'react/jsx-no-duplicate-props': 'error',
     'prettier/prettier': [

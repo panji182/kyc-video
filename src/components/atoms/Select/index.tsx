@@ -43,7 +43,6 @@ interface OptionsType {
 }
 
 const FormControlStyle = styled(FormControl)(({ theme }) => ({
-  margin: toRem(8),
   width: toRem(200),
 
   [theme.breakpoints.down('md')]: {
@@ -75,6 +74,7 @@ const SelectComp = ({
   isMultipleSelect = false,
   isFormInput = false,
   error = false,
+  sx,
   ...props
 }: Props) => {
   const theme = useTheme();
@@ -111,6 +111,11 @@ const SelectComp = ({
   }, [value, isMultipleSelect]);
 
   const renderSelectType = () => {
+    const fieldSetStyle = {
+      '& fieldset': {
+        top: 0,
+      },
+    };
     return isMultipleSelect ? (
       <Select
         {...usedId}
@@ -129,6 +134,10 @@ const SelectComp = ({
           </Box>
         )}
         MenuProps={MenuProps}
+        sx={{
+          ...fieldSetStyle,
+          ...sx,
+        }}
         {...props}
       >
         {options.map(item => (
@@ -149,6 +158,10 @@ const SelectComp = ({
         labelId="simple-select-label"
         value={selectValue}
         onChange={handleChange}
+        sx={{
+          ...fieldSetStyle,
+          ...sx,
+        }}
         {...props}
       >
         {options.map(item => (

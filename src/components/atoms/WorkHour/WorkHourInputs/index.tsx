@@ -1,12 +1,9 @@
 import React, { memo, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Grid from '@mui/material/Grid';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
 import Typography from '@mui/material/Typography';
 import dayjs, { Dayjs } from 'dayjs';
 
-import { toRem } from '@/helpers/globalFunctions';
 import { WorkHourList } from '@/types/api/WorkHour';
 
 import styles from './index.styles';
@@ -68,40 +65,24 @@ const WorkHourInputs = memo(
         <Grid item xs={12} sm={12} md={12} lg={12}>
           <Typography>{label}</Typography>
         </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
-          <FormControl
-            sx={{
-              marginLeft: toRem(8),
-              marginRight: toRem(8),
-              maxWidth: toRem(200),
-            }}
-          >
-            <FormLabel sx={{ mb: toRem(8) }}>From</FormLabel>
-            <TimePicker
-              value={fromTime}
-              onChange={newValue => handleInputFrom(newValue)}
-              maxTime={maxTime}
-            />
-          </FormControl>
+        <Grid item xs={12} sm={6} md={6} lg={6}>
+          <TimePicker
+            label="From"
+            value={fromTime}
+            onChange={newValue => handleInputFrom(newValue)}
+            maxTime={maxTime}
+          />
           {fromTimeError ? (
             <Typography sx={styles.textError}>{fromTimeError}</Typography>
           ) : null}
         </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
-          <FormControl
-            sx={{
-              marginLeft: toRem(8),
-              marginRight: toRem(8),
-              maxWidth: toRem(200),
-            }}
-          >
-            <FormLabel sx={{ mb: toRem(8) }}>To</FormLabel>
-            <TimePicker
-              value={toTime}
-              onChange={newValue => handleInputTo(newValue)}
-              minTime={minTime}
-            />
-          </FormControl>
+        <Grid item xs={12} sm={6} md={6} lg={6}>
+          <TimePicker
+            label="To"
+            value={toTime}
+            onChange={newValue => handleInputTo(newValue)}
+            minTime={minTime}
+          />
           {toTimeError ? (
             <Typography sx={styles.textError}>{toTimeError}</Typography>
           ) : null}

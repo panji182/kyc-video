@@ -3,13 +3,13 @@ import { toEm, toRem } from '@/helpers/globalFunctions';
 const styles = {
   buttonDeleteRowBox: {
     position: 'absolute',
-    right: '-38px',
-    top: '49%',
+    right: '-8px',
+    top: '50%',
   },
   buttonDeleteRowBoxResponsive: {
     position: 'absolute',
-    right: '-22px',
-    top: '40%',
+    right: 0,
+    top: 0,
   },
   textError: {
     marginBottom: toRem(8),

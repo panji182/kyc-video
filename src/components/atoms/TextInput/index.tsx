@@ -8,7 +8,6 @@ import { toRem } from '@/helpers/globalFunctions';
 import styles from './index.styles';
 
 const FormControlStyle = styled(FormControl)(({ theme }) => ({
-  margin: toRem(8),
   maxWidth: toRem(200),
 
   [theme.breakpoints.down('md')]: {

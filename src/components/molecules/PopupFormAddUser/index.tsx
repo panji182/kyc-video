@@ -111,7 +111,7 @@ const PopupFormAddUser = ({
     >
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={1} sx={styles.bottomSpace}>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextInput
               id="username"
               label="Username"
@@ -129,7 +129,7 @@ const PopupFormAddUser = ({
               </Typography>
             ) : null}
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextInput
               id="fullname"
               label="Fullname"
@@ -147,7 +147,7 @@ const PopupFormAddUser = ({
               </Typography>
             ) : null}
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextInput
               id="extid"
               label="Ext Id"
@@ -165,7 +165,7 @@ const PopupFormAddUser = ({
               </Typography>
             ) : null}
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <Select
               id="roles"
               label="Roles"

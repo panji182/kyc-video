@@ -77,7 +77,7 @@ const PopupFormAddChannel = ({
     >
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={1} sx={styles.bottomSpace}>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextInput
               id="channel"
               label="Channel"
@@ -95,7 +95,7 @@ const PopupFormAddChannel = ({
               </Typography>
             ) : null}
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextInput
               id="name"
               label="Name"

@@ -464,23 +464,15 @@ const DashboardPage = () => {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        sx={(theme: any) => ({
+        sx={{
           '&.MuiModal-root>.MuiBox-root': {
-            width: toRem(1000),
+            width: '80vw',
             background: '#EEF1FF',
-            maxHeight: '77vh',
           },
-
-          [theme.breakpoints.down('md')]: {
-            '&.MuiModal-root>.MuiBox-root': {
-              width: '80%',
-              marginTop: toRem(16),
-            },
-          },
-        })}
+        }}
       >
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} md={6} xl={6}>
+          <Grid item xs={12} sm={12} md={6} xl={6} sx={styles.pt1rem}>
             <PopupContent
               role={'Customer'}
               audioBitrate={'3Mbps'}
@@ -492,7 +484,7 @@ const DashboardPage = () => {
               ipAddress="192.168.1.1"
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={6} xl={6}>
+          <Grid item xs={12} sm={12} md={6} xl={6} sx={styles.pt1rem}>
             <PopupContent
               role={'Agent'}
               audioBitrate={'3Mbps'}

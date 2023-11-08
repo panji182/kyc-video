@@ -38,6 +38,9 @@ const styles = {
     paddingTop: toRem(13) + ' !important',
     paddingLeft: toRem(13) + ' !important',
   },
+  pt1rem: {
+    paddingTop: toRem(16) + ' !important',
+  },
 };
 
 export default styles;

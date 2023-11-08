@@ -157,16 +157,11 @@ const PopupFormAddHoliday = ({
       open={open}
       title={editedData ? 'Edit Holiday' : 'Create Holiday'}
       onClose={() => onClosePopup()}
-      sx={(theme: any) => ({
+      sx={{
         '&.MuiModal-root>.MuiBox-root': {
-          width: toRem(500),
+          width: '38vw',
         },
-        [theme.breakpoints.down('md')]: {
-          '&.MuiModal-root>.MuiBox-root': {
-            width: '80%',
-          },
-        },
-      })}
+      }}
     >
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={1} sx={{ marginBottom: toRem(16) }}>
@@ -224,11 +219,7 @@ const PopupFormAddHoliday = ({
             );
           })}
         </Grid>
-        <Stack
-          direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
-          justifyContent="space-between"
-          gap={2}
-        >
+        <Stack direction="row" justifyContent="space-between" gap={2}>
           <Box>
             <ButtonComp
               label="Add"

@@ -12,7 +12,6 @@ import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-import { toRem } from '@/helpers/globalFunctions';
 import { ServerConfiguration } from '@/types/template/ServerConfiguration';
 
 import styles from './index.styles';
@@ -100,8 +99,7 @@ const PopupFormConfiguration = ({
       onClose={() => onClosePopup()}
       sx={{
         '&.MuiModal-root>.MuiBox-root': {
-          width: toRem(350),
-          maxHeight: '77vh',
+          width: '25vw',
         },
       }}
     >

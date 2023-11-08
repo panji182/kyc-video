@@ -9,6 +9,8 @@ import { HeadCell } from '@/types/atoms/table';
 import IconButton from '@mui/material/IconButton';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 
+import styles from './index.styles';
+
 const Table = dynamic(() => import('@/components/atoms/Table'));
 const Button = dynamic(() => import('@/components/atoms/Button'));
 const ExportButton = dynamic(
@@ -234,23 +236,15 @@ const RecordingPage = () => {
       <Modal
         open={openPopupDetail}
         onClose={() => setOpenPopupDetail(false)}
-        sx={(theme: any) => ({
+        sx={{
           '&.MuiModal-root>.MuiBox-root': {
-            width: toRem(1000),
+            width: '80vw',
             background: '#EEF1FF',
-            maxHeight: '77vh',
           },
-
-          [theme.breakpoints.down('md')]: {
-            '&.MuiModal-root>.MuiBox-root': {
-              width: '80%',
-              marginTop: toRem(16),
-            },
-          },
-        })}
+        }}
       >
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} md={6} xl={6}>
+          <Grid item xs={12} sm={12} md={6} xl={6} sx={styles.pt1rem}>
             <PopupInformation
               role={'Customer'}
               roleName="Ahmad"
@@ -258,7 +252,7 @@ const RecordingPage = () => {
               ipAddress="192.168.1.1"
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={6} xl={6}>
+          <Grid item xs={12} sm={12} md={6} xl={6} sx={styles.pt1rem}>
             <PopupInformation
               role={'Agent'}
               roleName="Yuni"

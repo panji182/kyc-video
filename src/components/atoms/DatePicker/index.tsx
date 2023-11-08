@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import GlobalStyles from '@mui/material/GlobalStyles';
+import FormLabel from '@mui/material/FormLabel';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+import { toRem } from '@/helpers/globalFunctions';
 import styles, { FormControlStyle } from './index.styles';
 
 dayjs.locale('en');
@@ -21,7 +23,6 @@ type Props = {
 
 const DatePickerComp = ({ label, value, onChange, ...props }: Props) => {
   const [enterValue, setEnterValue] = useState<Dayjs | null>(null);
-  const usedLabel = label ? { label } : {};
 
   useEffect(() => {
     setEnterValue(value);
@@ -40,9 +41,9 @@ const DatePickerComp = ({ label, value, onChange, ...props }: Props) => {
         }}
       />
       <FormControlStyle>
+        {label && <FormLabel sx={{ mb: toRem(16) }}>{label}</FormLabel>}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            {...usedLabel}
             value={enterValue}
             onChange={handleChange}
             sx={{

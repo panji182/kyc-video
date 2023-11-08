@@ -14,13 +14,15 @@ import styles from './index.styles';
 
 const ModalStyle = styled(Modal)(({ theme }) => ({
   '&.MuiModal-root>.MuiBox-root': {
-    width: toRem(500),
+    width: '33.5vw',
     overflowY: 'auto',
-    maxHeight: '75vh',
+    maxHeight: '95vh',
+    outline: 'none',
+    padding: `${toRem(8)} ${toRem(16)}`,
   },
   [theme.breakpoints.down('md')]: {
     '&.MuiModal-root>.MuiBox-root': {
-      width: '80%',
+      width: '90vw !important',
       marginTop: toRem(16),
     },
   },
@@ -68,7 +70,7 @@ const ModalComp = ({ open, title, onClose, children, ...props }: Props) => {
             id="modal-title"
             variant="h5"
             component="h2"
-            sx={{ mb: toRem(16) }}
+            sx={{ mb: toRem(8) }}
           >
             {title}
           </Typography>

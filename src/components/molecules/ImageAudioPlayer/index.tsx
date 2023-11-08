@@ -18,7 +18,8 @@ const BoxStyled = styled(Box)(({ theme }) => ({
 
 const BoxImageStyled = styled(Box)(({ theme }) => ({
   width: '100%',
-  height: '400px',
+  height: '70vh',
+
   marginBottom: toRem(16),
   '& img': {
     position: 'static !important',
@@ -53,18 +54,11 @@ const ImageAudioPlayer = ({
       open={open}
       title={title}
       onClose={() => onClosePopup()}
-      sx={(theme: any) => ({
+      sx={{
         '&.MuiModal-root>.MuiBox-root': {
-          width: '60%',
-          overflowY: 'auto',
-          maxHeight: '92vh',
+          width: '60vw',
         },
-        [theme.breakpoints.down('md')]: {
-          '&.MuiModal-root>.MuiBox-root': {
-            width: '90%',
-          },
-        },
-      })}
+      }}
     >
       <BoxStyled>
         <BoxImageStyled>

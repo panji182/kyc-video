@@ -122,7 +122,7 @@ const PopupFormAddVideoJingle = ({
     >
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={1} sx={{ marginBottom: toRem(16) }}>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextInput
               id="jinglename"
               label="Enter Jingle Name"
@@ -142,7 +142,7 @@ const PopupFormAddVideoJingle = ({
               </Typography>
             ) : null}
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <Select
               id="jingletype"
               label="Enter Jingle Type"
@@ -163,7 +163,7 @@ const PopupFormAddVideoJingle = ({
             ) : null}
           </Grid>
           {formik.values.jingletype === 'video' && (
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid item xs={12} sm={6} md={6} lg={6}>
               <TextInput
                 id="video"
                 label="Enter Video Url"
@@ -186,7 +186,7 @@ const PopupFormAddVideoJingle = ({
           )}
           {formik.values.jingletype === 'imageaudio' && (
             <>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
+              <Grid item xs={12} sm={6} md={6} lg={6}>
                 <TextInput
                   id="image"
                   label="Enter Image Url"
@@ -206,7 +206,7 @@ const PopupFormAddVideoJingle = ({
                   </Typography>
                 ) : null}
               </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
+              <Grid item xs={12} sm={6} md={6} lg={6}>
                 <TextInput
                   id="audio"
                   label="Enter Audio Url"

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import { styled } from '@mui/material/styles';
 import { toRem } from '@/helpers/globalFunctions';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -30,7 +31,7 @@ type Props = {
 
 const TimePickerComp = ({ label, value, onChange, ...props }: Props) => {
   const [enterValue, setEnterValue] = useState<Dayjs | null>(null);
-  const usedLabel = label ? { label } : {};
+  // const usedLabel = label ? { label } : {};
 
   useEffect(() => {
     setEnterValue(value);
@@ -43,13 +44,9 @@ const TimePickerComp = ({ label, value, onChange, ...props }: Props) => {
 
   return (
     <FormControlStyle>
+      {label && <FormLabel sx={{ mb: toRem(16) }}>{label}</FormLabel>}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <TimePicker
-          {...usedLabel}
-          value={enterValue}
-          onChange={handleChange}
-          {...props}
-        />
+        <TimePicker value={enterValue} onChange={handleChange} {...props} />
       </LocalizationProvider>
     </FormControlStyle>
   );

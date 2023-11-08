@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
 import Typography from '@mui/material/Typography';
 
 import { CampaignInput } from '@/types/template/Campaign';
@@ -86,7 +84,7 @@ const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
     <Modal open={open} title={'Create Campaign'} onClose={() => onClosePopup()}>
       <>
         <Grid container spacing={1} sx={{ marginBottom: toRem(16) }}>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextInput
               id="name"
               label="Campaign Name"
@@ -97,7 +95,7 @@ const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
               onChange={val => handleInput(val, 'name')}
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <Select
               id="workHour"
               label="Work Hour"
@@ -111,39 +109,23 @@ const PopupFormAddCampaign = ({ open, onSubmited, onClosePopup }: Props) => {
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <Typography>Period</Typography>
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <FormControl
-              sx={{
-                marginLeft: toRem(8),
-                marginRight: toRem(8),
-                maxWidth: toRem(200),
-              }}
-            >
-              <FormLabel sx={{ mb: toRem(8) }}>From</FormLabel>
-              <DatePicker
-                value={campaignInput.dateStart}
-                onChange={newValue => handleInput(newValue, 'dateStart')}
-                slotProps={{ popper: { placement: 'top-start' } }}
-              />
-            </FormControl>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
+            <DatePicker
+              label="From"
+              value={campaignInput.dateStart}
+              onChange={newValue => handleInput(newValue, 'dateStart')}
+              slotProps={{ popper: { placement: 'top-start' } }}
+            />
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <FormControl
-              sx={{
-                marginLeft: toRem(8),
-                marginRight: toRem(8),
-                maxWidth: toRem(200),
-              }}
-            >
-              <FormLabel sx={{ mb: toRem(8) }}>To</FormLabel>
-              <DatePicker
-                value={campaignInput.dateEnd}
-                onChange={newValue => handleInput(newValue, 'dateEnd')}
-                slotProps={{ popper: { placement: 'top-start' } }}
-              />
-            </FormControl>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
+            <DatePicker
+              label="To"
+              value={campaignInput.dateEnd}
+              onChange={newValue => handleInput(newValue, 'dateEnd')}
+              slotProps={{ popper: { placement: 'top-start' } }}
+            />
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={6} lg={6}>
             <Select
               id="holiday"
               label="Holiday"

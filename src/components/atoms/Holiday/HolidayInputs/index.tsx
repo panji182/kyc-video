@@ -3,12 +3,9 @@ import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
 import Typography from '@mui/material/Typography';
 import { Dayjs } from 'dayjs';
 
-import { toRem } from '@/helpers/globalFunctions';
 import { EditedHolidays } from '@/types/api/Holiday';
 
 import styles from './index.styles';
@@ -65,7 +62,7 @@ const HolidayInputs = memo(
 
     return (
       <>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
+        <Grid item xs={12} sm={6} md={6} lg={6}>
           <TextInput
             id="name"
             label="Name"
@@ -79,15 +76,10 @@ const HolidayInputs = memo(
             <Typography sx={styles.textError}>{nameError}</Typography>
           ) : null}
         </Grid>
-        <Grid item id="idbuttonDeleteRow" xs={12} sm={12} md={6} lg={6}>
-          <FormControl
-            sx={{
-              margin: toRem(8),
-              maxWidth: toRem(200),
-            }}
-          >
-            <FormLabel sx={{ mb: toRem(16) }}>Date</FormLabel>
+        <Grid item xs={12} sm={6} md={6} lg={6}>
+          <Box sx={{ position: 'relative' }}>
             <DatePicker
+              label="Date"
               value={date}
               onChange={newValue => handleInput(index, newValue, 'date')}
               slotProps={{ popper: { placement: 'top-start' } }}
@@ -116,7 +108,7 @@ const HolidayInputs = memo(
                 </Stack>
               </Box>
             )}
-          </FormControl>
+          </Box>
           {dateError ? (
             <Typography sx={styles.textError}>{dateError}</Typography>
           ) : null}
