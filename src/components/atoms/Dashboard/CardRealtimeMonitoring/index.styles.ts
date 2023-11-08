@@ -66,6 +66,10 @@ const styles = {
     whiteSpace: 'nowrap',
   },
 
+  textWrapperSm: {
+    fontSize: toEm(12),
+  },
+
   textWrapper2: {
     textAlign: 'center',
     fontFamily: '"Segoe UI Regular", Helvetica',
@@ -74,6 +78,10 @@ const styles = {
     fontSize: toEm(9),
     letterSpacing: 0,
     lineHeight: 'normal',
+  },
+
+  textWrapper2Sm: {
+    fontSize: toEm(12),
   },
 
   textTitle: {
