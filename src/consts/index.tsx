@@ -103,3 +103,11 @@ export const optionsVideoJingleType = {
   video: 'video',
   imageAndAudio: 'imageaudio',
 };
+
+export const RealTimeMonitorDashboard = {
+  dataPerRowOpened: 6,
+  dataPerRowClosed: 7,
+  dataPerRowSmOpened: 2,
+  dataPerRowXsOpened: 1,
+  cardRealtimeHeight: 105,
+};
