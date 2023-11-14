@@ -1,19 +1,23 @@
-import React from 'react';
+'use client';
+
 import dynamic from 'next/dynamic';
-import { checkValidAuth } from '@/app/helpers/globalFunctions';
+const UserAuthentication = dynamic(
+  () => import('@/components/template/Layouts/UserAuthentication')
+);
 const AdminLayout = dynamic(
   () => import('@/components/template/Layouts/AdminLayout')
 );
 const VideoJinglePage = dynamic(
   () => import('@/components/template/VideoJinglePage')
 );
-const VideoJingle = async () => {
-  checkValidAuth();
 
+const VideoJingle = () => {
   return (
-    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
-      <VideoJinglePage />
-    </AdminLayout>
+    <UserAuthentication secretKey={process.env.SECRET_KEY || ''}>
+      <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
+        <VideoJinglePage />
+      </AdminLayout>
+    </UserAuthentication>
   );
 };
 

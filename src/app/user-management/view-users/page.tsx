@@ -1,5 +1,9 @@
+'use client';
+
 import dynamic from 'next/dynamic';
-import { checkValidAuth } from '@/app/helpers/globalFunctions';
+const UserAuthentication = dynamic(
+  () => import('@/components/template/Layouts/UserAuthentication')
+);
 const AdminLayout = dynamic(
   () => import('@/components/template/Layouts/AdminLayout')
 );
@@ -7,13 +11,13 @@ const ViewUsersPage = dynamic(
   () => import('@/components/template/ViewUsersPage')
 );
 
-const ViewUsers = async () => {
-  checkValidAuth();
-
+const ViewUsers = () => {
   return (
-    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
-      <ViewUsersPage />
-    </AdminLayout>
+    <UserAuthentication secretKey={process.env.SECRET_KEY || ''}>
+      <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
+        <ViewUsersPage />
+      </AdminLayout>
+    </UserAuthentication>
   );
 };
 

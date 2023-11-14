@@ -1,17 +1,21 @@
-import React from 'react';
+'use client';
+
 import dynamic from 'next/dynamic';
-import { checkValidAuth } from '@/app/helpers/globalFunctions';
+const UserAuthentication = dynamic(
+  () => import('@/components/template/Layouts/UserAuthentication')
+);
 const AdminLayout = dynamic(
   () => import('@/components/template/Layouts/AdminLayout')
 );
 const ChannelPage = dynamic(() => import('@/components/template/ChannelPage'));
-const Channel = async () => {
-  checkValidAuth();
 
+const Channel = () => {
   return (
-    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
-      <ChannelPage />
-    </AdminLayout>
+    <UserAuthentication secretKey={process.env.SECRET_KEY || ''}>
+      <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
+        <ChannelPage />
+      </AdminLayout>
+    </UserAuthentication>
   );
 };
 

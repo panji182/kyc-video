@@ -1,5 +1,9 @@
+'use client';
+
 import dynamic from 'next/dynamic';
-import { checkValidAuth } from '@/app/helpers/globalFunctions';
+const UserAuthentication = dynamic(
+  () => import('@/components/template/Layouts/UserAuthentication')
+);
 const AdminLayout = dynamic(
   () => import('@/components/template/Layouts/AdminLayout')
 );
@@ -7,13 +11,13 @@ const AbandonCallReportPage = dynamic(
   () => import('@/components/template/AbandonCallReportPage')
 );
 
-const AbandonCallReport = async () => {
-  checkValidAuth();
-
+const AbandonCallReport = () => {
   return (
-    <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
-      <AbandonCallReportPage />
-    </AdminLayout>
+    <UserAuthentication secretKey={process.env.SECRET_KEY || ''}>
+      <AdminLayout secretKey={process.env.SECRET_KEY || ''}>
+        <AbandonCallReportPage />
+      </AdminLayout>
+    </UserAuthentication>
   );
 };
 

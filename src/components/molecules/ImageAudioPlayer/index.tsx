@@ -62,7 +62,7 @@ const ImageAudioPlayer = ({
     >
       <BoxStyled>
         <BoxImageStyled>
-          <Image unoptimized fill src={imageSrc} alt={title} />
+          <Image fill src={imageSrc} alt={title} />
         </BoxImageStyled>
         {audioSrc && (
           <audio
