@@ -11,6 +11,7 @@ import TextField from '@mui/material/TextField';
 import FormLabel from '@mui/material/FormLabel';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
@@ -35,6 +36,8 @@ const LoginForm = ({ users, secretKey }: Login) => {
     const isUserName = (str: string) => !/[^A-Z0-9]/i.test(str);
     return isEmail(uname) || isUserName(uname);
   };
+  const [showLoader, setShowLoader] = useState<boolean>(false);
+
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -55,6 +58,7 @@ const LoginForm = ({ users, secretKey }: Login) => {
     },
     validationSchema: validationSchema,
     onSubmit: async values => {
+      setShowLoader(true);
       const enteredUser = users.find(d => d.username === values.username);
       const encPassword = encryptSHA256(values.password);
       if (enteredUser && enteredUser.password === encPassword) {
@@ -72,6 +76,7 @@ const LoginForm = ({ users, secretKey }: Login) => {
           }).unwrap();
           setCookie('token', resp.token);
         } catch (err: any) {}
+        setShowLoader(false);
         switch (enteredUser.role) {
           case Roles.admin:
             router.push(paths.dashboard.href);
@@ -83,6 +88,7 @@ const LoginForm = ({ users, secretKey }: Login) => {
             router.push(paths.recording.href);
         }
       } else {
+        setShowLoader(false);
         setShowError(true);
       }
     },
@@ -199,6 +205,9 @@ const LoginForm = ({ users, secretKey }: Login) => {
         </Stack>
         <Stack direction="row" justifyContent={'center'}>
           <LoginButton type="submit" variant="contained" disableRipple>
+            {showLoader && (
+              <CircularProgress size={30} sx={{ mr: toRem(16) }} />
+            )}
             Login
           </LoginButton>
         </Stack>
