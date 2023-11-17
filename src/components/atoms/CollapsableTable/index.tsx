@@ -16,6 +16,7 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import Skeleton from '@mui/material/Skeleton';
 import { visuallyHidden } from '@mui/utils';
 
 import styles from './index.styles';
@@ -169,6 +170,7 @@ type Props = {
   fieldOrderBy: string;
   rowsPerpageCount: number;
   headCells: HeadCell[];
+  isLoading: boolean;
   // eslint-disable-next-line no-unused-vars
   onGetSelectedData: (selData: any[]) => void;
 };
@@ -178,6 +180,7 @@ const CollapsableTable = ({
   fieldOrderBy,
   rowsPerpageCount,
   headCells,
+  isLoading,
   onGetSelectedData,
 }: Props) => {
   const [groupedData, setGroupedData] = React.useState<any[]>([]);
@@ -240,28 +243,23 @@ const CollapsableTable = ({
     setSelected([]);
   };
 
-  const handleClick = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    nameValue: string,
-    sectionValue: string
-  ) => {
+  const handleClick = (nameValue: string, sectionValue: string) => {
     setSelected((prevState: any[]) => {
       let isParentRow = false,
         prev = [...prevState];
       const selectedIndex = prev.findIndex(d => d.name === nameValue);
       if (sectionValue === '') isParentRow = true;
       if (selectedIndex > -1) {
-        if (!event.target.checked) {
-          if (isParentRow) {
-            prev = prev.filter(d => d.name.indexOf(nameValue) < 0);
-          } else {
-            prev.splice(selectedIndex, 1);
-          }
+        if (isParentRow) {
+          prev = prev.filter(d => d.name.indexOf(nameValue) < 0);
+        } else {
+          prev.splice(selectedIndex, 1);
         }
       } else {
         let dt = [];
         if (isParentRow) {
           dt = groupedData.filter(d => d.name.indexOf(nameValue) > -1);
+          prev = prev.filter(d => d.name.indexOf(nameValue) < 0);
         } else {
           dt.push(groupedData.find(d => d.name === nameValue));
         }
@@ -367,9 +365,7 @@ const CollapsableTable = ({
                         <Checkbox
                           color="primary"
                           checked={isItemSelected}
-                          onChange={event =>
-                            handleClick(event, nameValue, sectionValue)
-                          }
+                          onChange={() => handleClick(nameValue, sectionValue)}
                           inputProps={{
                             'aria-labelledby': labelId,
                           }}
@@ -409,6 +405,24 @@ const CollapsableTable = ({
                     </TableRow>
                   ) : null;
                 })
+              ) : isLoading ? (
+                Array(3)
+                  .fill(null)
+                  .map((_, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center" colSpan={headCells.length}>
+                        <Skeleton
+                          key={index}
+                          width="100%"
+                          sx={{
+                            height: '57px',
+                          }}
+                        >
+                          <Typography>.</Typography>
+                        </Skeleton>
+                      </TableCell>
+                    </TableRow>
+                  ))
               ) : (
                 <TableRow>
                   <TableCell align="center" colSpan={headCells.length}>

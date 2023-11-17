@@ -131,6 +131,7 @@ const ViewUsersPage = () => {
         data={dataRows}
         fieldOrderBy={'customerId'}
         rowsPerpageCount={25}
+        isLoading={false}
         headCells={headCells}
       />
       <PopupAdvancedSearchAbandonCall

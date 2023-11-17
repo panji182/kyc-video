@@ -285,6 +285,7 @@ const ServerConfiguration = () => {
           fieldOrderBy={'name'}
           rowsPerpageCount={25}
           headCells={headCells}
+          isLoading={dataQuery.isLoading}
           onGetSelectedData={handleGetSelectedData}
         />
         <Stack direction="row" mb={toRem(24)} justifyContent="space-between">

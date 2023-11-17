@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect, createContext, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import { getCookie, deleteCookie } from 'cookies-next';
@@ -23,6 +23,7 @@ import Avatar from '@mui/material/Avatar';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
+import Skeleton from '@mui/material/Skeleton';
 import styles, { DrawerHeader, AppBar, Drawer } from './index.styles';
 import { Providers } from '@/redux/provider';
 
@@ -176,7 +177,6 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
     null
   );
   const [search, setSearch] = useState<string>('');
-  console.log(search);
   const [alertPage, setAlertPage] = useState<boolean>(false);
   const auth: string = getCookie('auth') || '';
   const authCookie = auth !== '' ? decrypt(auth, secretKey) : null;
@@ -185,6 +185,17 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
     isVerified: '',
     role: '',
   });
+  const menuAccess = useMemo(() => {
+    const userMenus =
+      userMenuAccess[currentUserInfo.role as keyof UserMenuAccess];
+    const filtered =
+      search !== ''
+        ? userMenus.filter(
+            menu => menu.toLowerCase().indexOf(search.toLowerCase()) > -1
+          )
+        : userMenus;
+    return filtered && filtered.length > 0 ? filtered : undefined;
+  }, [currentUserInfo, search]);
 
   useEffect(() => {
     setExpandMenus(() => menuLists.map(() => false));
@@ -455,104 +466,118 @@ const AdminLayout = ({ secretKey, children }: AdminLayoutProps) => {
             },
           }}
         >
-          {menuLists.map((list, index) =>
-            (
-              userMenuAccess[currentUserInfo.role as keyof UserMenuAccess] || []
-            ).includes(list.label) ? (
-              <ListItem
-                component="div"
-                key={index}
-                disablePadding
-                sx={{ display: 'block' }}
-              >
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => {
-                    list.subMenus
-                      ? handleExpandMenuClick(index)
-                      : handleRedirect(list.link);
-                  }}
-                  selected={isMenuExist(pathname, list.name)}
-                >
-                  {list.icon && (
-                    <ListItemIcon
+          {menuAccess
+            ? menuLists.map((list, index) =>
+                (menuAccess || []).includes(list.label) ? (
+                  <ListItem
+                    component="div"
+                    key={index}
+                    disablePadding
+                    sx={{ display: 'block' }}
+                  >
+                    <ListItemButton
                       sx={{
-                        minWidth: 0,
-                        mr: open ? toRem(16) : 'auto',
-                        justifyContent: 'center',
-                        color: '#D1D5D8',
+                        minHeight: 48,
+                        justifyContent: open ? 'initial' : 'center',
+                        px: 2.5,
                       }}
+                      onClick={() => {
+                        list.subMenus
+                          ? handleExpandMenuClick(index)
+                          : handleRedirect(list.link);
+                      }}
+                      selected={isMenuExist(pathname, list.name)}
                     >
-                      {list.icon}
-                    </ListItemIcon>
-                  )}
-                  <ListItemText
-                    primary={list.label}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                  {list.subMenus && open && (
-                    <>
-                      {expandMenus[index] ||
-                      isSubMenuExist(pathname, list.subMenus) ? (
-                        <ExpandLess />
-                      ) : (
-                        <ExpandMore />
-                      )}
-                    </>
-                  )}
-                </ListItemButton>
-                <Collapse
-                  in={
-                    expandMenus[index] ||
-                    isSubMenuExist(pathname, list.subMenus)
-                  }
-                  timeout="auto"
-                  unmountOnExit
-                >
-                  <List component="div" disablePadding>
-                    {(list.subMenus || []).map((subMenu, indexSb) => (
-                      <ListItem
-                        component="div"
-                        key={`submenu${index}${indexSb}`}
-                        disablePadding
-                        sx={{ display: 'block' }}
-                      >
-                        <ListItemButton
-                          onClick={() => handleRedirect(subMenu.link)}
-                          selected={isMenuExist(pathname, subMenu.name)}
+                      {list.icon && (
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? toRem(16) : 'auto',
+                            justifyContent: 'center',
+                            color: '#D1D5D8',
+                          }}
                         >
-                          {subMenu.icon && (
-                            <ListItemIcon
-                              sx={{
-                                minWidth: 0,
-                                ml: open ? toRem(8) : 'auto',
-                                mr: open ? toRem(24) : 'auto',
-                                justifyContent: 'center',
-                                '& svg': {
-                                  fontSize: toEm(16),
-                                },
-                                color: '#D1D5D8',
-                              }}
-                            >
-                              {subMenu.icon}
-                            </ListItemIcon>
+                          {list.icon}
+                        </ListItemIcon>
+                      )}
+                      <ListItemText
+                        primary={list.label}
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                      {list.subMenus && open && (
+                        <>
+                          {expandMenus[index] ||
+                          isSubMenuExist(pathname, list.subMenus) ? (
+                            <ExpandLess />
+                          ) : (
+                            <ExpandMore />
                           )}
-                          <ListItemText
-                            primary={subMenu.label}
-                            sx={{ opacity: open ? 1 : 0 }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Collapse>
-              </ListItem>
-            ) : null
-          )}
+                        </>
+                      )}
+                    </ListItemButton>
+                    <Collapse
+                      in={
+                        expandMenus[index] ||
+                        isSubMenuExist(pathname, list.subMenus)
+                      }
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <List component="div" disablePadding>
+                        {(list.subMenus || []).map((subMenu, indexSb) => (
+                          <ListItem
+                            component="div"
+                            key={`submenu${index}${indexSb}`}
+                            disablePadding
+                            sx={{ display: 'block' }}
+                          >
+                            <ListItemButton
+                              onClick={() => handleRedirect(subMenu.link)}
+                              selected={isMenuExist(pathname, subMenu.name)}
+                            >
+                              {subMenu.icon && (
+                                <ListItemIcon
+                                  sx={{
+                                    minWidth: 0,
+                                    ml: open ? toRem(8) : 'auto',
+                                    mr: open ? toRem(24) : 'auto',
+                                    justifyContent: 'center',
+                                    '& svg': {
+                                      fontSize: toEm(16),
+                                    },
+                                    color: '#D1D5D8',
+                                  }}
+                                >
+                                  {subMenu.icon}
+                                </ListItemIcon>
+                              )}
+                              <ListItemText
+                                primary={subMenu.label}
+                                sx={{ opacity: open ? 1 : 0 }}
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Collapse>
+                  </ListItem>
+                ) : null
+              )
+            : Array(7)
+                .fill(null)
+                .map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    width="90%"
+                    sx={{
+                      height: '48px',
+                      marginLeft: toRem(16),
+                      marginRight: toRem(16),
+                    }}
+                  >
+                    <Typography>.</Typography>
+                  </Skeleton>
+                ))}
         </List>
       </Drawer>
       <Box

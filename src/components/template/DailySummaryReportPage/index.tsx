@@ -14,8 +14,14 @@ const ExportButton = dynamic(
 const PopupAdvancedSearchDailySummary = dynamic(
   () => import('@/components/molecules/PopupAdvancedSearchDailySummary')
 );
+const CsvDownloader = dynamic(() => import('@/components/atoms/CsvDownloader'));
 
-import { toRem } from '@/helpers/globalFunctions';
+import {
+  toRem,
+  columnProps,
+  jsPdfProps,
+  exportToPDF,
+} from '@/helpers/globalFunctions';
 
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -131,15 +137,53 @@ const headCells: HeadCell[] = [
   },
 ];
 
-const ViewUsersPage = () => {
+const DailySummaryReportPage = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   const handleExportCSV = () => {
-    alert('CSV Data Exported !');
+    const btnCsvDownloader = document.getElementById('csvDownloader');
+    btnCsvDownloader && btnCsvDownloader.click();
   };
 
   const handleExportPDF = () => {
-    alert('PDF Data Exported !');
+    const configPdf: jsPdfProps = {
+      orientation: 'l',
+      unit: 'pt',
+      format: 'a4',
+    };
+    const columnsPdf: columnProps = {
+      columnLabels: [
+        'Start Date',
+        'Channel',
+        'Interaction Waiting',
+        'Interaction Handled',
+        'Interaction Abandon',
+        'Interaction AwtTime',
+        'Agent Ready',
+        'Agent Not Ready',
+        'Agent Login',
+        'Agent AhtTime',
+      ],
+      columnFields: [
+        'startDate',
+        'channel',
+        'interactionWaiting',
+        'interactionHandled',
+        'interactionAbandon',
+        'interactionAwtTime',
+        'agentReady',
+        'agentNotReady',
+        'agentLogin',
+        'agentAhtTime',
+      ],
+    };
+    exportToPDF(
+      'Daily Summary Report Lists',
+      configPdf,
+      columnsPdf,
+      dataRows,
+      'daily_summary_report_lists'
+    );
   };
 
   const handleShowAdvancedSearch = () => {
@@ -171,6 +215,7 @@ const ViewUsersPage = () => {
         data={dataRows}
         fieldOrderBy={'channel'}
         rowsPerpageCount={25}
+        isLoading={false}
         headCells={headCells}
       />
       <PopupAdvancedSearchDailySummary
@@ -178,8 +223,14 @@ const ViewUsersPage = () => {
         onSearched={handleSearchResult}
         onClosePopup={() => setOpen(false)}
       />
+      <CsvDownloader
+        id="csvDownloader"
+        data={dataRows}
+        filename="daily_summary_report_lists.csv"
+        delimiter=";"
+      />
     </>
   );
 };
 
-export default ViewUsersPage;
+export default DailySummaryReportPage;

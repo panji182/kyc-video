@@ -214,6 +214,7 @@ const VideoJinglePage = () => {
         rowsPerpageCount={25}
         headCells={headCells}
         idActionName="id"
+        isLoading={dataQuery.isLoading}
         onEditAction={handleEditData}
         onDeleteAction={handleDeleteData}
         onQuickSearch={handleQuickSearch}

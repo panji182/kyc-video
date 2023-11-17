@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+
 import { HeadCell } from '@/types/atoms/table';
 import IconButton from '@mui/material/IconButton';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
@@ -27,8 +28,14 @@ const PopupRecordingLog = dynamic(
   () => import('@/components/atoms/Recording/PopupRecordingLog')
 );
 const Modal = dynamic(() => import('@/components/atoms/Modal'));
+const CsvDownloader = dynamic(() => import('@/components/atoms/CsvDownloader'));
 
-import { toRem } from '@/helpers/globalFunctions';
+import {
+  toRem,
+  columnProps,
+  jsPdfProps,
+  exportToPDF,
+} from '@/helpers/globalFunctions';
 
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -160,11 +167,51 @@ const RecordingPage = () => {
   const [openVideoPlayer, setOpenVideoPlayer] = useState<boolean>(false);
 
   const handleExportCSV = () => {
-    alert('CSV Data Exported !');
+    const btnCsvDownloader = document.getElementById('csvDownloader');
+    btnCsvDownloader && btnCsvDownloader.click();
   };
 
   const handleExportPDF = () => {
-    alert('PDF Data Exported !');
+    const configPdf: jsPdfProps = {
+      orientation: 'l',
+      unit: 'pt',
+      format: 'a4',
+    };
+    const columnsPdf: columnProps = {
+      columnLabels: [
+        'Interaction Id',
+        'Agent Id',
+        'Customer Name',
+        'Start Time',
+        'End Time',
+        'Duration',
+        'Server',
+        'Path',
+        'Filename',
+        'File Ext',
+        'Customer Channel Type',
+      ],
+      columnFields: [
+        'interactionId',
+        'agentId',
+        'customerName',
+        'startTime',
+        'endTime',
+        'duration',
+        'server',
+        'path',
+        'filename',
+        'fileExt',
+        'customerChannelType',
+      ],
+    };
+    exportToPDF(
+      'Recording Lists',
+      configPdf,
+      columnsPdf,
+      dataRows,
+      'recording_lists'
+    );
   };
 
   const handleShowAdvancedSearch = () => {
@@ -210,6 +257,7 @@ const RecordingPage = () => {
         fieldOrderBy={'agentId'}
         rowsPerpageCount={25}
         headCells={headCells}
+        isLoading={false}
         onClickData={handleClickData}
         customActionButton={(fields: any, index?: number) => (
           <IconButton
@@ -265,6 +313,12 @@ const RecordingPage = () => {
           </Grid>
         </Grid>
       </Modal>
+      <CsvDownloader
+        id="csvDownloader"
+        data={dataRows}
+        filename="recording_lists.csv"
+        delimiter=";"
+      />
     </>
   );
 };

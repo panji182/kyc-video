@@ -17,7 +17,9 @@ import { alpha } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import InputAdornment from '@mui/material/InputAdornment';
+import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import Skeleton from '@mui/material/Skeleton';
 import debounce from 'lodash/debounce';
 
 import { toRem } from '@/helpers/globalFunctions';
@@ -184,6 +186,7 @@ type Props = {
   showEditor?: boolean;
   isSortable?: boolean;
   sx?: any;
+  isLoading: boolean;
   // eslint-disable-next-line no-unused-vars
   customActionButton?: (fields: any, index?: number) => React.ReactNode;
   // eslint-disable-next-line no-unused-vars
@@ -204,6 +207,7 @@ const TableComp = ({
   idActionName,
   showEditor = true,
   isSortable = true,
+  isLoading,
   customActionButton,
   onEditAction,
   onDeleteAction,
@@ -345,6 +349,24 @@ const TableComp = ({
                     )}
                   </TableRow>
                 ))
+              ) : isLoading ? (
+                Array(3)
+                  .fill(null)
+                  .map((_, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center" colSpan={headCells.length}>
+                        <Skeleton
+                          key={index}
+                          width="100%"
+                          sx={{
+                            height: '57px',
+                          }}
+                        >
+                          <Typography>.</Typography>
+                        </Skeleton>
+                      </TableCell>
+                    </TableRow>
+                  ))
               ) : (
                 <TableRow>
                   <TableCell

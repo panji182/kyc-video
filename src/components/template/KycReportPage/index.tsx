@@ -14,8 +14,14 @@ const ExportButton = dynamic(
 const PopupAdvancedSearchKyc = dynamic(
   () => import('@/components/molecules/PopupAdvancedSearchKyc')
 );
+const CsvDownloader = dynamic(() => import('@/components/atoms/CsvDownloader'));
 
-import { toRem } from '@/helpers/globalFunctions';
+import {
+  toRem,
+  columnProps,
+  jsPdfProps,
+  exportToPDF,
+} from '@/helpers/globalFunctions';
 
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -187,15 +193,61 @@ const headCells: HeadCell[] = [
   },
 ];
 
-const ViewUsersPage = () => {
+const KycReportPage = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   const handleExportCSV = () => {
-    alert('CSV Data Exported !');
+    const btnCsvDownloader = document.getElementById('csvDownloader');
+    btnCsvDownloader && btnCsvDownloader.click();
   };
 
   const handleExportPDF = () => {
-    alert('PDF Data Exported !');
+    const configPdf: jsPdfProps = {
+      orientation: 'l',
+      unit: 'pt',
+      format: 'a4',
+    };
+    const columnsPdf: columnProps = {
+      columnLabels: [
+        'Conversation Id',
+        'Agent Id',
+        'Customer Channel Type',
+        'Start Time',
+        'End Time',
+        'Duration',
+        'WT',
+        'HT',
+        'Customer Id',
+        'Kyc Name',
+        'Kyc Telp',
+        'Kyc Email',
+        'Kyc Notes',
+        'Kyc Status',
+      ],
+      columnFields: [
+        'conversationId',
+        'agentId',
+        'customerChannelType',
+        'startTime',
+        'endTime',
+        'duration',
+        'wt',
+        'ht',
+        'customerId',
+        'kycName',
+        'kycTelp',
+        'kycEmail',
+        'kycNotes',
+        'kycStatus',
+      ],
+    };
+    exportToPDF(
+      'KYC Report Lists',
+      configPdf,
+      columnsPdf,
+      dataRows,
+      'kyc_report_lists'
+    );
   };
 
   const handleShowAdvancedSearch = () => {
@@ -227,6 +279,7 @@ const ViewUsersPage = () => {
         data={dataRows}
         fieldOrderBy={'conversationId'}
         rowsPerpageCount={25}
+        isLoading={false}
         headCells={headCells}
       />
       <PopupAdvancedSearchKyc
@@ -234,8 +287,14 @@ const ViewUsersPage = () => {
         onSearched={handleSearchResult}
         onClosePopup={() => setOpen(false)}
       />
+      <CsvDownloader
+        id="csvDownloader"
+        data={dataRows}
+        filename="kyc_report_lists.csv"
+        delimiter=";"
+      />
     </>
   );
 };
 
-export default ViewUsersPage;
+export default KycReportPage;

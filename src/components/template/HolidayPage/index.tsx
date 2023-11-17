@@ -280,6 +280,7 @@ const HolidayPage = () => {
         rowsPerpageCount={25}
         headCells={headCells}
         idActionName="id"
+        isLoading={dataQuery.isLoading}
         onQuickSearch={handleQuickSearch}
         customActionButton={(fields: any) => {
           return fields.name ? (

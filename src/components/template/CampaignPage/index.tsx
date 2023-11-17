@@ -124,6 +124,7 @@ const CampaignPage = () => {
         data={dataRows}
         fieldOrderBy={'name'}
         rowsPerpageCount={25}
+        isLoading={false}
         headCells={headCells}
       />
       <PopupFormAddCampaign

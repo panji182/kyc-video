@@ -1,5 +1,7 @@
 import CryptoJS from 'crypto-js';
 import sha256 from 'crypto-js/sha256';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export const toRem = (pxValue: number) => {
   // maesurement for spacing
@@ -62,4 +64,74 @@ export const getHTTPRequests = async (
   });
 
   return await response.json();
+};
+
+export type columnProps = {
+  columnLabels: any[];
+  columnFields: any[];
+};
+
+export type jsPdfProps = {
+  orientation: 'l' | 'p';
+  unit: 'pt' | 'mm' | 'cm' | 'in' | 'px' | 'pc' | 'em' | 'ex';
+  format: any[] | string;
+};
+
+export const exportToPDF = (
+  title: string,
+  jsPdfConfig: jsPdfProps,
+  columns: columnProps,
+  dataRows: any[],
+  outputFileName: string
+) => {
+  const pdf = new jsPDF(
+    jsPdfConfig.orientation,
+    jsPdfConfig.unit,
+    jsPdfConfig.format
+  );
+  const rows: any[] = [];
+
+  dataRows.forEach(dataRow => {
+    const temp = columns.columnFields.map(d => dataRow[d]);
+    rows.push(temp);
+  });
+
+  const pageWidth =
+    pdf.internal.pageSize.width || pdf.internal.pageSize.getWidth();
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  pdf.text(pageWidth / 2 - 30, 40, title);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  pdf.autoTable(columns.columnLabels, rows, {
+    startY: 65,
+    theme: 'grid',
+    styles: {
+      font: 'times',
+      halign: 'center',
+      cellPadding: 3.5,
+      lineWidth: 0.5,
+      lineColor: [0, 0, 0],
+      textColor: [0, 0, 0],
+    },
+    headStyles: {
+      textColor: [0, 0, 0],
+      fontStyle: 'normal',
+      lineWidth: 0.5,
+      lineColor: [0, 0, 0],
+      fillColor: [166, 204, 247],
+    },
+    alternateRowStyles: {
+      fillColor: [212, 212, 212],
+      textColor: [0, 0, 0],
+      lineWidth: 0.5,
+      lineColor: [0, 0, 0],
+    },
+    rowStyles: {
+      lineWidth: 0.5,
+      lineColor: [0, 0, 0],
+    },
+    tableLineColor: [0, 0, 0],
+  });
+  pdf.save(outputFileName);
 };
