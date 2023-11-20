@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -11,7 +11,7 @@ type Props = {
   colour: number;
 };
 
-const CardStatistic = ({ title, value, colour }: Props) => {
+const CardStatistic = memo(({ title, value, colour }: Props) => {
   const colourUsed = useMemo(() => {
     switch (colour) {
       case 1:
@@ -44,6 +44,8 @@ const CardStatistic = ({ title, value, colour }: Props) => {
       </Stack>
     </Box>
   );
-};
+});
+
+CardStatistic.displayName = 'CardStatistic';
 
 export default CardStatistic;

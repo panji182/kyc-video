@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, useContext, memo } from 'react';
+import { useState, useMemo, useCallback, memo, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
@@ -271,50 +271,44 @@ const filterDropdown: FilterDropdown[] = [
 ];
 
 type VScrollItemProps = {
-  index: number;
   // eslint-disable-next-line no-unused-vars
   onClickDetail: (id: string) => void;
-  datas: any[];
-  showDataPerRow: number;
+  rowData: string;
 };
 
-const VScrollItem = memo(
-  ({ index, onClickDetail, datas, showDataPerRow }: VScrollItemProps) => {
-    const { sidebarOpened } = useContext(adminLayoutContext);
-    const realtimeBreakPoint = useMemo(
-      () => (sidebarOpened ? 3 : 2),
-      [sidebarOpened]
-    );
-    const dataPerRowStartOffset = index * showDataPerRow;
-    const dataPerRowEndOffset = dataPerRowStartOffset + showDataPerRow;
-    const rowData = datas.slice(dataPerRowStartOffset, dataPerRowEndOffset);
-    return (
-      <>
-        {rowData.map((d, rowIdx) => (
-          <Grid
-            key={`realtime${rowIdx}`}
-            item
-            xs={12}
-            sm={6}
-            md={realtimeBreakPoint}
-            xl={realtimeBreakPoint}
-          >
-            <CardRealtimeMonitoring
-              id={d.id}
-              title={d.title}
-              bitRate={d.bitRate}
-              jitter={d.jitter}
-              frameRate={d.frameRate}
-              colour={d.colour}
-              icon={d.icon}
-              onClick={onClickDetail}
-            />
-          </Grid>
-        ))}
-      </>
-    );
-  }
-);
+const VScrollItem = memo(({ onClickDetail, rowData }: VScrollItemProps) => {
+  const { sidebarOpened } = useContext(adminLayoutContext);
+  const realtimeBreakPoint = useMemo(
+    () => (sidebarOpened ? 3 : 2),
+    [sidebarOpened]
+  );
+  const parsedRowData: any[] = useMemo(() => JSON.parse(rowData), [rowData]);
+  return (
+    <>
+      {parsedRowData.map((d, rowIdx) => (
+        <Grid
+          key={`realtime${rowIdx}`}
+          item
+          xs={12}
+          sm={6}
+          md={realtimeBreakPoint}
+          xl={realtimeBreakPoint}
+        >
+          <CardRealtimeMonitoring
+            id={d.id}
+            title={d.title}
+            bitRate={d.bitRate}
+            jitter={d.jitter}
+            frameRate={d.frameRate}
+            colour={d.colour}
+            icon={d.icon}
+            onClick={onClickDetail}
+          />
+        </Grid>
+      ))}
+    </>
+  );
+});
 
 VScrollItem.displayName = 'VScrollItem';
 
@@ -363,13 +357,13 @@ const DashboardPage = () => {
     setSelectedId(id);
     setOpen(true);
   }, []);
-  const handleClickFilter = (data: FilterDropdown) => {
+  const handleClickFilter = useCallback((data: FilterDropdown) => {
     console.log(99, data);
-  };
+  }, []);
 
-  const handleClickSort = (sorted: sortType) => {
+  const handleClickSort = useCallback((sorted: sortType) => {
     console.log(103, sorted);
-  };
+  }, []);
 
   return (
     <>

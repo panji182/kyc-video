@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -74,65 +74,60 @@ const Icons: IconsType = {
   ios: <IconDashboardIos />,
 };
 
-const CardRealtimeMonitoring = ({
-  id,
-  title,
-  bitRate,
-  jitter,
-  frameRate,
-  colour,
-  icon,
-  onClick,
-}: Props) => {
-  const colourBG = useMemo(() => {
-    switch (colour) {
-      case 'success':
-        return { ...styles.frameSuccess };
-      case 'error':
-        return { ...styles.frameError };
-      default:
-        return { ...styles.frameWarning };
-    }
-  }, [colour]);
-  const colourEllipse2 = useMemo(() => {
-    switch (colour) {
-      case 'success':
-        return { ...styles.ellipse2Success };
-      case 'error':
-        return { ...styles.ellipse2Error };
-      default:
-        return { ...styles.ellipse2Warning };
-    }
-  }, [colour]);
+const CardRealtimeMonitoring = memo(
+  ({ id, title, bitRate, jitter, frameRate, colour, icon, onClick }: Props) => {
+    const colourBG = useMemo(() => {
+      switch (colour) {
+        case 'success':
+          return { ...styles.frameSuccess };
+        case 'error':
+          return { ...styles.frameError };
+        default:
+          return { ...styles.frameWarning };
+      }
+    }, [colour]);
+    const colourEllipse2 = useMemo(() => {
+      switch (colour) {
+        case 'success':
+          return { ...styles.ellipse2Success };
+        case 'error':
+          return { ...styles.ellipse2Error };
+        default:
+          return { ...styles.ellipse2Warning };
+      }
+    }, [colour]);
 
-  const handleClick = () => {
-    onClick(id);
-  };
+    const handleClick = () => {
+      onClick(id);
+    };
 
-  return (
-    <Box sx={{ ...styles.frame, ...colourBG }} onClick={handleClick}>
-      <Typography component="p" sx={styles.textTitle}>
-        {title}
-      </Typography>
-      <Box sx={styles.ellipse}></Box>
-      <Box sx={{ ...styles.ellipse2, ...colourEllipse2 }}></Box>
-      <Stack direction="row" justifyContent="space-around">
-        <Box>
-          <TextValue value={bitRate} />
-          <TextTitle title="Bit rate" />
-        </Box>
-        <Box>
-          <TextValue value={jitter} />
-          <TextTitle title="Jitter" />
-        </Box>
-        <Box>
-          <TextValue value={frameRate} />
-          <TextTitle title="Frame rate" />
-        </Box>
-      </Stack>
-      <Box sx={styles.vaadinMobile}>{Icons[icon as keyof IconsType]}</Box>
-    </Box>
-  );
-};
+    return (
+      <Box sx={{ ...styles.frame, ...colourBG }} onClick={handleClick}>
+        <Typography component="p" sx={styles.textTitle}>
+          {title}
+        </Typography>
+        <Box sx={styles.ellipse}></Box>
+        <Box sx={{ ...styles.ellipse2, ...colourEllipse2 }}></Box>
+        <Stack direction="row" justifyContent="space-around">
+          <Box>
+            <TextValue value={bitRate} />
+            <TextTitle title="Bit rate" />
+          </Box>
+          <Box>
+            <TextValue value={jitter} />
+            <TextTitle title="Jitter" />
+          </Box>
+          <Box>
+            <TextValue value={frameRate} />
+            <TextTitle title="Frame rate" />
+          </Box>
+        </Stack>
+        <Box sx={styles.vaadinMobile}>{Icons[icon as keyof IconsType]}</Box>
+      </Box>
+    );
+  }
+);
+
+CardRealtimeMonitoring.displayName = 'CardRealtimeMonitoring';
 
 export default CardRealtimeMonitoring;

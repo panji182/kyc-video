@@ -126,17 +126,20 @@ const VirtualScroll = ({
   const visibleChildren = useMemo(
     () =>
       new Array(visibleNodeCount).fill(null).map((_, index) => {
+        const dataPerRowStartOffset = (index + startNode) * showDataPerRow;
+        const dataPerRowEndOffset = dataPerRowStartOffset + showDataPerRow;
+        const rowData = JSON.stringify(
+          datas.slice(dataPerRowStartOffset, dataPerRowEndOffset)
+        );
         return (
           <Item
             key={index + startNode}
-            index={index + startNode}
             onClickDetail={onClickDetail}
-            datas={datas}
-            showDataPerRow={showDataPerRow}
+            rowData={rowData}
           />
         );
       }),
-    [startNode, visibleNodeCount, Item, showDataPerRow]
+    [startNode, visibleNodeCount, Item, datas, showDataPerRow]
   );
 
   return (
