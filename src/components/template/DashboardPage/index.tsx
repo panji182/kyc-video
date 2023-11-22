@@ -331,7 +331,7 @@ const DashboardPage = () => {
       };
     } else {
       return {
-        scrollHeight: 350,
+        scrollHeight: null,
         showDataPerRow: sidebarOpened
           ? RealTimeMonitorDashboard.dataPerRowOpened
           : RealTimeMonitorDashboard.dataPerRowClosed,

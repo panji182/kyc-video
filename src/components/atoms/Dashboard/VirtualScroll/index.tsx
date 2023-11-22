@@ -62,7 +62,7 @@ function findEndNode(
 type VirtualScrollProps = {
   Item: any;
   itemCount: number;
-  height: number;
+  height: number | null;
   heightRowVirtual: number;
   renderAhead: number;
   // eslint-disable-next-line no-unused-vars
@@ -83,6 +83,7 @@ const VirtualScroll = ({
   showDataPerRow,
 }: VirtualScrollProps) => {
   const [scrollTop, setScrollTop] = useState(0);
+  const [wrapHeight, setWrapHeight] = useState(350);
   const animationFrame = useRef<number>(0);
 
   const handleScroll = useCallback((e: any) => {
@@ -96,7 +97,10 @@ const VirtualScroll = ({
 
   useEffect(() => {
     const scrollContainer = document.getElementById('scrollContainer');
-    scrollContainer && setScrollTop(scrollContainer.scrollTop);
+    if (scrollContainer) {
+      setScrollTop(scrollContainer.scrollTop);
+      setWrapHeight(scrollContainer.offsetHeight);
+    }
   }, []);
 
   const childPositions = useMemo(() => {
@@ -117,8 +121,8 @@ const VirtualScroll = ({
   const startNode = Math.max(0, firstVisibleNode - renderAhead);
 
   const lastVisibleNode = useMemo(
-    () => findEndNode(childPositions, firstVisibleNode, itemCount, height),
-    [childPositions, firstVisibleNode, itemCount, height]
+    () => findEndNode(childPositions, firstVisibleNode, itemCount, wrapHeight),
+    [childPositions, firstVisibleNode, itemCount, wrapHeight]
   );
   const endNode = Math.min(itemCount - 1, lastVisibleNode + renderAhead);
   const visibleNodeCount = endNode - startNode + 1;
@@ -145,7 +149,7 @@ const VirtualScroll = ({
   return (
     <Box
       id="scrollContainer"
-      sx={{ height, overflow: 'auto' }}
+      sx={{ height: height ?? 'calc(100vh - 15.6rem)', overflow: 'auto' }}
       onScroll={handleScroll}
     >
       <Box
