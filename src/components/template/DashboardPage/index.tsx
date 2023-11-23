@@ -223,7 +223,7 @@ const dummyRealtime: RealtimeProps[] = [
   },
   {
     id: '3',
-    title: 'MS156',
+    title: 'MS159',
     bitRate: '300Kbps',
     jitter: '120 ms',
     frameRate: '60 fps',
@@ -232,7 +232,7 @@ const dummyRealtime: RealtimeProps[] = [
   },
   {
     id: '4',
-    title: 'MY648',
+    title: 'MY659',
     bitRate: '3Mbps',
     jitter: '25 ms',
     frameRate: '55 fps',
