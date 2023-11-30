@@ -117,7 +117,7 @@ const PopupFormAddVideoJingle = ({
   return (
     <Modal
       open={open}
-      title={editedData ? `Edit Channel` : `Create Channel`}
+      title={editedData ? `Edit Video Jingle` : `Create Video Jingle`}
       onClose={() => onClosePopup()}
     >
       <form onSubmit={formik.handleSubmit}>
